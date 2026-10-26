@@ -1,0 +1,148 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Crown, LogIn, Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useAppStore } from "@/lib/store";
+import AccountMenu from "./AccountMenu";
+
+const LINKS = [
+  { href: "inicio", label: "Início" },
+  { href: "modalidades", label: "Modalidades" },
+  { href: "horarios", label: "Horários" },
+  { href: "planos", label: "Planos" },
+  { href: "galeria", label: "Galeria" },
+  { href: "contato", label: "Contato" },
+];
+
+export default function Navbar() {
+  const user = useAppStore((s) => s.user);
+  const openAuthModal = useAppStore((s) => s.openAuthModal);
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 30);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  function go(href: string) {
+    setOpen(false);
+    document.getElementById(href)?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  return (
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-[#050505]/90 backdrop-blur-xl border-b border-[#d9a441]/15 py-2"
+          : "bg-transparent py-4"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+        {/* Logo */}
+        <button
+          onClick={() => go("inicio")}
+          aria-label="Ir para o início"
+          className="flex items-center gap-2 cursor-pointer shrink-0"
+        >
+          <img
+            src="/logo-horizontal.jpg"
+            alt="Logo CROWN Academia"
+            className={`rounded-lg transition-all duration-300 ${
+              scrolled ? "h-10" : "h-12"
+            } border border-[#d9a441]/20`}
+          />
+        </button>
+
+        {/* Links desktop */}
+        <nav aria-label="Navegação principal" className="hidden md:flex items-center gap-1">
+          {LINKS.map((l) => (
+            <button
+              key={l.href}
+              onClick={() => go(l.href)}
+              className="px-4 py-2 font-heading uppercase text-sm tracking-wider text-muted-foreground hover:text-[#d9a441] transition-colors relative group cursor-pointer"
+            >
+              {l.label}
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gold-gradient group-hover:w-2/3 transition-all duration-300" />
+            </button>
+          ))}
+        </nav>
+
+        {/* Ações */}
+        <div className="flex items-center gap-3">
+          {user ? (
+            <AccountMenu />
+          ) : (
+            <Button
+              onClick={() => openAuthModal(undefined, "login")}
+              className="hidden sm:inline-flex h-10 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-sm gold-glow-sm"
+            >
+              <LogIn className="w-4 h-4 mr-2" />
+              Entrar
+            </Button>
+          )}
+
+          {/* Menu mobile */}
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <button
+                aria-label="Abrir menu"
+                className="md:hidden w-11 h-11 flex items-center justify-center rounded-lg border border-[#2a2a2a] bg-[#101010] text-foreground hover:text-[#d9a441] hover:border-[#d9a441]/50 transition-colors"
+              >
+                {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              className="bg-[#0a0a0a] border-[#262626] w-72 p-0"
+            >
+              <SheetHeader className="p-5 border-b border-[#262626]">
+                <SheetTitle className="flex items-center gap-2">
+                  <img
+                    src="/logo-horizontal.jpg"
+                    alt="Logo CROWN Academia"
+                    className="h-10 rounded-md border border-[#d9a441]/20"
+                  />
+                </SheetTitle>
+              </SheetHeader>
+              <nav aria-label="Menu mobile" className="flex flex-col p-4 gap-1">
+                {LINKS.map((l) => (
+                  <button
+                    key={l.href}
+                    onClick={() => go(l.href)}
+                    className="text-left px-4 py-3 rounded-lg font-heading uppercase tracking-wider text-sm text-muted-foreground hover:text-[#d9a441] hover:bg-[#d9a441]/5 transition-colors cursor-pointer"
+                  >
+                    {l.label}
+                  </button>
+                ))}
+                {!user && (
+                  <Button
+                    onClick={() => {
+                      setOpen(false);
+                      openAuthModal(undefined, "login");
+                    }}
+                    className="mt-4 h-11 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold"
+                  >
+                    <Crown className="w-4 h-4 mr-2" />
+                    Entrar
+                  </Button>
+                )}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </header>
+  );
+}

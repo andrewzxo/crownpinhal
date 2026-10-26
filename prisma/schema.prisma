@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String
+  password      String
+  passwordPlain String?
+  phone         String?
+  role          String         @default("CLIENT") // CLIENT | ADMIN | OWNER
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  sessions      Session[]
+  subscriptions Subscription[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Modality {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  imageUrl    String?
+  icon        String?
+  order       Int        @default(0)
+  active      Boolean    @default(true)
+  schedules   Schedule[]
+}
+
+model Schedule {
+  id         String   @id @default(cuid())
+  modalityId String
+  modality   Modality @relation(fields: [modalityId], references: [id], onDelete: Cascade)
+  dayOfWeek  Int // 0 = Domingo ... 6 = Sábado
+  startTime  String // "07:00"
+  endTime    String // "08:00"
+  instructor String?
+}
+
+model Plan {
+  id          String         @id @default(cuid())
+  name        String
+  description String
+  features    String // JSON string[] de benefícios
+  price       Float? // null = preço ainda não definido
+  period      String? // ex: "mês"
+  badge       String? // ex: "MAIS POPULAR"
+  highlighted Boolean        @default(false)
+  order       Int            @default(0)
+  active      Boolean        @default(true)
+  subscriptions Subscription[]
+}
+
+model GalleryImage {
+  id     String  @id @default(cuid())
+  url    String
+  title  String?
+  order  Int     @default(0)
+  active Boolean @default(true)
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId    String
+  plan      Plan     @relation(fields: [planId], references: [id])
+  status    String   @default("PENDING") // PENDING | ACTIVE | CANCELLED
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  key   String @id
+  value String
+}
