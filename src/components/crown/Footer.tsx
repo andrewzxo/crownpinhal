@@ -25,19 +25,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Marca */}
           <div>
-          <div className="flex items-center gap-3 mb-5">
-            <img
-              src="/logo-emblem.png"
-              alt="Logo CROWN Academia"
-              className="h-14 w-14 object-cover rounded-lg border border-[#d9a441]/20"
-            />
-            <span className="flex flex-col leading-none">
-              <span className="font-display uppercase text-2xl tracking-wide">CROWN</span>
-              <span className="font-heading uppercase text-[10px] tracking-[0.4em] text-[#d9a441] mt-1">
-                Pinhal-SP
-              </span>
-            </span>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Logo CROWN Academia"
+            className="h-16 w-auto gold-drop-glow mb-5"
+          />
             <p className="text-sm text-muted-foreground leading-relaxed">
               A academia mais completa de Pinhal-SP. Estrutura premium, treinadores
               qualificados e uma comunidade que treina junto.

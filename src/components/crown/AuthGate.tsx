@@ -292,9 +292,9 @@ export default function AuthGate() {
           className="hidden lg:flex flex-col items-center text-center max-w-md"
         >
           <img
-            src="/logo-crown.png"
+            src="/logo.png"
             alt="Logo da Academia CROWN Pinhal-SP"
-            className="w-64 rounded-3xl gold-glow border border-[#d9a441]/30"
+            className="w-80 gold-drop-glow"
           />
           <h1 className="mt-8 font-display text-4xl uppercase leading-tight">
             Sua coroa não se <span className="text-gold-gradient">ganha.</span>
@@ -324,9 +324,9 @@ export default function AuthGate() {
         >
           <div className="lg:hidden flex justify-center mb-6">
             <img
-              src="/logo-crown.png"
+              src="/logo.png"
               alt="Logo da Academia CROWN Pinhal-SP"
-              className="h-24 rounded-xl border border-[#d9a441]/30 gold-glow"
+              className="h-20 w-auto gold-drop-glow"
             />
           </div>
 

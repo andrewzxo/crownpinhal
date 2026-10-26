@@ -140,6 +140,9 @@
   .gold-glow-sm {
     box-shadow: 0 0 24px -6px rgba(217, 164, 65, 0.4);
   }
+  .gold-drop-glow {
+    filter: drop-shadow(0 0 22px rgba(217, 164, 65, 0.35));
+  }
   .bg-gold-gradient {
     background: linear-gradient(135deg, #f5d488 0%, #d9a441 45%, #b07e22 100%);
   }

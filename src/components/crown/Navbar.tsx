@@ -54,23 +54,15 @@ export default function Navbar() {
         <button
           onClick={() => go("inicio")}
           aria-label="Ir para o início"
-          className="flex items-center gap-2.5 cursor-pointer shrink-0"
+          className="flex items-center cursor-pointer shrink-0"
         >
           <img
-            src="/logo-emblem.png"
+            src="/logo.png"
             alt="Logo CROWN Academia"
-            className={`object-cover rounded-lg transition-all duration-300 ${
-              scrolled ? "h-10 w-10" : "h-12 w-12"
-            } border border-[#d9a441]/25`}
+            className={`w-auto transition-all duration-300 ${
+              scrolled ? "h-11" : "h-14"
+            } gold-drop-glow`}
           />
-          <span className="flex flex-col items-start leading-none">
-            <span className="font-display uppercase text-xl tracking-wide text-foreground">
-              CROWN
-            </span>
-            <span className="font-heading uppercase text-[9px] tracking-[0.4em] text-[#d9a441] mt-0.5">
-              Pinhal-SP
-            </span>
-          </span>
         </button>
 
         {/* Links desktop */}
@@ -116,20 +108,12 @@ export default function Navbar() {
               className="bg-[#0a0a0a] border-[#262626] w-72 p-0"
             >
               <SheetHeader className="p-5 border-b border-[#262626]">
-                <SheetTitle className="flex items-center gap-2.5">
+                <SheetTitle className="flex items-center">
                   <img
-                    src="/logo-emblem.png"
+                    src="/logo.png"
                     alt="Logo CROWN Academia"
-                    className="h-10 w-10 object-cover rounded-md border border-[#d9a441]/20"
+                    className="h-10 w-auto gold-drop-glow"
                   />
-                  <span className="flex flex-col leading-none">
-                    <span className="font-display uppercase text-lg tracking-wide">
-                      CROWN
-                    </span>
-                    <span className="font-heading uppercase text-[8px] tracking-[0.4em] text-[#d9a441] mt-0.5">
-                      Pinhal-SP
-                    </span>
-                  </span>
                 </SheetTitle>
               </SheetHeader>
               <nav aria-label="Menu mobile" className="flex flex-col p-4 gap-1">

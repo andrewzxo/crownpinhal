@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     "Academia CROWN em Pinhal-SP. Musculação, CROSS, HYROX e CROWN RUN. Treine como um rei.",
   keywords: ["academia", "CROWN", "Pinhal", "musculação", "cross", "hyrox", "corrida", "fitness"],
   icons: {
-    icon: "/logo-emblem.png",
+    icon: "/logo.png",
   },
 };
 

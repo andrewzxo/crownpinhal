@@ -118,3 +118,19 @@ Stage Summary:
 - Site com identidade 100% real da CROWN: logo melhorada, hero personalizada com coroa dourada, fotos reais da recepção/interior na galeria e no card de Musculação, grade oficial de horários (40 aulas/semana) com CROSS/HYROX/CROWN RUN
 - Verificado no navegador (desktop 1280px + mobile 390px): AuthGate, visitante, hero, modalidades, horários por dia, galeria, footer sticky, login do dono após reset — tudo OK; lint 0/0; console limpo
 - Credenciais mantidas: dono@crown.com/crown123 (OWNER), admin@crown.com/admin123 (ADMIN), cliente@crown.com/cliente123 (CLIENT)
+
+---
+Task ID: 10
+Agent: orchestrator (Z.ai Code)
+Task: Logo oficial do usuário em todo o site (sem gerar imagens)
+
+Work Log:
+- Copiado upload/logo-horizontal-removebg-preview.png → public/logo.png (PNG oficial com fundo transparente)
+- Aparado o excesso de transparente com PIL (conteúdo era 45% do canvas 500x500 → 428x243) para o logo renderizar grande o suficiente
+- Substituídas TODAS as 7 referências (logo-crown.png/logo-emblem.png) por /logo.png: Splash (page.tsx), favicon (layout.tsx), AuthGate desktop (w-80) e mobile (h-20), Navbar desktop (h-14/h-11 ao rolar) e Sheet mobile (h-10), Footer (h-16)
+- Removidos borders/rounded das logos (PNG transparente) e criado utilitário .gold-drop-glow (drop-shadow que respeita transparência) em globals.css — o antigo gold-glow é box-shadow e desenharia um retângulo brilhante
+- Verificado no navegador: portão de acesso, navbar (topo/rolado), menu mobile, footer — logo oficial nítida em todos; lint 0/0; console sem erros
+
+Stage Summary:
+- Identidade visual 100% oficial: o PNG enviado pelo usuário é usado em tudo (abertura, login, navbar, menu, footer, favicon); nenhuma imagem de logo gerada por IA está mais em uso nos componentes
+- Arquivos antigos logo-crown.png / logo-emblem.png permanecem em public/ apenas como backup (sem referências no código)
