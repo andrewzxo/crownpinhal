@@ -19,7 +19,8 @@ const LINKS = [
   { href: "modalidades", label: "Modalidades" },
   { href: "horarios", label: "Horários" },
   { href: "planos", label: "Planos" },
-  { href: "galeria", label: "Galeria" },
+  { href: "eventos", label: "Eventos" },
+  { href: "empresas", label: "Empresas" },
   { href: "contato", label: "Contato" },
 ];
 
@@ -66,12 +67,12 @@ export default function Navbar() {
         </button>
 
         {/* Links desktop */}
-        <nav aria-label="Navegação principal" className="hidden md:flex items-center gap-1">
+        <nav aria-label="Navegação principal" className="hidden lg:flex items-center gap-1">
           {LINKS.map((l) => (
             <button
               key={l.href}
               onClick={() => go(l.href)}
-              className="px-4 py-2 font-heading uppercase text-sm tracking-wider text-muted-foreground hover:text-[#d9a441] transition-colors relative group cursor-pointer"
+              className="px-3 py-2 font-heading uppercase text-sm tracking-wider text-muted-foreground hover:text-[#d9a441] transition-colors relative group cursor-pointer"
             >
               {l.label}
               <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gold-gradient group-hover:w-2/3 transition-all duration-300" />
@@ -98,7 +99,7 @@ export default function Navbar() {
             <SheetTrigger asChild>
               <button
                 aria-label="Abrir menu"
-                className="md:hidden w-11 h-11 flex items-center justify-center border border-[#2a2a2a] bg-[#101010] text-foreground hover:text-[#d9a441] hover:border-[#d9a441]/60 transition-colors"
+                className="lg:hidden w-11 h-11 flex items-center justify-center border border-[#2a2a2a] bg-[#101010] text-foreground hover:text-[#d9a441] hover:border-[#d9a441]/60 transition-colors"
               >
                 {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>

@@ -1,16 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ChevronDown, Crown, MapPin, Play } from "lucide-react";
+import { ChevronDown, Dumbbell, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/store";
 import { CrownWatermark } from "./CrownShapes";
+import { WhatsAppIcon } from "./CtaSection";
 
 export default function Hero() {
   const content = useAppStore((s) => s.content);
   const s = content?.settings ?? {};
-  const heroTitle = s.heroTitle || "CROWN\nPINHAL-SP";
-  const heroHighlight = s.heroHighlight || "PINHAL-SP";
+  const heroTitle = s.heroTitle || "CONECTANDO\nPESSOAS\nATRAVÉS DO\nFITNESS";
+  const heroHighlight = s.heroHighlight || "FITNESS";
+  const whatsapp = s.whatsapp || "5519991504548";
+  const waMessage = s.whatsappMsg || "Olá! Quero agendar meus 7 dias grátis na CROWN.";
+  const waLink = `https://wa.me/${whatsapp}?text=${encodeURIComponent(waMessage)}`;
 
   const [pre, post] = (() => {
     const idx = heroHighlight ? heroTitle.indexOf(heroHighlight) : -1;
@@ -68,7 +72,7 @@ export default function Hero() {
             className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl leading-relaxed"
           >
             {s.heroSubtitle ||
-              "Academia completa em Pinhal-SP: musculação, CROSS, HYROX, CROWN RUN, aulas coletivas, lutas, beach tennis e futevôlei."}
+              "Musculação, CROSS, HYROX oficial, lutas, aulas coletivas, corrida e quadras de areia. Um espaço completo para o seu Fitness & Lifestyle no coração de Pinhal."}
           </motion.p>
 
           {/* CTAs — paralelogramos */}
@@ -81,13 +85,15 @@ export default function Hero() {
             <div className="-skew-x-[10deg]">
               <Button
                 size="lg"
-                onClick={() => document.getElementById("planos")?.scrollIntoView({ behavior: "smooth" })}
+                asChild
                 className="h-14 px-10 skew-x-[10deg] bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-bold text-base transition-all hover:scale-[1.02]"
               >
-                <span className="flex items-center gap-2 skew-x-[10deg]">
-                  <Crown className="w-5 h-5" />
-                  Ver planos
-                </span>
+                <a href={waLink} target="_blank" rel="noopener noreferrer">
+                  <span className="flex items-center gap-2 skew-x-[10deg]">
+                    <WhatsAppIcon className="w-5 h-5" />
+                    Agendar 7 dias grátis
+                  </span>
+                </a>
               </Button>
             </div>
             <div className="-skew-x-[10deg]">
@@ -98,12 +104,24 @@ export default function Hero() {
                 className="h-14 px-10 skew-x-[10deg] bg-[#050505]/40 backdrop-blur border-[#d9a441]/40 hover:bg-[#d9a441]/10 hover:text-[#d9a441] hover:border-[#d9a441] font-heading uppercase tracking-wider font-semibold text-base transition-all"
               >
                 <span className="flex items-center gap-2 skew-x-[10deg]">
-                  <Play className="w-5 h-5" />
+                  <Dumbbell className="w-5 h-5" />
                   Modalidades
                 </span>
               </Button>
             </div>
           </motion.div>
+
+          {/* Nota da campanha — informação real */}
+          {(s.heroCtaNote || "7 dias grátis para novos alunos testarem a estrutura • das 5h às 16h") && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.75 }}
+              className="mt-4 text-xs font-heading uppercase tracking-widest text-[#d9a441]/80"
+            >
+              {s.heroCtaNote || "7 dias grátis para novos alunos testarem a estrutura • das 5h às 16h"}
+            </motion.p>
+          )}
 
           {/* Mini stats — chips inclinados */}
           <motion.div

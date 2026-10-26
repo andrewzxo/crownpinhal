@@ -47,7 +47,7 @@ export default function Modalities() {
           subtitle={
             setContentFallback
               ? "Em breve as modalidades serão cadastradas pelo nosso time."
-              : "Academia completa: são várias opções para você alcançar seus objetivos, do condicionamento à força."
+              : "Do ferro à areia: musculação completa, CROSS, HYROX oficial, lutas, ritmos, corrida, beach tennis e futevôlei. Tem treino para cada objetivo — e para cada dia da semana."
           }
         />
 

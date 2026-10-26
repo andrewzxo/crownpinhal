@@ -21,7 +21,7 @@ export default function About() {
     gallery[1]?.url || "/img/real-interior.png",
   ];
 
-  const aboutTitle = settings?.aboutTitle || "ACADEMIA COMPLETA. TUDO EM UM SÓ LUGAR.";
+  const aboutTitle = settings?.aboutTitle || "MAIS QUE UMA ACADEMIA. SEU FITNESS & LIFESTYLE.";
   const titleParts = aboutTitle.split(". ");
   const lastPart = titleParts.pop() || aboutTitle;
   const prePart = titleParts.length ? titleParts.join(". ") + "." : "";
@@ -42,14 +42,14 @@ export default function About() {
           <div>
             <SectionTitle
               align="left"
-              eyebrow="Sobre a Crown"
+              eyebrow="Sobre a vibe CROWN"
               title={prePart}
               highlight={lastPart}
             />
             <Reveal delay={0.15}>
               <p className="mt-6 text-lg text-muted-foreground leading-relaxed border-l-2 border-[#d9a441]/40 pl-5">
                 {settings?.aboutText ||
-                  "Musculação com acesso livre todos os dias, CROSS de segunda a domingo, preparação HYROX, CROWN RUN, aulas coletivas (Dance, Bike, Jump e Pilates), Muay Thai, Boxe, Beach Tennis e Futevôlei. Aceitamos Gympass, TotalPass e Wellhub."}
+                  "Um ambiente acolhedor, focado em rotina e comunidade — ambiente inteiro na mesma energia. Conectando pessoas através do fitness: treino, saúde e convivência além do ferro. Treina na CROWN, joga nas quadras de areia e fecha o dia no Arena Beach Bar."}
               </p>
             </Reveal>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Crown, Instagram, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, Clock, Crown, ExternalLink, Instagram, MapPin, MessageCircle, Phone, Ticket } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { CrownEdge } from "./CrownShapes";
 
@@ -17,8 +17,15 @@ export default function Footer() {
     { href: "modalidades", label: "Modalidades" },
     { href: "horarios", label: "Horários" },
     { href: "planos", label: "Planos" },
-    { href: "galeria", label: "Galeria" },
+    { href: "eventos", label: "Eventos" },
+    { href: "empresas", label: "Empresas" },
   ];
+
+  const mapsUrl =
+    s.mapsUrl ||
+    "https://www.google.com/maps/search/?api=1&query=Crown+Pinhal,+Av.+Washington+Lu%C3%ADs,+45,+Esp%C3%ADrito+Santo+do+Pinhal+-+SP";
+  const beaconsUrl = s.beaconsUrl || "https://beacons.ai/crownpinhal";
+  const ticketbroUrl = s.ticketbroUrl || "https://crown-gym-pinhal.ticketbro.com/";
 
   return (
     <>
@@ -35,8 +42,8 @@ export default function Footer() {
             className="h-16 w-auto gold-drop-glow mb-5"
           />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Musculação, CROSS, HYROX, CROWN RUN, aulas coletivas, lutas, beach tennis e
-              futevôlei em Pinhal-SP.
+              Um espaço completo para o seu Fitness & Lifestyle: musculação, CROSS, HYROX,
+              lutas, aulas coletivas, corrida, quadras de areia e Arena Beach Bar.
             </p>
             <a
               href={s.instagram ? `https://instagram.com/${s.instagram.replace("@", "")}` : "https://instagram.com/crownpinhal"}
@@ -92,18 +99,26 @@ export default function Footer() {
             <ul className="space-y-3.5 text-sm text-muted-foreground">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 mt-0.5 text-[#d9a441] shrink-0" />
-                {s.address || "Pinhal-SP"}
+                <span>
+                  <span className="block text-foreground/90">{s.address || "Av. Washington Luís, 45 — Espírito Santo do Pinhal-SP"}</span>
+                  <span className="block mt-0.5 text-xs text-muted-foreground/70">
+                    {s.addressNote || "A ~700m da Praça Nestor de Almeida Vergueiro • CEP 13990-000"}
+                  </span>
+                  <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1.5 inline-flex items-center gap-1 text-xs font-heading uppercase tracking-wider text-[#d9a441] hover:brightness-125 transition-all"
+                  >
+                    Ver no Google Maps
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#d9a441] shrink-0" />
                 {s.phone || "(19) 99150-4548"}
               </li>
-              {s.email && (
-                <li className="flex items-center gap-2.5">
-                  <Mail className="w-4 h-4 text-[#d9a441] shrink-0" />
-                  {s.email}
-                </li>
-              )}
               {s.whatsapp && (
                 <li>
                   <a
@@ -118,6 +133,26 @@ export default function Footer() {
                 </li>
               )}
             </ul>
+            <div className="mt-5 flex flex-col gap-2">
+              <a
+                href={beaconsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#d9a441] transition-colors"
+              >
+                <ExternalLink className="w-4 h-4 text-[#d9a441] shrink-0" />
+                Hub de agendamento
+              </a>
+              <a
+                href={ticketbroUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[#d9a441] transition-colors"
+              >
+                <Ticket className="w-4 h-4 text-[#d9a441] shrink-0" />
+                Ingressos e eventos
+              </a>
+            </div>
           </div>
 
           {/* Horários */}
@@ -145,10 +180,15 @@ export default function Footer() {
 
       {/* Barra inferior */}
       <div className="border-t border-[#1a1a1a]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-muted-foreground/70">
-            © {new Date().getFullYear()} CROWN Academia — Pinhal-SP. Todos os direitos reservados.
-          </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col lg:flex-row items-center justify-between gap-3">
+          <div className="text-center lg:text-left">
+            <p className="text-xs text-muted-foreground/70">
+              © {new Date().getFullYear()} Crown Pinhal — Todos os direitos reservados.
+            </p>
+            <p className="text-[11px] text-muted-foreground/40 mt-1">
+              {s.cnpj || "Lrt Atividades em Condicionamento Fisico LTDA • CNPJ 57.249.247/0001-63"}
+            </p>
+          </div>
           <p className="text-xs text-muted-foreground/50 font-heading uppercase tracking-widest">
             12 modalidades • 7 dias por semana
           </p>

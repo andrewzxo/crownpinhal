@@ -5,14 +5,15 @@ import { useAppStore } from "@/lib/store";
 import { WhatsAppIcon } from "./CtaSection";
 
 export default function WhatsAppFloat() {
-  const whatsapp = useAppStore((s) => s.content?.settings.whatsapp) || "5519991504548";
+  const settings = useAppStore((s) => s.content?.settings);
+  const whatsapp = settings?.whatsapp || "5519991504548";
   const phoneLabel = "(19) 99150-4548";
+  const message =
+    settings?.whatsappMsg || "Olá! Quero agendar meus 7 dias grátis na CROWN.";
 
   return (
     <motion.a
-      href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(
-        "Olá! Vim pelo site da CROWN e quero saber mais sobre os treinos."
-      )}`}
+      href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`Falar com a CROWN no WhatsApp ${phoneLabel}`}

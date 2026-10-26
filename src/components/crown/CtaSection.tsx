@@ -1,5 +1,6 @@
 "use client";
 
+import { ExternalLink, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/store";
 import Reveal from "./Reveal";
@@ -9,8 +10,11 @@ export default function CtaSection() {
   const settings = useAppStore((s) => s.content?.settings);
   const instagram = (settings?.instagram || "@crownpinhal").replace("@", "");
   const whatsapp = settings?.whatsapp || "5519991504548";
+  const beaconsUrl = settings?.beaconsUrl || "https://beacons.ai/crownpinhal";
+  const waMessage = settings?.whatsappMsg || "Olá! Quero agendar meus 7 dias grátis na CROWN.";
+  const waLink = `https://wa.me/${whatsapp}?text=${encodeURIComponent(waMessage)}`;
 
-  const ctaTitle = settings?.ctaTitle || "VENHA TREINAR NA CROWN";
+  const ctaTitle = settings?.ctaTitle || "COMEÇA COM 7 DIAS GRÁTIS";
   const ctaWords = ctaTitle.split(" ");
   const ctaLast = ctaWords.pop() || "";
   const ctaPre = ctaWords.join(" ");
@@ -33,8 +37,8 @@ export default function CtaSection() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <Reveal>
-          <p className="font-heading uppercase tracking-[0.4em] text-xs text-[#d9a441] mb-6">
-            Escolha sua aula
+          <p className="font-heading uppercase tracking-[0.3em] text-xs text-[#d9a441] mb-6">
+            {settings?.ctaEyebrow || "Aula experimental"}
           </p>
           <h2 className="font-display uppercase text-5xl sm:text-7xl lg:text-8xl leading-[0.95]">
             {ctaPre && <span className="text-foreground">{ctaPre} </span>}
@@ -44,7 +48,7 @@ export default function CtaSection() {
           </h2>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
             {settings?.ctaText ||
-              "Musculação, CROSS, HYROX, aulas coletivas e mais. Chama no WhatsApp ou segue a CROWN no Instagram."}
+              "Novos alunos testam toda a estrutura das 5h às 16h. Agende sua aula experimental pelo WhatsApp ou pelo hub da CROWN — é rápido."}
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -53,15 +57,24 @@ export default function CtaSection() {
               asChild
               className="h-14 px-10 rounded-none clip-arrow-r bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-bold text-base transition-all hover:scale-[1.03]"
             >
-              <a
-                href={`https://wa.me/${whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={waLink} target="_blank" rel="noopener noreferrer">
                 <WhatsAppIcon className="w-5 h-5 mr-2" />
-                Chamar no WhatsApp
+                Agendar pelo WhatsApp
               </a>
             </Button>
+            <div className="-skew-x-[10deg]">
+              <Button
+                size="lg"
+                variant="outline"
+                asChild
+                className="h-14 px-10 skew-x-[10deg] bg-transparent border-[#d9a441]/50 hover:bg-[#d9a441]/10 hover:text-[#d9a441] hover:border-[#d9a441] font-heading uppercase tracking-wider font-semibold text-base transition-all"
+              >
+                <a href={beaconsUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4 mr-2 inline-block skew-x-[10deg]" />
+                  <span className="inline-block skew-x-[10deg]">Hub da CROWN</span>
+                </a>
+              </Button>
+            </div>
             <div className="-skew-x-[10deg]">
               <Button
                 size="lg"
@@ -74,7 +87,8 @@ export default function CtaSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span className="inline-block skew-x-[10deg]">Seguir no Instagram</span>
+                  <Instagram className="w-4 h-4 mr-2 inline-block skew-x-[10deg]" />
+                  <span className="inline-block skew-x-[10deg]">{settings?.instagram || "@crownpinhal"}</span>
                 </a>
               </Button>
             </div>

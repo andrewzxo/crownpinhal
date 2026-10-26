@@ -220,3 +220,30 @@ Stage Summary:
 - Site 100% livre de bordões inventados: todo texto é informação real (nome CROWN Pinhal-SP, 12 modalidades, 47 aulas/semana, 7 dias, horários oficiais, contatos reais, convênios e parceiros do flyer)
 - Números falsos (850+ alunos, 12 treinadores, 5 anos), ano fictício (Desde 2020), endereço fake (Av. dos Reis) e e-mail não confirmado removidos do site
 - IMPORTANTE para próximos agentes: nunca criar bordões/frases de marketing — só usar dados reais fornecidos pelo cliente; settings agora se atualizam no re-seed (update:{value}); planos idem (update por nome)
+
+---
+Task ID: 14
+Agent: orchestrator (Z.ai Code)
+Task: Landing page de conversão com a base de dados REAL oficial (copywriter + dev) — Hero com slogan, Vibe CROWN, Modalidades persuasivas, Empresas (Wellhub/TotalPass), Comunidade & Eventos (Crown Games/Desafio 12 Check-ins/Projeto Verão/Arena Beach Bar), CTA 7 Dias Grátis, Footer com endereço/CNPJ
+
+Work Log:
+- prisma/seed.ts: settings oficiais (heroBadge "FITNESS & LIFESTYLE • ESPÍRITO SANTO DO PINHAL-SP", heroTitle "CONECTANDO PESSOAS ATRAVÉS DO FITNESS" com \n, heroCtaNote "7 dias grátis... das 5h às 16h", aboutTitle "MAIS QUE UMA ACADEMIA. SEU FITNESS & LIFESTYLE.", aboutText vibe CROWN, ctaEyebrow "PROJETO VERÃO CROWN — 90 DIAS PRA MUDAR", ctaTitle "COMEÇA COM 7 DIAS GRÁTIS", address "Av. Washington Luís, 45 — Espírito Santo do Pinhal-SP", addressNote "A ~700m da Praça Nestor de Almeida Vergueiro • CEP 13990-000", mapsUrl google.com/maps, cnpj "Lrt Atividades em Condicionamento Fisico LTDA • CNPJ 57.249.247/0001-63", whatsappMsg "Olá! Quero agendar meus 7 dias grátis na CROWN.", beaconsUrl, ticketbroUrl)
+- seed.ts: modalities agora atualiza descrições no re-seed (update por nome, sem tocar schedules); descrições persuasivas com dados reais (HYROX "afiliada oficial HYROX Brasil", CROSS "@herculesfunctional", BEACH/FUTEBÔLEI "quadras de areia + Arena Beach Bar")
+- Hero.tsx: CTA primário "AGENDAR 7 DIAS GRÁTIS" → wa.me com mensagem pré-preenchida; CTA secundário Modalidades; nota da campanha sob os CTAs; fallback do título = slogan real
+- About.tsx: eyebrow "Sobre a vibe CROWN" + fallbacks reais (conceito "ambiente inteiro na mesma energia" / "além do ferro")
+- Modalities.tsx: subtitle persuasivo "Do ferro à areia..."
+- NOVO Empresas.tsx (id=empresas): 3 cards clip-blade — WELLHUB (destacado, regras reais: Musculação/BB funcional no Basic; grupos+CROSS no Basic+/Silver; sem reserva prévia), TOTALPASS, PLANO EMPRESA; ícones em escudos, checks em losangos, CTA WhatsApp corporativo
+- NOVO Comunidade.tsx (id=eventos): card destaque CROWN GAMES — EDIÇÃO PINHAL com chips INICIANTE/SCALED/RX e CTA "GARANTIR INGRESSO" → ticketbro; cards DESAFIO 12 CHECK-INS (fones JBL), PROJETO VERÃO CROWN (90 dias pra mudar), ARENA BEACH BAR (porções e bebidas)
+- CtaSection.tsx: eyebrow dinâmico (Projeto Verão), título "COMEÇA COM 7 DIAS GRÁTIS", botões WhatsApp (msg real) + HUB DA CROWN (beacons) + @crownpinhal
+- Footer.tsx: endereço completo + referência da praça + "Ver no Google Maps", links "Hub de agendamento" (beacons) e "Ingressos e eventos" (ticketbro), CNPJ/razão social na barra inferior, nav + Eventos/Empresas
+- SiteView: ordem Hero→Marquee→About→Modalidades→Coletivas→Horários→Empresas→Planos→Galeria→Comunidade→CTA→Footer; Navbar 7 links (desktop lg:flex px-3, sheet lg:hidden)
+- WhatsAppFloat: mensagem da campanha (settings.whatsappMsg)
+- FIX de navegação: Comunidade id="comunidade" → id="eventos" (nav apontava #eventos; validado no browser)
+- Re-seed executado (settings+modalidades+planos atualizados sem reset do DB)
+- Verificação browser desktop 1280x800: hero com slogan e coroa de fundo, Empresas (Wellhub destacado), Comunidade (Crown Games com foto), CTA 7 dias grátis, footer completo; mobile 390x844: hero empilhado + nota da campanha, Crown Games, footer, sheet com 7 links, balão redondo; navegação EVENTOS/EMPRESAS testada por clique; hrefs validados (wa.me/5519991504548 com msg, instagram.com/crownpinhal, beacons.ai/crownpinhal, crown-gym-pinhal.ticketbro.com, Google Maps); dev.log sem erros; lint 0/0
+
+Stage Summary:
+- Copy 100% com dados REAIS oficiais: slogan "Conectando pessoas através do fitness", campanhas reais (7 Dias Grátis das 5h às 16h, Projeto Verão Crown — 90 dias pra mudar, Desafio 12 Check-ins com prêmios tipo fones JBL, Crown Games — Edição Pinhal com categorias Iniciante/Scaled/RX), Arena Beach Bar, quadras de areia, HYROX afiliada oficial, @herculesfunctional, Wellhub/TotalPass com regras por plano
+- Contatos e links oficiais em todo o site: Av. Washington Luís 45 (700m da Praça Nestor de Almeida Vergueiro, CEP 13990-000), WhatsApp (19) 99150-4548 com mensagem pré-preenchida, Instagram @crownpinhal, Beacons (hub de agendamento), Ticketbro (ingressos), CNPJ 57.249.247/0001-63
+- Estrutura de conversão: Hero (slogan + CTA 7 dias grátis) → Vibe → Modalidades → Coletivas → Horários → Empresas → Planos → Galeria → Comunidade & Eventos → CTA → Footer completo
+- Nenhum bordão inventado: todas as frases derivam da base de dados oficial fornecida pelo cliente

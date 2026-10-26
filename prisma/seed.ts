@@ -101,7 +101,7 @@ async function main() {
     {
       name: 'Musculação',
       description:
-        'Academia completa com área de força e cardio. Acompanhamento dos nossos professores e acesso livre durante todo o funcionamento: Seg a Sex 5h às 22h • Sáb 8h às 16h • Dom 8h às 14h.',
+        'Musculação completa com área de força e cardio, professores na casa e acesso livre durante todo o funcionamento: Seg a Sex 5h às 22h • Sáb 8h às 16h • Dom 8h às 14h.',
       imageUrl: '/img/real-interior.png',
       icon: 'Dumbbell',
       order: 1,
@@ -110,7 +110,7 @@ async function main() {
     {
       name: 'CROSS',
       description:
-        'A aula mais intensa da CROWN. Treinos de alta intensidade combinando força, resistência e condicionamento. Manhã e tarde, de segunda a sexta — mais sábados e domingos.',
+        'O treino mais intenso da CROWN, com programação de afiliados @herculesfunctional. Força, resistência e condicionamento de verdade — manhã e noite, toda semana.',
       imageUrl: '/img/cross.jpg',
       icon: 'Flame',
       order: 2,
@@ -119,7 +119,7 @@ async function main() {
     {
       name: 'HYROX',
       description:
-        'Preparação para a prova HYROX — corrida misturada com estações funcionais: sled push, wall balls, burpees e muito mais. Para quem quer competir ou explodir o condicionamento.',
+        'A CROWN é afiliada oficial HYROX Brasil. Preparação completa para a prova: corrida, sled push, wall balls, burpees e mais. Para competir ou explodir o condicionamento.',
       imageUrl: '/img/hyrox.jpg',
       icon: 'Trophy',
       order: 3,
@@ -128,7 +128,7 @@ async function main() {
     {
       name: 'CROWN RUN',
       description:
-        'O treino de corrida da CROWN. Toda terça-feira às 19h no Estádio Velho. Corra com a comunidade, melhore seu ritmo e sua resistência com os nossos professores.',
+        'O treino de corrida da CROWN. Toda terça-feira às 19h no Estádio Velho. Corra com a comunidade, melhore seu ritmo e sua resistência.',
       imageUrl: '/img/run.jpg',
       icon: 'Footprints',
       order: 4,
@@ -137,7 +137,7 @@ async function main() {
     {
       name: 'CROWN DANCE',
       description:
-        'Aula coletiva de dança: cardio, ritmo e diversão em uma aula que queima calorias sem parecer treino. Toda segunda-feira às 18h.',
+        'Ritmos que queimam calorias sem parecer treino. Cardio, dança e energia coletiva em uma aula só. Toda segunda às 18h.',
       imageUrl: '/img/zumba.jpg',
       icon: 'Music',
       order: 5,
@@ -155,7 +155,7 @@ async function main() {
     {
       name: 'JUMP',
       description:
-        'Aula no mini trampolim: cardio de alto impacto com baixo impacto nas articulações. Terça e quinta às 18h.',
+        'Cardio de alto rendimento com leveza para as articulações. A aula divertida que assusta a balança. Terça e quinta às 18h.',
       imageUrl: '/img/jump.jpg',
       icon: 'Activity',
       order: 7,
@@ -164,7 +164,7 @@ async function main() {
     {
       name: 'PILATES',
       description:
-        'Força, flexibilidade, postura e respiração. Aula coletiva para equilibrar o corpo e a mente. Toda terça-feira às 19h.',
+        'Força, flexibilidade, postura e respiração. A aula que equilibra o corpo e a mente. Toda terça às 19h.',
       imageUrl: '/img/pilates.jpg',
       icon: 'Sparkles',
       order: 8,
@@ -173,7 +173,7 @@ async function main() {
     {
       name: 'MUAY THAI',
       description:
-        'Arte marcial tailandesa completa: golpes, joelhadas e condicionamento de atleta. Aulas para todos os níveis — consulte horários na recepção.',
+        'Lutas na CROWN: arte marcial tailandesa completa — golpes, joelhadas e condicionamento de atleta. Aulas para todos os níveis.',
       imageUrl: '/img/muay-thai.jpg',
       icon: 'Swords',
       order: 9,
@@ -182,7 +182,7 @@ async function main() {
     {
       name: 'BOXE',
       description:
-        'Técnica de punhos, footwork e condicionamento em treinos que desafiam de verdade. Consulte horários na recepção.',
+        'Técnica de punhos, footwork e condicionamento em treinos que desafiam de verdade. Uma das lutas da CROWN — venha testar.',
       imageUrl: '/img/boxe.jpg',
       icon: 'Zap',
       order: 10,
@@ -191,7 +191,7 @@ async function main() {
     {
       name: 'BEACH TENNIS',
       description:
-        'A moda que conquistou o Brasil — raquete, areia e muita diversão. Turmas e horários na recepção.',
+        'Quadras de areia integradas para jogar a modalidade que conquistou o Brasil. E o pós-jogo? Porções e bebidas no Arena Beach Bar.',
       imageUrl: '/img/beach-tennis.jpg',
       icon: 'Medal',
       order: 11,
@@ -200,7 +200,7 @@ async function main() {
     {
       name: 'FUTEVÔLEI',
       description:
-        'Quadra de areia para treinar o esporte que mistura futebol e vôlei. Aulas e horários na recepção.',
+        'Futebol + vôlei na areia da CROWN. Quadras de areia integradas e o pós-jogo garantido no Arena Beach Bar.',
       imageUrl: '/img/futevolei.jpg',
       icon: 'Medal',
       order: 12,
@@ -210,7 +210,13 @@ async function main() {
 
   for (const m of modalitiesData) {
     const existing = await prisma.modality.findFirst({ where: { name: m.name } })
-    if (!existing) {
+    if (existing) {
+      // re-seed atualiza descrições/imagens — NÃO toca em schedules (evita duplicar horários)
+      await prisma.modality.update({
+        where: { id: existing.id },
+        data: { description: m.description, imageUrl: m.imageUrl, icon: m.icon, order: m.order, active: true },
+      })
+    } else {
       await prisma.modality.create({
         data: m as never,
       })
@@ -290,28 +296,41 @@ async function main() {
   // IMPORTANTE: bordões/frases de marketing inventadas NÃO são permitidas —
   // somente informações reais da academia (nome, modalidades, horários, contatos).
   const settings: Record<string, string> = {
-    heroBadge: 'ACADEMIA CROWN • PINHAL-SP',
-    heroTitle: 'CROWN\nPINHAL-SP',
-    heroHighlight: 'PINHAL-SP',
+    // HERO — slogan real da CROWN ("Conectando pessoas através do fitness")
+    heroBadge: 'FITNESS & LIFESTYLE • ESPÍRITO SANTO DO PINHAL-SP',
+    heroTitle: 'CONECTANDO\nPESSOAS\nATRAVÉS DO\nFITNESS',
+    heroHighlight: 'FITNESS',
     heroSubtitle:
-      'Academia completa em Pinhal-SP: musculação, CROSS, HYROX, CROWN RUN, aulas coletivas, lutas, beach tennis e futevôlei.',
+      'Musculação, CROSS, HYROX oficial, lutas, aulas coletivas, corrida e quadras de areia. Um espaço completo para o seu Fitness & Lifestyle no coração de Pinhal.',
+    heroCtaNote: '7 dias grátis para novos alunos testarem a estrutura • das 5h às 16h',
     heroImageUrl: '/img/hero-crown.png',
     marqueeItems:
       'MUSCULAÇÃO • CROSS • HYROX • CROWN RUN • CROWN DANCE • BIKE • JUMP • PILATES • MUAY THAI • BOXE • BEACH TENNIS • FUTEVÔLEI',
-    aboutTitle: 'ACADEMIA COMPLETA. TUDO EM UM SÓ LUGAR.',
+    // SOBRE A VIBE CROWN — conceito real: "Um espaço completo para o seu Fitness & Lifestyle. Conectando pessoas através do fitness."
+    aboutTitle: 'MAIS QUE UMA ACADEMIA. SEU FITNESS & LIFESTYLE.',
     aboutText:
-      'Musculação com acesso livre todos os dias, CROSS de segunda a domingo, preparação HYROX, CROWN RUN, aulas coletivas (Dance, Bike, Jump e Pilates), Muay Thai, Boxe, Beach Tennis e Futevôlei. Aceitamos Gympass, TotalPass e Wellhub.',
+      'Um ambiente acolhedor, focado em rotina e comunidade — ambiente inteiro na mesma energia. Conectando pessoas através do fitness: treino, saúde e convivência além do ferro. Treina na CROWN, joga nas quadras de areia e fecha o dia no Arena Beach Bar.',
     statsMembers: '47',
     statsModalities: '12',
     statsTrainers: '7',
     statsYears: '5h',
-    ctaTitle: 'VENHA TREINAR NA CROWN',
+    // CTA — campanha real "7 Dias Grátis" + "Projeto Verão Crown — 90 dias pra mudar"
+    ctaEyebrow: 'PROJETO VERÃO CROWN — 90 DIAS PRA MUDAR',
+    ctaTitle: 'COMEÇA COM 7 DIAS GRÁTIS',
     ctaText:
-      'Musculação, CROSS, HYROX, aulas coletivas e mais. Chama no WhatsApp, fala com a recepção ou segue @crownpinhal no Instagram.',
-    address: 'Pinhal-SP',
+      'Novos alunos testam toda a estrutura das 5h às 16h. Agende sua aula experimental pelo WhatsApp ou pelo hub da CROWN — é rápido.',
+    // CONTATO E LOCALIZAÇÃO — registros oficiais
+    address: 'Av. Washington Luís, 45 — Espírito Santo do Pinhal-SP',
+    addressNote: 'A ~700m da Praça Nestor de Almeida Vergueiro • CEP 13990-000',
+    mapsUrl:
+      'https://www.google.com/maps/search/?api=1&query=Crown+Pinhal,+Av.+Washington+Lu%C3%ADs,+45,+Esp%C3%ADrito+Santo+do+Pinhal+-+SP',
+    cnpj: 'Lrt Atividades em Condicionamento Fisico LTDA • CNPJ 57.249.247/0001-63',
     phone: '(19) 99150-4548',
     whatsapp: '5519991504548',
+    whatsappMsg: 'Olá! Quero agendar meus 7 dias grátis na CROWN.',
     instagram: '@crownpinhal',
+    beaconsUrl: 'https://beacons.ai/crownpinhal',
+    ticketbroUrl: 'https://crown-gym-pinhal.ticketbro.com/',
     email: '',
     hoursText: 'MUSCULAÇÃO: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h',
     convenios: 'PLANO FAMÍLIA|PLANO EMPRESA|PLANO HORÁRIO ECONÔMICO|OFICIAIS MILITARES',

@@ -7,8 +7,10 @@ import About from "./About";
 import Modalities from "./Modalities";
 import Coletivas from "./Coletivas";
 import ScheduleSection from "./ScheduleSection";
+import Empresas from "./Empresas";
 import Plans from "./Plans";
 import Gallery from "./Gallery";
+import Comunidade from "./Comunidade";
 import CtaSection from "./CtaSection";
 import Footer from "./Footer";
 import WhatsAppFloat from "./WhatsAppFloat";
@@ -24,8 +26,10 @@ export default function SiteView() {
         <Modalities />
         <Coletivas />
         <ScheduleSection />
+        <Empresas />
         <Plans />
         <Gallery />
+        <Comunidade />
         <CtaSection />
       </main>
       <Footer />
