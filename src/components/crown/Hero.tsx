@@ -9,8 +9,8 @@ import { CrownWatermark } from "./CrownShapes";
 export default function Hero() {
   const content = useAppStore((s) => s.content);
   const s = content?.settings ?? {};
-  const heroTitle = s.heroTitle || "TREINE COMO UM REI";
-  const heroHighlight = s.heroHighlight || "COMO UM REI";
+  const heroTitle = s.heroTitle || "CROWN\nPINHAL-SP";
+  const heroHighlight = s.heroHighlight || "PINHAL-SP";
 
   const [pre, post] = (() => {
     const idx = heroHighlight ? heroTitle.indexOf(heroHighlight) : -1;
@@ -53,7 +53,7 @@ export default function Hero() {
           </div>
 
           {/* Título gigante */}
-          <h1 className="font-display uppercase leading-[0.95] text-[clamp(3rem,9vw,7rem)]">
+          <h1 className="font-display uppercase leading-[0.95] whitespace-pre-line text-[clamp(3rem,9vw,7rem)]">
             {pre && <span className="text-foreground">{pre}</span>}
             <span className="text-gold-gradient drop-shadow-[0_0_30px_rgba(217,164,65,0.35)]">
               {heroHighlight}
@@ -68,7 +68,7 @@ export default function Hero() {
             className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl leading-relaxed"
           >
             {s.heroSubtitle ||
-              "Musculação, CrossFit, lutas e aulas coletivas em um espaço feito para você evoluir. Aqui, cada gota de suor te aproxima da coroa."}
+              "Academia completa em Pinhal-SP: musculação, CROSS, HYROX, CROWN RUN, aulas coletivas, lutas, beach tennis e futevôlei."}
           </motion.p>
 
           {/* CTAs — paralelogramos */}
@@ -113,9 +113,9 @@ export default function Hero() {
             className="mt-14 flex flex-wrap gap-3"
           >
             {[
-              { value: s.statsMembers || "850+", label: "Alunos ativos" },
+              { value: s.statsMembers || "47", label: "Aulas por semana" },
               { value: s.statsModalities || "12", label: "Modalidades" },
-              { value: s.statsTrainers || "12", label: "Treinadores" },
+              { value: s.statsTrainers || "7", label: "Dias por semana" },
             ].map((st) => (
               <div
                 key={st.label}

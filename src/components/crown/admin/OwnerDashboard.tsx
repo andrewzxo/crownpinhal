@@ -911,7 +911,7 @@ export default function OwnerDashboard() {
     <div className="flex min-h-screen flex-col bg-[#050505] text-foreground">
       <PanelHeader
         titleB="DASHBOARD"
-        subtitle="Visão geral do império CROWN"
+        subtitle="Visão geral CROWN"
       >
         <Button
           variant="outline"

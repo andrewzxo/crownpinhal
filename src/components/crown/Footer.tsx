@@ -35,8 +35,8 @@ export default function Footer() {
             className="h-16 w-auto gold-drop-glow mb-5"
           />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              A academia mais completa de Pinhal-SP. Estrutura premium, treinadores
-              qualificados e uma comunidade que treina junto.
+              Musculação, CROSS, HYROX, CROWN RUN, aulas coletivas, lutas, beach tennis e
+              futevôlei em Pinhal-SP.
             </p>
             <a
               href={s.instagram ? `https://instagram.com/${s.instagram.replace("@", "")}` : "https://instagram.com/crownpinhal"}
@@ -92,16 +92,18 @@ export default function Footer() {
             <ul className="space-y-3.5 text-sm text-muted-foreground">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 mt-0.5 text-[#d9a441] shrink-0" />
-                {s.address || "Av. dos Reis, 1234 - Centro, Pinhal-SP"}
+                {s.address || "Pinhal-SP"}
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#d9a441] shrink-0" />
-                {s.phone || "(19) 99999-9999"}
+                {s.phone || "(19) 99150-4548"}
               </li>
-              <li className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-[#d9a441] shrink-0" />
-                {s.email || "contato@crownpinhal.com.br"}
-              </li>
+              {s.email && (
+                <li className="flex items-center gap-2.5">
+                  <Mail className="w-4 h-4 text-[#d9a441] shrink-0" />
+                  {s.email}
+                </li>
+              )}
               {s.whatsapp && (
                 <li>
                   <a
@@ -133,7 +135,7 @@ export default function Footer() {
                   <Crown className="w-4 h-4" /> CROWN PINHAL-SP
                 </p>
                 <p className="mt-1.5 text-xs text-muted-foreground">
-                  Sua coroa não se ganha. Ela se conquista.
+                  CROSS • HYROX • CROWN RUN
                 </p>
               </div>
             </div>
@@ -148,7 +150,7 @@ export default function Footer() {
             © {new Date().getFullYear()} CROWN Academia — Pinhal-SP. Todos os direitos reservados.
           </p>
           <p className="text-xs text-muted-foreground/50 font-heading uppercase tracking-widest">
-            Treine como um rei
+            12 modalidades • 7 dias por semana
           </p>
         </div>
       </div>

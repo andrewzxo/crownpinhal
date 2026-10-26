@@ -1582,7 +1582,7 @@ const SETTING_SECTIONS: SettingSection[] = [
     title: "Hero",
     icon: Sparkles,
     fields: [
-      { key: "heroBadge", label: "Badge do Hero", placeholder: "ex.: Desde 2005" },
+      { key: "heroBadge", label: "Badge do Hero", placeholder: "ex.: ACADEMIA CROWN • PINHAL-SP" },
       { key: "heroTitle", label: "Título do Hero" },
       { key: "heroHighlight", label: "Palavra Destacada (ouro)" },
       { key: "heroSubtitle", label: "Subtítulo", type: "textarea" },
@@ -1604,10 +1604,10 @@ const SETTING_SECTIONS: SettingSection[] = [
     title: "Estatísticas",
     icon: BarChart3,
     fields: [
-      { key: "statsMembers", label: "Alunos Ativos" },
+      { key: "statsMembers", label: "Aulas por Semana" },
       { key: "statsModalities", label: "Modalidades" },
-      { key: "statsTrainers", label: "Treinadores" },
-      { key: "statsYears", label: "Anos de História" },
+      { key: "statsTrainers", label: "Dias por Semana" },
+      { key: "statsYears", label: "Abertura (primeiro horário)" },
     ],
   },
   {

@@ -16,7 +16,7 @@ export default function Gallery() {
           eyebrow="Conheça o espaço"
           title="NOSSA ESTRUTURA"
           highlight="ESTRUTURA"
-          subtitle="Um ambiente pensado nos mínimos detalhes para você treinar com conforto e motivação."
+          subtitle="Fotos reais da estrutura da CROWN em Pinhal-SP."
         />
 
         {gallery.length === 0 ? (

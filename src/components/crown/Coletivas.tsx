@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
 
@@ -70,10 +69,10 @@ export default function Coletivas() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
-          eyebrow="Aulas coletivas"
-          title="TREINE JUNTO, EVOLUA JUNTO"
-          highlight="JUNTO"
-          subtitle="Você, aluno da musculação, também tem o benefício de participar das nossas aulas coletivas. Escolha sua aula e vem."
+          eyebrow="Modalidades coletivas"
+          title="AULAS COLETIVAS"
+          highlight="COLETIVAS"
+          subtitle="CROWN DANCE, BIKE, JUMP e PILATES. Confira os dias e horários de cada aula."
         />
 
         {/* Grade por dia */}
@@ -130,14 +129,6 @@ export default function Coletivas() {
             </motion.div>
           ))}
         </div>
-
-        <Reveal delay={0.2}>
-          <p className="mt-8 flex items-center justify-center gap-3 text-center font-heading uppercase tracking-widest text-[#d9a441]">
-            <Check className="w-5 h-5" />
-            Resultados de verdade
-            <Check className="w-5 h-5" />
-          </p>
-        </Reveal>
       </div>
     </section>
   );

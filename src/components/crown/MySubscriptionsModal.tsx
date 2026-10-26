@@ -73,7 +73,7 @@ function SubsList() {
         <p className="mt-4 text-muted-foreground">
           Você ainda não fez nenhum pedido de plano.
         </p>
-        <p className="text-sm text-muted-foreground/60">Escolha um plano e vista a coroa!</p>
+        <p className="text-sm text-muted-foreground/60">Escolha um plano para assinar.</p>
       </div>
     );
   }

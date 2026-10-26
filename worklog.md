@@ -191,3 +191,32 @@ Stage Summary:
 - Identidade visual própria consolidada: a silhueta de COROA (zigue-zague de picos) costura todas as seções, e um sistema de formatos angulares exclusivos (lâmina, escudo, hexágono, losango, flecha, paralelogramo) substituiu o visual 100% quadrado
 - Único elemento redondo do site: o balão do WhatsApp (19 99150-4548), conforme autorizado pelo cliente
 - Nenhum rounded-* reintroduzido; emojis continuam zerados; Instagram e WhatsApp mantidos em destaque
+
+---
+Task ID: 13
+Agent: orchestrator (Z.ai Code)
+Task: Splash sem quadrado de fundo (só a logo PNG) + remoção de TODOS os bordões inventados — somente informações reais
+
+Work Log:
+- Splash (page.tsx): removido wrapper animate-pulse-gold (box-shadow desenhava o retângulo brilhante ao redor da logo); agora é apenas <img src="/logo.png"> transparente com gold-drop-glow (drop-shadow que segue a forma da marca) + animate-pulse de opacidade; texto "Carregando o império..." → "Carregando..." (funcional)
+- Bordões inventados removidos e substituídos por informações reais:
+  - page.tsx: "Carregando o império..." → "Carregando..."
+  - layout.tsx: meta description sem "Treine como um rei"
+  - AuthGate: "Bem-vindo ao império" → "Bem-vindo à CROWN"; h1 "Sua coroa não se ganha. Ela se conquista." → "12 modalidades. 7 dias por semana."; removido "academia mais completa de Pinhal-SP"; chip "Academia completa" → "7 DIAS POR SEMANA"
+  - Hero: heroTitle "TREINE COMO UM REI" → "CROWN\nPINHAL-SP" (quebra limpa com whitespace-pre-line); subtitle factual; stats 850+ alunos/12 treinadores → 47 aulas por semana / 12 modalidades / 7 dias por semana
+  - About: título "ACADEMIA COMPLETA. RESULTADO DE VERDADE." → "ACADEMIA COMPLETA. TUDO EM UM SÓ LUGAR."; texto factual (modalidades + convênios); bloco "Treine como rei" → bloco dourado clip-peak com HORÁRIOS REAIS (dinâmico de settings.hoursText); selo "Desde 2020" removido; ícones dos stats atualizados (Dumbbell/CalendarCheck/Clock/Sunrise)
+  - Coletivas: "TREINE JUNTO, EVOLUA JUNTO" → "AULAS COLETIVAS"; subtitle factual; linha "Resultados de verdade" removida
+  - Plans: eyebrow "Invista em você" → "Planos CROWN"; subtitle factual; descrições dos 3 planos sem bordões ("O plano favorito da nossa coroa" / "sem limites" → descrições factuais); seed agora atualiza planos existentes (update por nome)
+  - CtaSection: "#VEMPRA CROWN" (hashtag inventada) → "VENHA TREINAR NA CROWN" (última palavra em ouro, "#" hardcoded removido); ctaText factual
+  - Footer: description factual; fallback de endereço "Av. dos Reis, 1234" (FAKE) → "Pinhal-SP"; telefone fallback real (19) 99150-4548; e-mail inventado contato@crownpinhal.com.br removido (seed email='' e linha só renderiza se preenchida); "Sua coroa não se ganha..." → "CROSS • HYROX • CROWN RUN"; rodapé "Treine como um rei" → "12 modalidades • 7 dias por semana"
+  - MySubscriptionsModal: "Escolha um plano e vista a coroa!" → "Escolha um plano para assinar."
+  - OwnerDashboard: "Visão geral do império CROWN" → "Visão geral CROWN"
+  - AdminPanel: placeholder "ex.: Desde 2005" → "ex.: ACADEMIA CROWN • PINHAL-SP"; labels dos stats atualizados (Aulas por Semana / Modalidades / Dias por Semana / Abertura)
+- seed.ts: comentário "bordões NÃO permitidos — somente informações reais"; settings com valores reais; upsert com update:{value} para re-seed atualizar o DB existente (antes update:{} mantinha dados velhos); re-seed executado 2x (settings + planos)
+- Verificação: grep sem bordões em src (só comentários técnicos de design restam); API /api/content retorna dados reais; browser desktop 1280px (AuthGate, hero CROWN/PINHAL-SP em 2 linhas, sobre com bloco de horários, coletivas, planos, CTA "VENHA TREINAR NA CROWN", footer completo) + mobile 390px (hero, footer até a barra final, balão redondo); splash capturada em aba nova — logo transparente sem retângulo + "CARREGANDO..."; lint 0/0; console e dev.log sem erros
+
+Stage Summary:
+- Splash = apenas a logo oficial em PNG transparente (sem quadrado, sem box-shadow) + "Carregando..."
+- Site 100% livre de bordões inventados: todo texto é informação real (nome CROWN Pinhal-SP, 12 modalidades, 47 aulas/semana, 7 dias, horários oficiais, contatos reais, convênios e parceiros do flyer)
+- Números falsos (850+ alunos, 12 treinadores, 5 anos), ano fictício (Desde 2020), endereço fake (Av. dos Reis) e e-mail não confirmado removidos do site
+- IMPORTANTE para próximos agentes: nunca criar bordões/frases de marketing — só usar dados reais fornecidos pelo cliente; settings agora se atualizam no re-seed (update:{value}); planos idem (update por nome)

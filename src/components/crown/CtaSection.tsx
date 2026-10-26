@@ -10,6 +10,11 @@ export default function CtaSection() {
   const instagram = (settings?.instagram || "@crownpinhal").replace("@", "");
   const whatsapp = settings?.whatsapp || "5519991504548";
 
+  const ctaTitle = settings?.ctaTitle || "VENHA TREINAR NA CROWN";
+  const ctaWords = ctaTitle.split(" ");
+  const ctaLast = ctaWords.pop() || "";
+  const ctaPre = ctaWords.join(" ");
+
   return (
     <>
       <CrownEdge fill="#050505" height={20} />
@@ -32,14 +37,14 @@ export default function CtaSection() {
             Escolha sua aula
           </p>
           <h2 className="font-display uppercase text-5xl sm:text-7xl lg:text-8xl leading-[0.95]">
-            <span className="text-foreground">#</span>
+            {ctaPre && <span className="text-foreground">{ctaPre} </span>}
             <span className="text-gold-gradient drop-shadow-[0_0_30px_rgba(217,164,65,0.35)]">
-              {(settings?.ctaTitle || "#VEMPRA CROWN").replace("#", "")}
+              {ctaLast}
             </span>
           </h2>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
             {settings?.ctaText ||
-              "Escolha sua aula e venha treinar com a gente. Chama no WhatsApp e começa sua transformação hoje."}
+              "Musculação, CROSS, HYROX, aulas coletivas e mais. Chama no WhatsApp ou segue a CROWN no Instagram."}
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">

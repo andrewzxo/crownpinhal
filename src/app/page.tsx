@@ -14,16 +14,14 @@ import OwnerDashboard from "@/components/crown/admin/OwnerDashboard";
 
 function Splash() {
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center gap-6">
-      <div className="animate-pulse-gold">
-        <img
-          src="/logo.png"
-          alt="Carregando CROWN Academia"
-          className="w-64 gold-drop-glow"
-        />
-      </div>
-      <p className="font-heading uppercase tracking-[0.4em] text-xs text-[#d9a441] animate-pulse">
-        Carregando o império...
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center gap-10">
+      <img
+        src="/logo.png"
+        alt="Carregando CROWN Academia"
+        className="w-72 sm:w-96 gold-drop-glow animate-pulse"
+      />
+      <p className="font-heading uppercase tracking-[0.4em] text-xs text-[#d9a441]/70">
+        Carregando...
       </p>
     </div>
   );

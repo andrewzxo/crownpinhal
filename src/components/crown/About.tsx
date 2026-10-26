@@ -2,17 +2,17 @@
 
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
-import { Crown, HeartPulse, Medal, Users } from "lucide-react";
+import { CalendarCheck, Clock, Dumbbell, Sunrise } from "lucide-react";
 
 export default function About() {
   const settings = useAppStore((s) => s.content?.settings);
   const gallery = useAppStore((s) => s.content?.gallery) ?? [];
 
   const stats = [
-    { icon: Users, value: settings?.statsMembers || "850+", label: "Alunos ativos" },
-    { icon: Crown, value: settings?.statsModalities || "12", label: "Modalidades" },
-    { icon: Medal, value: settings?.statsTrainers || "12", label: "Treinadores" },
-    { icon: HeartPulse, value: settings?.statsYears || "5", label: "Anos de história" },
+    { icon: Dumbbell, value: settings?.statsModalities || "12", label: "Modalidades" },
+    { icon: CalendarCheck, value: settings?.statsMembers || "47", label: "Aulas por semana" },
+    { icon: Clock, value: settings?.statsTrainers || "7", label: "Dias por semana" },
+    { icon: Sunrise, value: settings?.statsYears || "5h", label: "Abertura" },
   ];
 
   const imgs = [
@@ -21,10 +21,18 @@ export default function About() {
     gallery[1]?.url || "/img/real-interior.png",
   ];
 
-  const aboutTitle = settings?.aboutTitle || "ACADEMIA COMPLETA. RESULTADO DE VERDADE.";
+  const aboutTitle = settings?.aboutTitle || "ACADEMIA COMPLETA. TUDO EM UM SÓ LUGAR.";
   const titleParts = aboutTitle.split(". ");
   const lastPart = titleParts.pop() || aboutTitle;
   const prePart = titleParts.length ? titleParts.join(". ") + "." : "";
+  const hoursLines = (
+    settings?.hoursText || "MUSCULAÇÃO: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h"
+  )
+    .replace("MUSCULAÇÃO:", "")
+    .trim()
+    .split("•")
+    .map((h) => h.trim())
+    .filter(Boolean);
 
   return (
     <section id="sobre" className="relative py-24 sm:py-32 overflow-hidden">
@@ -41,7 +49,7 @@ export default function About() {
             <Reveal delay={0.15}>
               <p className="mt-6 text-lg text-muted-foreground leading-relaxed border-l-2 border-[#d9a441]/40 pl-5">
                 {settings?.aboutText ||
-                  "A CROWN é a academia mais completa de Pinhal-SP. Treino de verdade, estrutura premium e uma comunidade que treina junto."}
+                  "Musculação com acesso livre todos os dias, CROSS de segunda a domingo, preparação HYROX, CROWN RUN, aulas coletivas (Dance, Bike, Jump e Pilates), Muay Thai, Boxe, Beach Tennis e Futevôlei. Aceitamos Gympass, TotalPass e Wellhub."}
               </p>
             </Reveal>
 
@@ -97,21 +105,17 @@ export default function About() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/70 to-transparent" />
                 </div>
-                <div className="clip-peak bg-gold-gradient p-6 text-black flex flex-col items-center justify-center text-center h-40 sm:h-48">
-                  <Crown className="w-10 h-10 mb-2" />
-                  <p className="font-display uppercase text-2xl leading-tight">
-                    Treine
-                    <br />
-                    como rei
+                <div className="clip-peak bg-gold-gradient px-4 py-5 text-black flex flex-col items-center justify-center text-center h-40 sm:h-48">
+                  <Clock className="w-8 h-8 mb-2 shrink-0" />
+                  <p className="font-display uppercase text-base sm:text-lg leading-snug">
+                    {hoursLines.map((line, i) => (
+                      <span key={line}>
+                        {i > 0 && <br />}
+                        {line}
+                      </span>
+                    ))}
                   </p>
                 </div>
-              </div>
-            </div>
-
-            {/* Selo inclinado */}
-            <div className="absolute -top-5 -left-5 hidden sm:block -skew-x-12">
-              <div className="skew-x-12 bg-[#050505] border-2 border-[#d9a441] px-4 py-2 font-display uppercase text-sm text-[#d9a441]">
-                Desde 2020
               </div>
             </div>
           </Reveal>

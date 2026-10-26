@@ -221,7 +221,7 @@ async function main() {
   const plansData = [
     {
       name: 'CROWN START',
-      description: 'Ideal para quem está começando a jornada.',
+      description: 'Musculação com avaliação física e planilha de treino.',
       features: JSON.stringify([
         'Acesso livre à musculação',
         'Avaliação física inicial',
@@ -234,7 +234,7 @@ async function main() {
     },
     {
       name: 'CROWN BLACK',
-      description: 'O plano favorito da nossa coroa.',
+      description: 'Musculação, CROSS, aulas coletivas, HYROX e CROWN RUN.',
       features: JSON.stringify([
         'Acesso total à musculação',
         'Aulas de CROSS incluídas',
@@ -248,7 +248,7 @@ async function main() {
     },
     {
       name: 'CROWN GOLD',
-      description: 'Experiência completa, sem limites.',
+      description: 'Tudo do CROWN BLACK com personal trainer e nutricionista.',
       features: JSON.stringify([
         'Tudo do plano CROWN BLACK',
         'Personal trainer 2x por semana',
@@ -264,7 +264,11 @@ async function main() {
 
   for (const p of plansData) {
     const existing = await prisma.plan.findFirst({ where: { name: p.name } })
-    if (!existing) await prisma.plan.create({ data: p })
+    if (existing) {
+      await prisma.plan.update({ where: { id: existing.id }, data: p })
+    } else {
+      await prisma.plan.create({ data: p })
+    }
   }
 
   // ---------- Galeria (fotos reais + complemento) ----------
@@ -283,37 +287,39 @@ async function main() {
   }
 
   // ---------- Configurações ----------
+  // IMPORTANTE: bordões/frases de marketing inventadas NÃO são permitidas —
+  // somente informações reais da academia (nome, modalidades, horários, contatos).
   const settings: Record<string, string> = {
-    heroBadge: 'CROWN GYM • PINHAL-SP',
-    heroTitle: 'TREINE COMO UM REI',
-    heroHighlight: 'COMO UM REI',
+    heroBadge: 'ACADEMIA CROWN • PINHAL-SP',
+    heroTitle: 'CROWN\nPINHAL-SP',
+    heroHighlight: 'PINHAL-SP',
     heroSubtitle:
-      'Academia completa: musculação, CROSS, HYROX, aulas coletivas, lutas, beach tennis e futevôlei. Aqui, cada treino te aproxima da coroa.',
+      'Academia completa em Pinhal-SP: musculação, CROSS, HYROX, CROWN RUN, aulas coletivas, lutas, beach tennis e futevôlei.',
     heroImageUrl: '/img/hero-crown.png',
     marqueeItems:
       'MUSCULAÇÃO • CROSS • HYROX • CROWN RUN • CROWN DANCE • BIKE • JUMP • PILATES • MUAY THAI • BOXE • BEACH TENNIS • FUTEVÔLEI',
-    aboutTitle: 'ACADEMIA COMPLETA. RESULTADO DE VERDADE.',
+    aboutTitle: 'ACADEMIA COMPLETA. TUDO EM UM SÓ LUGAR.',
     aboutText:
-      'A CROWN é a academia mais completa de Pinhal-SP: musculação com acesso livre, aulas de CROSS de segunda a domingo, preparação HYROX, coletivas (Dance, Bike, Jump e Pilates), Muay Thai, Boxe, Beach Tennis e Futevôlei. Aceitamos Gympass, TotalPass e Wellhub. Aqui você não treina sozinho — você conquista sua coroa.',
-    statsMembers: '850+',
+      'Musculação com acesso livre todos os dias, CROSS de segunda a domingo, preparação HYROX, CROWN RUN, aulas coletivas (Dance, Bike, Jump e Pilates), Muay Thai, Boxe, Beach Tennis e Futevôlei. Aceitamos Gympass, TotalPass e Wellhub.',
+    statsMembers: '47',
     statsModalities: '12',
-    statsTrainers: '12',
-    statsYears: '5',
-    ctaTitle: '#VEMPRA CROWN',
+    statsTrainers: '7',
+    statsYears: '5h',
+    ctaTitle: 'VENHA TREINAR NA CROWN',
     ctaText:
-      'Escolha sua aula e venha treinar com a gente. Chama no WhatsApp, fala com a recepção e começa sua transformação hoje.',
+      'Musculação, CROSS, HYROX, aulas coletivas e mais. Chama no WhatsApp, fala com a recepção ou segue @crownpinhal no Instagram.',
     address: 'Pinhal-SP',
     phone: '(19) 99150-4548',
     whatsapp: '5519991504548',
     instagram: '@crownpinhal',
-    email: 'contato@crownpinhal.com.br',
+    email: '',
     hoursText: 'MUSCULAÇÃO: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h',
     convenios: 'PLANO FAMÍLIA|PLANO EMPRESA|PLANO HORÁRIO ECONÔMICO|OFICIAIS MILITARES',
     partners: 'GYMPASS|TOTALPASS|WELLHUB',
   }
 
   for (const [key, value] of Object.entries(settings)) {
-    await prisma.setting.upsert({ where: { key }, update: {}, create: { key, value } })
+    await prisma.setting.upsert({ where: { key }, update: { value }, create: { key, value } })
   }
 
   console.log('Seed concluído!')

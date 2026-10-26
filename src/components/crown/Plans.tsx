@@ -41,10 +41,10 @@ export default function Plans() {
       <section id="planos" className="relative py-24 sm:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <SectionTitle
-          eyebrow="Invista em você"
+          eyebrow="Planos CROWN"
           title="ESCOLHA SEU PLANO"
           highlight="PLANO"
-          subtitle="Planos pensados para cada fase da sua jornada. Valores serão anunciados em breve — garanta já seu interesse e seja avisado primeiro."
+          subtitle="Valores serão anunciados em breve. Você já pode manifestar interesse no plano que quiser."
         />
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">

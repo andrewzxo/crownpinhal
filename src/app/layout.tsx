@@ -22,7 +22,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "CROWN Academia | Pinhal-SP",
   description:
-    "Academia CROWN em Pinhal-SP. Musculação, CROSS, HYROX e CROWN RUN. Treine como um rei.",
+    "Academia CROWN em Pinhal-SP. Musculação, CROSS, HYROX, CROWN RUN, aulas coletivas, lutas, beach tennis e futevôlei.",
   keywords: ["academia", "CROWN", "Pinhal", "musculação", "cross", "hyrox", "corrida", "fitness"],
   icons: {
     icon: "/logo.png",

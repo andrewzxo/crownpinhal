@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
+  Clock,
   Crown,
   Dumbbell,
   Eye,
@@ -296,21 +297,20 @@ export default function AuthGate() {
             className="w-80 gold-drop-glow"
           />
           <h1 className="mt-8 font-display text-4xl uppercase leading-tight">
-            Sua coroa não se <span className="text-gold-gradient">ganha.</span>
+            12 <span className="text-gold-gradient">modalidades.</span>
             <br />
-            Ela se <span className="text-gold-gradient">conquista.</span>
+            7 <span className="text-gold-gradient">dias por semana.</span>
           </h1>
           <CrownGlyph className="mt-5 w-16 h-4 text-[#d9a441]" />
           <p className="mt-4 text-muted-foreground leading-relaxed">
-            Entre para acompanhar seus treinos, conhecer as modalidades e garantir seu plano
-            na academia mais completa de Pinhal-SP.
+            Entre para acompanhar seus treinos, conhecer as modalidades e garantir seu plano.
           </p>
           <div className="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
               <Dumbbell className="w-4 h-4 text-[#d9a441]" /> 12 MODALIDADES
             </span>
             <span className="flex items-center gap-2">
-              <Crown className="w-4 h-4 text-[#d9a441]" /> Academia completa
+              <Clock className="w-4 h-4 text-[#d9a441]" /> 7 DIAS POR SEMANA
             </span>
           </div>
         </motion.div>
@@ -338,7 +338,7 @@ export default function AuthGate() {
                 Acesso CROWN
               </p>
               <h2 className="mt-2 font-display text-2xl uppercase">
-                Bem-vindo ao <span className="text-gold-gradient">império</span>
+                Bem-vindo à <span className="text-gold-gradient">CROWN</span>
               </h2>
             </div>
 
