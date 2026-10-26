@@ -19,7 +19,7 @@ export default function AuthModal() {
     <Dialog open={authModal.open} onOpenChange={(open) => !open && closeAuthModal()}>
       <DialogContent className="bg-[#0d0d0d] border-[#2a2a2a] max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="mx-auto w-14 h-14 rounded-full bg-gold-gradient flex items-center justify-center mb-2 gold-glow-sm">
+          <div className="mx-auto w-14 h-14 bg-gold-gradient flex items-center justify-center mb-2 gold-glow-sm">
             <Crown className="w-7 h-7 text-black" />
           </div>
           <DialogTitle className="text-center font-display text-xl uppercase tracking-wide">

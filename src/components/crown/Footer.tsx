@@ -35,10 +35,10 @@ export default function Footer() {
               qualificados e uma comunidade que treina junto.
             </p>
             <a
-              href={s.instagram ? `https://instagram.com/${s.instagram.replace("@", "")}` : "#"}
+              href={s.instagram ? `https://instagram.com/${s.instagram.replace("@", "")}` : "https://instagram.com/crownpinhal"}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#2a2a2a] px-4 py-2 text-sm text-muted-foreground hover:text-[#d9a441] hover:border-[#d9a441]/50 transition-colors"
+              className="mt-5 inline-flex items-center gap-2 border border-[#2a2a2a] px-4 py-2 text-sm text-muted-foreground hover:text-[#d9a441] hover:border-[#d9a441]/60 transition-colors"
             >
               <Instagram className="w-4 h-4" />
               {s.instagram || "@crownpinhal"}
@@ -88,7 +88,7 @@ export default function Footer() {
                     href={`https://wa.me/${s.whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 mt-1 rounded-full bg-gold-gradient text-black px-4 py-2 text-sm font-heading uppercase tracking-wider font-semibold hover:brightness-110 transition-all"
+                    className="inline-flex items-center gap-2 mt-1 bg-gold-gradient text-black px-4 py-2 text-sm font-heading uppercase tracking-wider font-semibold hover:brightness-110 transition-all"
                   >
                     <MessageCircle className="w-4 h-4" />
                     WhatsApp
@@ -105,9 +105,9 @@ export default function Footer() {
             </h3>
             <p className="text-sm text-muted-foreground flex items-start gap-2.5 leading-relaxed">
               <Clock className="w-4 h-4 mt-0.5 text-[#d9a441] shrink-0" />
-              {s.hoursText || "Seg a Sex: 5h30 - 23h • Sáb: 8h - 14h • Dom: 8h - 12h"}
+              {s.hoursText || "Musculação: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h"}
             </p>
-            <div className="mt-6 rounded-xl border border-[#262626] bg-[#0d0d0d] p-4">
+            <div className="mt-6 border-l-2 border-[#d9a441] bg-[#0d0d0d] p-4">
               <p className="font-display uppercase text-sm text-gold-gradient flex items-center gap-2">
                 <Crown className="w-4 h-4" /> CROWN PINHAL-SP
               </p>

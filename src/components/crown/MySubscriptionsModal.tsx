@@ -86,7 +86,7 @@ function SubsList() {
         return (
           <div
             key={s.id}
-            className="rounded-xl border border-[#262626] bg-[#0a0a0a] p-4 flex items-start justify-between gap-3"
+            className="border border-[#262626] bg-[#0a0a0a] p-4 flex items-start justify-between gap-3"
           >
             <div className="min-w-0">
               <p className="font-display uppercase tracking-wide text-lg">{s.plan.name}</p>
@@ -100,7 +100,7 @@ function SubsList() {
               )}
             </div>
             <span
-              className={`shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-heading uppercase tracking-wider ${st.cls}`}
+              className={`shrink-0 inline-flex items-center gap-1.5 border px-3 py-1 text-xs font-heading uppercase tracking-wider ${st.cls}`}
             >
               <Icon className="w-3.5 h-3.5" />
               {st.label}

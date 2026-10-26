@@ -47,7 +47,7 @@
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0rem;
   --gold: #d9a441;
   --gold-light: #f0d090;
   --gold-dark: #a87421;
@@ -109,7 +109,6 @@
 }
 ::-webkit-scrollbar-thumb {
   background: #3a2e14;
-  border-radius: 8px;
   border: 2px solid #0a0a0a;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -151,6 +150,28 @@
     background:
       linear-gradient(#101010, #101010) padding-box,
       linear-gradient(135deg, rgba(245, 212, 136, 0.9), rgba(217, 164, 65, 0.4), rgba(168, 116, 33, 0.9)) border-box;
+  }
+  /* Cantos chanfrados — assinatura visual CROWN */
+  .clip-notch {
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  }
+  .clip-notch-sm {
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .clip-notch-lg {
+    clip-path: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+  }
+  .clip-slant {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
+  }
+  .diagonal-stripes {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent 0,
+      transparent 8px,
+      rgba(217, 164, 65, 0.14) 8px,
+      rgba(217, 164, 65, 0.14) 10px
+    );
   }
   .grain-overlay {
     position: relative;

@@ -45,8 +45,7 @@ export default function ScheduleSection() {
   const totalClasses = entries.reduce((acc, e) => acc + e.classes.length, 0);
 
   return (
-    <section id="horarios" className="relative py-24 sm:py-32 bg-[#080808] border-y border-[#1c1c1c]">
-      <div className="absolute bottom-0 right-0 w-[500px] h-[300px] rounded-full bg-[#d9a441]/6 blur-[130px]" />
+    <section id="horarios" className="relative py-24 sm:py-32 bg-[#080808] border-b border-[#1c1c1c]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Grade semanal"
@@ -61,12 +60,12 @@ export default function ScheduleSection() {
 
         <Reveal delay={0.15} className="mt-12">
           <Tabs defaultValue={String(defaultDay)} className="w-full">
-            <TabsList className="w-full grid grid-cols-7 h-auto bg-[#0d0d0d] border border-[#262626] rounded-xl p-1.5 gap-1 overflow-x-auto">
+            <TabsList className="w-full grid grid-cols-7 h-auto bg-[#0d0d0d] border border-[#262626] p-1.5 gap-1 overflow-x-auto">
               {DAYS.map((d) => (
                 <TabsTrigger
                   key={d.value}
                   value={String(d.value)}
-                  className={`font-heading uppercase tracking-wider text-xs sm:text-sm py-2.5 rounded-lg data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-bold cursor-pointer ${
+                  className={`font-heading uppercase tracking-wider text-xs sm:text-sm py-2.5 data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-bold cursor-pointer ${
                     d.value === today ? "text-[#d9a441]" : "text-muted-foreground"
                   }`}
                 >
@@ -83,7 +82,7 @@ export default function ScheduleSection() {
                 </p>
 
                 {d.classes.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-[#2a2a2a] p-10 text-center text-muted-foreground">
+                  <div className="border border-dashed border-[#2a2a2a] p-10 text-center text-muted-foreground">
                     Nenhuma aula programada para este dia. Aproveite para treinar por conta!
                   </div>
                 ) : (
@@ -94,7 +93,7 @@ export default function ScheduleSection() {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.35, delay: i * 0.05 }}
-                        className="group rounded-xl border border-[#262626] bg-[#0d0d0d] p-5 hover:border-[#d9a441]/50 hover:bg-[#111] transition-all duration-300"
+                        className="group border border-[#262626] bg-[#0d0d0d] p-5 hover:border-[#d9a441]/60 hover:bg-[#111] transition-all duration-300 border-l-2 border-l-[#d9a441]/60"
                       >
                         <div className="flex items-center justify-between gap-3">
                           <p className="font-display text-2xl text-gold-gradient tracking-wide">

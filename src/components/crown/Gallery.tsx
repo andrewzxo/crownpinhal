@@ -17,14 +17,14 @@ export default function Gallery() {
         />
 
         {gallery.length === 0 ? (
-          <div className="mt-12 rounded-xl border border-dashed border-[#2a2a2a] p-12 text-center text-muted-foreground">
+          <div className="mt-12 border border-dashed border-[#2a2a2a] p-12 text-center text-muted-foreground">
             As fotos da estrutura serão publicadas em breve.
           </div>
         ) : (
           <div className="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
             {gallery.map((g, i) => (
               <Reveal key={g.id} delay={(i % 3) * 0.08} className="mb-4 break-inside-avoid">
-                <figure className="group relative rounded-2xl overflow-hidden border border-[#262626] hover:border-[#d9a441]/50 transition-all duration-300 cursor-pointer">
+                <figure className="group relative overflow-hidden border border-[#262626] hover:border-[#d9a441]/60 transition-all duration-300 cursor-pointer">
                   <img
                     src={g.url}
                     alt={g.title || "Foto da estrutura da academia CROWN"}

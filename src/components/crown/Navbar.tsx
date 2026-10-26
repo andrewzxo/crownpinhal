@@ -98,7 +98,7 @@ export default function Navbar() {
             <SheetTrigger asChild>
               <button
                 aria-label="Abrir menu"
-                className="md:hidden w-11 h-11 flex items-center justify-center rounded-lg border border-[#2a2a2a] bg-[#101010] text-foreground hover:text-[#d9a441] hover:border-[#d9a441]/50 transition-colors"
+                className="md:hidden w-11 h-11 flex items-center justify-center border border-[#2a2a2a] bg-[#101010] text-foreground hover:text-[#d9a441] hover:border-[#d9a441]/60 transition-colors"
               >
                 {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -121,7 +121,7 @@ export default function Navbar() {
                   <button
                     key={l.href}
                     onClick={() => go(l.href)}
-                    className="text-left px-4 py-3 rounded-lg font-heading uppercase tracking-wider text-sm text-muted-foreground hover:text-[#d9a441] hover:bg-[#d9a441]/5 transition-colors cursor-pointer"
+                    className="text-left px-4 py-3 font-heading uppercase tracking-wider text-sm text-muted-foreground hover:text-[#d9a441] hover:bg-[#d9a441]/5 border-l-2 border-transparent hover:border-[#d9a441] transition-colors cursor-pointer"
                   >
                     {l.label}
                   </button>

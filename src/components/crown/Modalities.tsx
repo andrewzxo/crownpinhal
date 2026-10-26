@@ -8,6 +8,7 @@ import {
   Dumbbell,
   Flame,
   Footprints,
+  Medal,
   Music,
   Sparkles,
   Swords,
@@ -29,6 +30,7 @@ const ICONS: Record<string, LucideIcon> = {
   Sparkles,
   Trophy,
   Footprints,
+  Medal,
 };
 
 export default function Modalities() {
@@ -37,7 +39,6 @@ export default function Modalities() {
 
   return (
     <section id="modalidades" className="relative py-24 sm:py-32">
-      <div className="absolute top-0 -left-40 w-[450px] h-[450px] rounded-full bg-[#d9a441]/8 blur-[130px]" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="O que treinar"
@@ -46,7 +47,7 @@ export default function Modalities() {
           subtitle={
             setContentFallback
               ? "Em breve as modalidades serão cadastradas pelo nosso time."
-              : "Escolha seu estilo de treino. São várias opções para você alcanzar seus objetivos, do condicionamento à força."
+              : "Academia completa: são várias opções para você alcançar seus objetivos, do condicionamento à força."
           }
         />
 
@@ -56,7 +57,7 @@ export default function Modalities() {
               <motion.article
                 whileHover={{ y: -8 }}
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className="group relative h-80 rounded-2xl overflow-hidden border border-[#262626] bg-[#0d0d0d] cursor-pointer hover:border-[#d9a441]/50 transition-colors duration-300"
+                className="group relative h-80 overflow-hidden border border-[#262626] bg-[#0d0d0d] cursor-pointer hover:border-[#d9a441]/60 transition-colors duration-300"
                 onClick={() =>
                   document.getElementById("horarios")?.scrollIntoView({ behavior: "smooth" })
                 }
@@ -74,9 +75,12 @@ export default function Modalities() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#d9a441]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
+                {/* Barra superior */}
+                <span className="absolute top-0 left-0 h-0.5 w-full bg-gold-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                 {/* Conteúdo */}
                 <div className="absolute inset-x-0 bottom-0 p-5">
-                  <div className="w-10 h-10 rounded-lg bg-gold-gradient flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 gold-glow-sm">
+                  <div className="w-10 h-10 bg-gold-gradient flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
                     {(() => {
                       const Icon = (m.icon && ICONS[m.icon]) || Dumbbell;
                       return <Icon className="w-5 h-5 text-black" />;
@@ -90,7 +94,9 @@ export default function Modalities() {
                   </p>
                   <p className="mt-3 flex items-center gap-1.5 text-xs font-heading uppercase tracking-wider text-[#d9a441] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <CalendarClock className="w-3.5 h-3.5" />
-                    {m.schedules.length} horários disponíveis
+                    {m.schedules.length > 0
+                      ? `${m.schedules.length} horários disponíveis`
+                      : "Consulte a recepção"}
                   </p>
                 </div>
 

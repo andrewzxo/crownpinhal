@@ -38,10 +38,10 @@ export default function AccountMenu() {
         <DropdownMenuTrigger asChild>
           <button
             aria-label="Menu da conta"
-            className="flex items-center gap-2 rounded-full border border-[#2a2a2a] bg-[#101010] hover:border-[#d9a441]/50 transition-colors pl-1 pr-3 py-1 cursor-pointer"
+            className="flex items-center gap-2 border border-[#2a2a2a] bg-[#101010] hover:border-[#d9a441]/60 transition-colors pl-1 pr-3 py-1 cursor-pointer"
           >
-            <Avatar className="w-8 h-8 border border-[#d9a441]/40">
-              <AvatarFallback className="bg-gold-gradient text-black text-xs font-bold">
+            <Avatar className="w-8 h-8 rounded-none border border-[#d9a441]/50">
+              <AvatarFallback className="rounded-none bg-gold-gradient text-black text-xs font-bold">
                 {initials}
               </AvatarFallback>
             </Avatar>

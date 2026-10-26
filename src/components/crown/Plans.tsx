@@ -8,9 +8,20 @@ import Reveal, { SectionTitle } from "./Reveal";
 
 export default function Plans() {
   const plans = useAppStore((s) => s.content?.plans) ?? [];
+  const settings = useAppStore((s) => s.content?.settings);
   const user = useAppStore((s) => s.user);
   const openSubscribe = useAppStore((s) => s.openSubscribe);
   const openAuthModal = useAppStore((s) => s.openAuthModal);
+
+  const convenios = (settings?.convenios || "PLANO FAMÍLIA|PLANO EMPRESA|PLANO HORÁRIO ECONÔMICO|OFICIAIS MILITARES")
+    .split("|")
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  const partners = (settings?.partners || "GYMPASS|TOTALPASS|WELLHUB")
+    .split("|")
+    .map((t) => t.trim())
+    .filter(Boolean);
 
   function handleSubscribe(planId: string) {
     if (!user) {
@@ -25,7 +36,6 @@ export default function Plans() {
 
   return (
     <section id="planos" className="relative py-24 sm:py-32 overflow-hidden">
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-[#d9a441]/8 blur-[140px]" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <SectionTitle
           eyebrow="Invista em você"
@@ -40,19 +50,22 @@ export default function Plans() {
               <motion.article
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`relative h-full flex flex-col rounded-3xl p-7 ${
+                className={`relative h-full flex flex-col p-7 ${
                   p.highlighted
-                    ? "border-gold-gradient gold-glow bg-[#101010] shadow-2xl"
-                    : "border border-[#262626] bg-[#0d0d0d] hover:border-[#d9a441]/30"
+                    ? "border-2 border-[#d9a441] gold-glow bg-[#101010] shadow-2xl"
+                    : "border border-[#262626] bg-[#0d0d0d] hover:border-[#d9a441]/40"
                 } transition-all duration-300`}
               >
+                {/* Barra superior */}
+                <span className="absolute top-0 left-0 h-1 w-full bg-gold-gradient" />
+
                 {/* Badge */}
                 {p.badge && (
                   <span
-                    className={`absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-4 py-1.5 font-heading uppercase tracking-widest text-xs font-bold ${
+                    className={`absolute -top-3.5 left-0 whitespace-nowrap px-4 py-1.5 font-heading uppercase tracking-widest text-xs font-bold ${
                       p.highlighted
-                        ? "bg-gold-gradient text-black gold-glow-sm"
-                        : "bg-[#1a1a1a] border border-[#d9a441]/40 text-[#d9a441]"
+                        ? "bg-gold-gradient text-black"
+                        : "bg-[#050505] border border-[#d9a441]/50 text-[#d9a441]"
                     }`}
                   >
                     {p.badge}
@@ -65,7 +78,7 @@ export default function Plans() {
                 <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>
 
                 {/* Preço — ainda não definido */}
-                <div className="mt-6 rounded-xl bg-[#0a0a0a] border border-[#262626] px-4 py-4">
+                <div className="mt-6 bg-[#0a0a0a] border border-[#262626] px-4 py-4">
                   {p.price !== null ? (
                     <p className="font-display text-4xl text-gold-gradient">
                       R$ {p.price.toFixed(2).replace(".", ",")}
@@ -95,7 +108,7 @@ export default function Plans() {
                 <ul className="mt-6 space-y-3 flex-1">
                   {p.features.map((f) => (
                     <li key={f} className="flex items-start gap-2.5 text-sm text-foreground/85">
-                      <span className="mt-0.5 w-4.5 h-4.5 shrink-0 rounded-full bg-[#d9a441]/15 border border-[#d9a441]/40 flex items-center justify-center w-[18px] h-[18px]">
+                      <span className="mt-0.5 w-[18px] h-[18px] shrink-0 bg-[#d9a441]/15 border border-[#d9a441]/50 flex items-center justify-center">
                         <Check className="w-3 h-3 text-[#d9a441]" />
                       </span>
                       {f}
@@ -107,8 +120,8 @@ export default function Plans() {
                   onClick={() => handleSubscribe(p.id)}
                   className={`mt-8 w-full h-12 font-heading uppercase tracking-wider font-bold text-sm transition-all hover:scale-[1.02] ${
                     p.highlighted
-                      ? "bg-gold-gradient hover:brightness-110 text-black gold-glow-sm"
-                      : "bg-[#1a1a1a] border border-[#d9a441]/40 text-[#d9a441] hover:bg-[#d9a441] hover:text-black"
+                      ? "bg-gold-gradient hover:brightness-110 text-black"
+                      : "bg-[#1a1a1a] border border-[#d9a441]/50 text-[#d9a441] hover:bg-[#d9a441] hover:text-black"
                   }`}
                 >
                   <Crown className="w-4 h-4 mr-2" />
@@ -124,6 +137,42 @@ export default function Plans() {
             <Info className="w-4 h-4 text-[#d9a441]" />
             Ao assinar, o dono da academia recebe seu pedido e entra em contato para finalizar.
           </p>
+        </Reveal>
+
+        {/* Convênios e descontos */}
+        <Reveal delay={0.35}>
+          <div className="mt-16 border border-[#262626] bg-[#0b0b0b]">
+            <div className="bg-[#111] border-b border-[#262626] px-6 py-4 flex items-center justify-center">
+              <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide">
+                Convênios e <span className="text-gold-gradient">descontos</span>
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#262626]">
+              {convenios.map((c, i) => (
+                <div key={c} className="bg-[#0b0b0b] px-5 py-6 text-center hover:bg-[#111] transition-colors">
+                  <p className="font-display text-[#d9a441]/25 text-3xl leading-none mb-2">
+                    {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <p className="font-heading uppercase tracking-wider text-sm font-semibold">
+                    {c}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-[#262626] px-6 py-5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 flex-wrap">
+              <span className="font-heading uppercase tracking-[0.3em] text-xs text-muted-foreground">
+                Aceitamos
+              </span>
+              {partners.map((p) => (
+                <span
+                  key={p}
+                  className="font-display uppercase text-lg tracking-wide border border-[#d9a441]/40 px-4 py-1.5 text-[#d9a441]"
+                >
+                  {p}
+                </span>
+              ))}
+            </div>
+          </div>
         </Reveal>
       </div>
     </section>

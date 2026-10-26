@@ -15,7 +15,6 @@ import {
   Phone,
   User,
   UserPlus,
-  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,17 +87,17 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
 
   return (
     <Tabs defaultValue="login" className="w-full">
-      <TabsList className="grid w-full grid-cols-2 h-12 bg-[#0a0a0a] border border-[#262626] rounded-lg p-1">
+      <TabsList className="grid w-full grid-cols-2 h-12 bg-[#0a0a0a] border border-[#262626] p-1">
         <TabsTrigger
           value="login"
-          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-semibold rounded-md"
+          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-semibold"
         >
           <LogIn className="w-4 h-4 mr-2" />
           Entrar
         </TabsTrigger>
         <TabsTrigger
           value="register"
-          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-semibold rounded-md"
+          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-semibold"
         >
           <UserPlus className="w-4 h-4 mr-2" />
           Criar conta
@@ -155,7 +154,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
             disabled={loading !== null}
             className="w-full h-12 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base gold-glow-sm transition-all hover:scale-[1.01]"
           >
-            {loading === "login" ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5" />}
+            {loading === "login" ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
             Entrar agora
           </Button>
         </form>
@@ -280,8 +279,6 @@ export default function AuthGate() {
         className="absolute inset-0 w-full h-full object-cover opacity-20"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/85 via-[#050505]/60 to-[#050505]" />
-      <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-[#d9a441]/10 blur-[130px]" />
-      <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] rounded-full bg-[#d9a441]/10 blur-[130px]" />
 
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center max-w-6xl mx-auto px-4 py-10 gap-8 lg:gap-16 lg:flex-row lg:justify-between">
         {/* Marca */}
@@ -307,10 +304,10 @@ export default function AuthGate() {
           </p>
           <div className="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
-              <Dumbbell className="w-4 h-4 text-[#d9a441]" /> CROSS • HYROX • RUN
+              <Dumbbell className="w-4 h-4 text-[#d9a441]" /> 12 MODALIDADES
             </span>
             <span className="flex items-center gap-2">
-              <Crown className="w-4 h-4 text-[#d9a441]" /> Estrutura premium
+              <Crown className="w-4 h-4 text-[#d9a441]" /> Academia completa
             </span>
           </div>
         </motion.div>
@@ -330,7 +327,7 @@ export default function AuthGate() {
             />
           </div>
 
-          <div className="rounded-2xl bg-[#0d0d0d]/95 backdrop-blur-xl border border-[#262626] p-6 sm:p-8 shadow-2xl">
+          <div className="border border-[#262626] border-t-2 border-t-[#d9a441] bg-[#0d0d0d]/95 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
             <div className="text-center mb-6">
               <p className="font-heading uppercase tracking-[0.3em] text-xs text-[#d9a441]">
                 Acesso CROWN

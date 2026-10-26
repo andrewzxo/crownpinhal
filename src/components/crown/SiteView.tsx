@@ -5,11 +5,13 @@ import Hero from "./Hero";
 import Marquee from "./Marquee";
 import About from "./About";
 import Modalities from "./Modalities";
+import Coletivas from "./Coletivas";
 import ScheduleSection from "./ScheduleSection";
 import Plans from "./Plans";
 import Gallery from "./Gallery";
 import CtaSection from "./CtaSection";
 import Footer from "./Footer";
+import WhatsAppFloat from "./WhatsAppFloat";
 
 export default function SiteView() {
   return (
@@ -20,12 +22,14 @@ export default function SiteView() {
         <Marquee />
         <About />
         <Modalities />
+        <Coletivas />
         <ScheduleSection />
         <Plans />
         <Gallery />
         <CtaSection />
       </main>
       <Footer />
+      <WhatsAppFloat />
     </div>
   );
 }

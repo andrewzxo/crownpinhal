@@ -134,3 +134,31 @@ Work Log:
 Stage Summary:
 - Identidade visual 100% oficial: o PNG enviado pelo usuário é usado em tudo (abertura, login, navbar, menu, footer, favicon); nenhuma imagem de logo gerada por IA está mais em uso nos componentes
 - Arquivos antigos logo-crown.png / logo-emblem.png permanecem em public/ apenas como backup (sem referências no código)
+
+---
+Task ID: 11
+Agent: orchestrator (Z.ai Code)
+Task: Mais horários e informações oficiais + identidade visual única (sem arredondados, sem emojis, sem banner feio) + Instagram @crownpinhal + balão WhatsApp 19 99150-4548
+
+Work Log:
+- Geradas 4 imagens sequenciais: img/texture-gold.jpg (textura preta com pinceladas douradas estilo flyer), img/muay-thai.jpg, img/beach-tennis.jpg, img/futevolei.jpg
+- seed.ts atualizado com dados oficiais: 12 modalidades (Musculação, CROSS, HYROX, CROWN RUN, CROWN DANCE, BIKE, JUMP, PILATES, MUAY THAI, BOXE, BEACH TENNIS, FUTEVÔLEI); CROSS Seg-Sex 6h/7h/8h + 16h30-19h30, Sáb 8h, Dom 9h (quadro oficial); coletivas do flyer (Seg 18h Dance + 18h15 Bike, Ter 18h Jump + 19h Pilates, Qua 18h15 Bike, Qui 18h Jump); 47 aulas/semana; settings com whatsapp 5519991504548, phone (19) 99150-4548, instagram @crownpinhal, hoursText Musculação Seg-Sex 5h-22h/Sáb 8h-16h/Dom 8h-14h, convenios (Família|Empresa|Horário Econômico|Oficiais Militares), partners (Gympass|TotalPass|Wellhub), ctaTitle #VEMPRA CROWN
+- globals.css: --radius 0rem (tudo quadrado), utilitários clip-notch/notch-sm/notch-lg/clip-slant/diagonal-stripes, scrollbar quadrada
+- Marquee redesenhado: faixa reta (sem rotação, sem fundo dourado grito) com texto Anton alternando sólido/contorno e separador "//" dourado
+- Hero: removido Zap (raio) da faixa lateral (agora losangos quadrados), badge quadrado com borda esquerda dourada, stats com borda esquerda
+- About: cards de stats em grade com gap-px, imagens quadradas, selo "Desde 2020" quadrado, título com ponto corrigido
+- Modalities: cards quadrados com barra dourada no topo no hover, chip de ícone quadrado, "Consulte a recepção" para modalidades sem grade, Medal adicionado ao ICONS
+- NOVA seção Coletivas (id=coletivas): grade por dia com cards chanfrados (clip-notch) + fundo texture-gold + benefícios numerados do flyer + "Resultados de verdade"
+- ScheduleSection: tabs e cards quadrados com borda esquerda dourada
+- Plans: cards quadrados, badges quadrados, checks quadrados + NOVO painel CONVÊNIOS E DESCONTOS (4 itens numerados) + ACEITAMOS Gympass/TotalPass/Wellhub
+- CtaSection: fundo texture-gold, título gigante #VEMPRA CROWN, botões CHAMAR NO WHATSAPP + SEGUIR NO INSTAGRAM, WhatsAppIcon SVG oficial exportado
+- WhatsAppFloat: balão fixo inferior direito quadrado verde #25D366 com ícone oficial WhatsApp, expande com telefone (19) 99150-4548 no hover desktop, link wa.me com mensagem pré-preenchida
+- Footer/Navbar/AuthGate/AccountMenu/modais: todos quadrados; Zap removido do botão Entrar; badge AuthGate "12 MODALIDADES"
+- DB resetado (rm + db:push + seed) e dev server reiniciado; login dono testado OK
+- Verificado no navegador (1280px + 390px): AuthGate, hero, marquee, sobre, modalidades, coletivas, horários (aba DOM = Cross 9h + Hyrox 9h), planos + convênios, galeria, CTA, footer, menu mobile, balão WhatsApp; links wa.me/5519991504548 e instagram.com/crownpinhal confirmados; lint 0/0; console e dev.log sem erros
+
+Stage Summary:
+- Site com identidade brutalista própria preto/dourado: cantos 100% retos com chanfros assinatura, tipografia Anton gigante, marquee reto elegante, textura grunge dourada gerada por IA nas seções
+- Informações oficiais completas: 12 modalidades do flyer, 47 aulas/semana do quadro oficial, coletivas com benefícios, convênios/descontos, Gympass/TotalPass/Wellhub, #VemPraCrown
+- Contato real: balão WhatsApp fixo (5519991504548) + Instagram @crownpinhal em footer e CTA
+- Sem emojis, sem ícones de raio/faísca, sem banner rotacionado, sem cantos arredondados

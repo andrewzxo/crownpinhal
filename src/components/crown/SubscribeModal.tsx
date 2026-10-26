@@ -64,7 +64,7 @@ export default function SubscribeModal() {
         {plan ? (
           done ? (
             <div className="py-6 text-center">
-              <div className="mx-auto w-16 h-16 rounded-full bg-gold-gradient flex items-center justify-center gold-glow mb-4">
+              <div className="mx-auto w-16 h-16 bg-gold-gradient flex items-center justify-center gold-glow mb-4">
                 <BadgeCheck className="w-8 h-8 text-black" />
               </div>
               <DialogHeader>
@@ -104,7 +104,7 @@ export default function SubscribeModal() {
               </DialogHeader>
 
               <div className="space-y-4">
-                <div className="rounded-lg bg-[#0a0a0a] border border-[#262626] p-4 space-y-2">
+                <div className="bg-[#0a0a0a] border border-[#262626] p-4 space-y-2">
                   <p className="font-heading uppercase text-xs tracking-wider text-[#d9a441]">
                     Incluído no plano
                   </p>
@@ -134,7 +134,7 @@ export default function SubscribeModal() {
                   />
                 </div>
 
-                <div className="rounded-lg bg-[#d9a441]/5 border border-[#d9a441]/20 p-3 text-xs text-muted-foreground">
+                <div className="bg-[#d9a441]/5 border border-[#d9a441]/20 p-3 text-xs text-muted-foreground">
                   Pedido será feito em nome de{" "}
                   <strong className="text-foreground">{user?.name}</strong> ({user?.email}). O
                   dono da academia receberá seu pedido no painel de controle.
