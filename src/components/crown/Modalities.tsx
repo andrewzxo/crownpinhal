@@ -57,7 +57,7 @@ export default function Modalities() {
               <motion.article
                 whileHover={{ y: -8 }}
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className="group relative h-80 overflow-hidden border border-[#262626] bg-[#0d0d0d] cursor-pointer hover:border-[#d9a441]/60 transition-colors duration-300"
+                className="group relative h-80 overflow-hidden clip-blade bg-[#0d0d0d] cursor-pointer"
                 onClick={() =>
                   document.getElementById("horarios")?.scrollIntoView({ behavior: "smooth" })
                 }
@@ -80,7 +80,7 @@ export default function Modalities() {
 
                 {/* Conteúdo */}
                 <div className="absolute inset-x-0 bottom-0 p-5">
-                  <div className="w-10 h-10 bg-gold-gradient flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                  <div className="clip-shield w-10 h-11 bg-gold-gradient flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
                     {(() => {
                       const Icon = (m.icon && ICONS[m.icon]) || Dumbbell;
                       return <Icon className="w-5 h-5 text-black" />;

@@ -151,9 +151,38 @@
       linear-gradient(#101010, #101010) padding-box,
       linear-gradient(135deg, rgba(245, 212, 136, 0.9), rgba(217, 164, 65, 0.4), rgba(168, 116, 33, 0.9)) border-box;
   }
-  /* Cantos chanfrados — assinatura visual CROWN */
+  /* ---------- Formatos exclusivos CROWN — identidade "coroa angular" ---------- */
+  /* Card lâmina: cortes opostos em diagonal */
+  .clip-blade {
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  }
+  /* Chip chanfrado: lado direito inclinado */
+  .clip-tag {
+    clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  }
+  /* Escudo: base em ponta (brasão) */
+  .clip-shield {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), 50% 100%, 0 calc(100% - 12px));
+  }
+  /* Pico de coroa no topo */
+  .clip-peak {
+    clip-path: polygon(50% 0, 100% 22px, 100% 100%, 0 100%, 0 22px);
+  }
+  /* Hexágono alongado (joia) */
+  .clip-hex {
+    clip-path: polygon(14% 0, 86% 0, 100% 50%, 86% 100%, 14% 100%, 0 50%);
+  }
+  /* Botão flecha: ponta à direita */
+  .clip-arrow-r {
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
+  }
+  /* Cantos chanfrados clássicos */
   .clip-notch {
     clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  }
+  /* Padrão sutil de picos de coroa para fundos */
+  .bg-crown-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28' viewBox='0 0 56 28'%3E%3Cpath d='M0 28 L14 4 L28 28 L42 4 L56 28' fill='none' stroke='%23d9a441' stroke-opacity='0.08' stroke-width='1.5'/%3E%3C/svg%3E");
   }
   .clip-notch-sm {
     clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
@@ -193,6 +222,21 @@
   }
   .animate-pulse-gold {
     animation: pulse-gold 2.4s ease-in-out infinite;
+  }
+  .animate-ping-slow {
+    animation: ping-slow 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  75%,
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
   }
 }
 

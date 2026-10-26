@@ -2,12 +2,15 @@
 
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
+import { CrownEdge } from "./CrownShapes";
 
 export default function Gallery() {
   const gallery = useAppStore((s) => s.content?.gallery) ?? [];
 
   return (
-    <section id="galeria" className="relative py-24 sm:py-32 bg-[#080808] border-y border-[#1c1c1c]">
+    <>
+      <CrownEdge fill="#080808" height={20} />
+      <section id="galeria" className="relative py-24 sm:py-32 bg-[#080808]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Conheça o espaço"
@@ -24,7 +27,7 @@ export default function Gallery() {
           <div className="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
             {gallery.map((g, i) => (
               <Reveal key={g.id} delay={(i % 3) * 0.08} className="mb-4 break-inside-avoid">
-                <figure className="group relative overflow-hidden border border-[#262626] hover:border-[#d9a441]/60 transition-all duration-300 cursor-pointer">
+                <figure className="group relative overflow-hidden clip-blade bg-[#0d0d0d] cursor-pointer">
                   <img
                     src={g.url}
                     alt={g.title || "Foto da estrutura da academia CROWN"}
@@ -42,6 +45,7 @@ export default function Gallery() {
           </div>
         )}
       </div>
-    </section>
+      </section>
+    </>
   );
 }

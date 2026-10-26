@@ -6,6 +6,7 @@ import { CalendarDays, Clock, User } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
+import { CrownEdge } from "./CrownShapes";
 
 const DAYS = [
   { value: 1, label: "Seg", full: "Segunda-feira" },
@@ -45,8 +46,15 @@ export default function ScheduleSection() {
   const totalClasses = entries.reduce((acc, e) => acc + e.classes.length, 0);
 
   return (
-    <section id="horarios" className="relative py-24 sm:py-32 bg-[#080808] border-b border-[#1c1c1c]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <>
+      <CrownEdge fill="#080808" height={20} />
+      <section
+        id="horarios"
+        className="relative py-24 sm:py-32 bg-[#080808] overflow-hidden"
+      >
+        {/* Padrão de coroa no fundo */}
+        <div className="absolute inset-0 bg-crown-pattern pointer-events-none" aria-hidden />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <SectionTitle
           eyebrow="Grade semanal"
           title="HORÁRIOS DAS AULAS"
@@ -65,7 +73,7 @@ export default function ScheduleSection() {
                 <TabsTrigger
                   key={d.value}
                   value={String(d.value)}
-                  className={`font-heading uppercase tracking-wider text-xs sm:text-sm py-2.5 data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-bold cursor-pointer ${
+                  className={`font-heading uppercase tracking-wider text-xs sm:text-sm py-2.5 rounded-none cursor-pointer data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-bold data-[state=active]:[clip-path:polygon(9px_0,100%_0,calc(100%_-_9px)_100%,0_100%)] ${
                     d.value === today ? "text-[#d9a441]" : "text-muted-foreground"
                   }`}
                 >
@@ -96,9 +104,9 @@ export default function ScheduleSection() {
                         className="group border border-[#262626] bg-[#0d0d0d] p-5 hover:border-[#d9a441]/60 hover:bg-[#111] transition-all duration-300 border-l-2 border-l-[#d9a441]/60"
                       >
                         <div className="flex items-center justify-between gap-3">
-                          <p className="font-display text-2xl text-gold-gradient tracking-wide">
+                          <span className="clip-tag bg-gold-gradient text-black font-display text-lg tracking-wide px-3.5 py-1 inline-block">
                             {c.startTime}
-                          </p>
+                          </span>
                           <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-heading uppercase tracking-wider">
                             <Clock className="w-3.5 h-3.5" />
                             até {c.endTime}
@@ -121,7 +129,8 @@ export default function ScheduleSection() {
             ))}
           </Tabs>
         </Reveal>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }

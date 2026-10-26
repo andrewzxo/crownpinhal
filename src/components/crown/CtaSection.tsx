@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/store";
 import Reveal from "./Reveal";
+import { CrownEdge, CrownWatermark } from "./CrownShapes";
 
 export default function CtaSection() {
   const settings = useAppStore((s) => s.content?.settings);
@@ -10,7 +11,9 @@ export default function CtaSection() {
   const whatsapp = settings?.whatsapp || "5519991504548";
 
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden grain-overlay border-t border-[#1c1c1c]">
+    <>
+      <CrownEdge fill="#050505" height={20} />
+      <section className="relative py-24 sm:py-32 overflow-hidden grain-overlay">
       {/* Fundo com a textura da marca */}
       <img
         src="/img/texture-gold.jpg"
@@ -19,6 +22,9 @@ export default function CtaSection() {
         className="absolute inset-0 w-full h-full object-cover opacity-35"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#050505]/80 to-[#050505]" />
+
+      {/* Marca d'água coroa */}
+      <CrownWatermark className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] text-[#d9a441] opacity-[0.06]" />
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <Reveal>
@@ -40,7 +46,7 @@ export default function CtaSection() {
             <Button
               size="lg"
               asChild
-              className="h-14 px-10 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-bold text-base gold-glow transition-all hover:scale-[1.03]"
+              className="h-14 px-10 rounded-none clip-arrow-r bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-bold text-base transition-all hover:scale-[1.03]"
             >
               <a
                 href={`https://wa.me/${whatsapp}`}
@@ -51,24 +57,27 @@ export default function CtaSection() {
                 Chamar no WhatsApp
               </a>
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              asChild
-              className="h-14 px-10 bg-transparent border-[#d9a441]/50 hover:bg-[#d9a441]/10 hover:text-[#d9a441] hover:border-[#d9a441] font-heading uppercase tracking-wider font-semibold text-base transition-all"
-            >
-              <a
-                href={`https://instagram.com/${instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
+            <div className="-skew-x-[10deg]">
+              <Button
+                size="lg"
+                variant="outline"
+                asChild
+                className="h-14 px-10 skew-x-[10deg] bg-transparent border-[#d9a441]/50 hover:bg-[#d9a441]/10 hover:text-[#d9a441] hover:border-[#d9a441] font-heading uppercase tracking-wider font-semibold text-base transition-all"
               >
-                Seguir no Instagram
-              </a>
-            </Button>
+                <a
+                  href={`https://instagram.com/${instagram}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="inline-block skew-x-[10deg]">Seguir no Instagram</span>
+                </a>
+              </Button>
+            </div>
           </div>
         </Reveal>
       </div>
-    </section>
+      </section>
+    </>
   );
 }
 

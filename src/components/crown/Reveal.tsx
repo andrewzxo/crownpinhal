@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { CrownGlyph } from "./CrownShapes";
 
 export default function Reveal({
   children,
@@ -59,6 +60,11 @@ export function SectionTitle({
         {highlight && <span className="text-gold-gradient">{highlight}</span>}
         {post}
       </h2>
+      <CrownGlyph
+        className={`mt-5 w-16 h-4 text-[#d9a441] ${
+          align === "center" ? "mx-auto" : ""
+        }`}
+      />
       {subtitle && (
         <p className={`mt-4 text-muted-foreground max-w-2xl ${align === "center" ? "mx-auto" : ""}`}>
           {subtitle}

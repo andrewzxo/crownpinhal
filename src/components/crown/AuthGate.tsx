@@ -23,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { SessionUser } from "@/lib/types";
+import { CrownGlyph, CrownWatermark } from "./CrownShapes";
 
 const inputCls =
   "h-11 bg-[#0a0a0a] border-[#2a2a2a] text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-[#d9a441]/50 focus-visible:border-[#d9a441]/60 transition-all";
@@ -152,7 +153,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
           <Button
             type="submit"
             disabled={loading !== null}
-            className="w-full h-12 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base gold-glow-sm transition-all hover:scale-[1.01]"
+            className="w-full h-12 rounded-none clip-arrow-r bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base transition-all hover:scale-[1.01]"
           >
             {loading === "login" ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
             Entrar agora
@@ -255,7 +256,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
           <Button
             type="submit"
             disabled={loading !== null}
-            className="w-full h-12 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base gold-glow-sm transition-all hover:scale-[1.01]"
+            className="w-full h-12 rounded-none clip-arrow-r bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base transition-all hover:scale-[1.01]"
           >
             {loading === "register" ? <Loader2 className="w-5 h-5 animate-spin" /> : <Crown className="w-5 h-5" />}
             Criar minha conta
@@ -286,8 +287,9 @@ export default function AuthGate() {
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="hidden lg:flex flex-col items-center text-center max-w-md"
+          className="hidden lg:flex flex-col items-center text-center max-w-md relative"
         >
+          <CrownWatermark className="pointer-events-none absolute -top-16 -left-24 w-80 text-[#d9a441] opacity-[0.08]" />
           <img
             src="/logo.png"
             alt="Logo da Academia CROWN Pinhal-SP"
@@ -298,6 +300,7 @@ export default function AuthGate() {
             <br />
             Ela se <span className="text-gold-gradient">conquista.</span>
           </h1>
+          <CrownGlyph className="mt-5 w-16 h-4 text-[#d9a441]" />
           <p className="mt-4 text-muted-foreground leading-relaxed">
             Entre para acompanhar seus treinos, conhecer as modalidades e garantir seu plano
             na academia mais completa de Pinhal-SP.
@@ -327,8 +330,10 @@ export default function AuthGate() {
             />
           </div>
 
-          <div className="border border-[#262626] border-t-2 border-t-[#d9a441] bg-[#0d0d0d]/95 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
+          <div className="clip-blade bg-[#d9a441]/30 p-px shadow-2xl">
+            <div className="clip-blade bg-[#0d0d0d]/95 backdrop-blur-xl p-6 sm:p-8">
             <div className="text-center mb-6">
+              <CrownGlyph className="mx-auto w-14 h-4 text-[#d9a441] mb-4" />
               <p className="font-heading uppercase tracking-[0.3em] text-xs text-[#d9a441]">
                 Acesso CROWN
               </p>
@@ -353,16 +358,19 @@ export default function AuthGate() {
             <Button
               variant="outline"
               onClick={() => setVisitor(true)}
-              className="w-full h-12 bg-transparent border-[#3a3a3a] hover:bg-[#d9a441]/10 hover:text-[#d9a441] hover:border-[#d9a441]/50 font-heading uppercase tracking-wider transition-all"
+              className="w-full h-12 -skew-x-[10deg] rounded-none bg-transparent border-[#3a3a3a] hover:bg-[#d9a441]/10 hover:text-[#d9a441] hover:border-[#d9a441]/50 font-heading uppercase tracking-wider transition-all"
             >
-              <Eye className="w-5 h-5 mr-2" />
-              Entrar como visitante
+              <span className="flex items-center justify-center gap-2 skew-x-[10deg]">
+                <Eye className="w-5 h-5" />
+                Entrar como visitante
+              </span>
             </Button>
             <p className="mt-3 text-center text-xs text-muted-foreground">
               Explore as modalidades e horários sem criar conta.
               <br />
               Para assinar um plano, o cadastro é necessário.
             </p>
+            </div>
           </div>
 
           <p className="mt-6 text-center text-xs text-muted-foreground/60">

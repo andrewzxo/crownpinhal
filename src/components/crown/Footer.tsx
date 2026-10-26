@@ -2,6 +2,7 @@
 
 import { Clock, Crown, Instagram, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useAppStore } from "@/lib/store";
+import { CrownEdge } from "./CrownShapes";
 
 export default function Footer() {
   const settings = useAppStore((s) => s.content?.settings);
@@ -20,7 +21,10 @@ export default function Footer() {
   ];
 
   return (
-    <footer id="contato" className="relative mt-auto bg-[#070707] border-t border-[#1e1e1e]">
+    <>
+      {/* Picos de coroa coroando o rodapé */}
+      <CrownEdge fill="#070707" stroke="rgba(217,164,65,0.5)" height={26} />
+      <footer id="contato" className="relative mt-auto bg-[#070707]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Marca */}
@@ -38,11 +42,27 @@ export default function Footer() {
               href={s.instagram ? `https://instagram.com/${s.instagram.replace("@", "")}` : "https://instagram.com/crownpinhal"}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-2 border border-[#2a2a2a] px-4 py-2 text-sm text-muted-foreground hover:text-[#d9a441] hover:border-[#d9a441]/60 transition-colors"
+              className="mt-5 inline-flex -skew-x-12 bg-gold-gradient text-black hover:brightness-110 transition-all"
             >
-              <Instagram className="w-4 h-4" />
-              {s.instagram || "@crownpinhal"}
+              <span className="flex items-center gap-2 skew-x-12 px-5 py-3 text-sm font-heading uppercase tracking-wider font-bold">
+                <Instagram className="w-4 h-4" />
+                {s.instagram || "@crownpinhal"}
+              </span>
             </a>
+            {s.whatsapp && (
+              <a
+                href={`https://wa.me/${s.whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp da CROWN"
+                className="ml-3 mt-5 inline-flex -skew-x-12 border border-[#25D366]/60 text-[#25D366] hover:bg-[#25D366]/10 transition-colors"
+              >
+                <span className="flex items-center gap-2 skew-x-12 px-4 py-3 text-sm font-heading uppercase tracking-wider font-bold">
+                  <MessageCircle className="w-4 h-4" />
+                  WhatsApp
+                </span>
+              </a>
+            )}
           </div>
 
           {/* Navegação */}
@@ -107,13 +127,15 @@ export default function Footer() {
               <Clock className="w-4 h-4 mt-0.5 text-[#d9a441] shrink-0" />
               {s.hoursText || "Musculação: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h"}
             </p>
-            <div className="mt-6 border-l-2 border-[#d9a441] bg-[#0d0d0d] p-4">
-              <p className="font-display uppercase text-sm text-gold-gradient flex items-center gap-2">
-                <Crown className="w-4 h-4" /> CROWN PINHAL-SP
-              </p>
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                Sua coroa não se ganha. Ela se conquista.
-              </p>
+            <div className="mt-6 -skew-x-12">
+              <div className="skew-x-12 bg-[#0d0d0d] border-l-2 border-[#d9a441] p-4">
+                <p className="font-display uppercase text-sm text-gold-gradient flex items-center gap-2">
+                  <Crown className="w-4 h-4" /> CROWN PINHAL-SP
+                </p>
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  Sua coroa não se ganha. Ela se conquista.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -130,6 +152,7 @@ export default function Footer() {
           </p>
         </div>
       </div>
-    </footer>
+      </footer>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAppStore } from "@/lib/store";
+import { CrownEdge } from "./CrownShapes";
 
 export default function Marquee() {
   const marqueeItems = useAppStore((s) => s.content?.settings.marqueeItems);
@@ -20,23 +21,24 @@ export default function Marquee() {
           >
             {t}
           </span>
-          <span className="font-display text-xl text-[#d9a441] select-none" aria-hidden>
-            {"//"}
-          </span>
+          <span className="w-2 h-2 bg-[#d9a441] rotate-45 shrink-0" aria-hidden />
         </span>
       ))}
     </div>
   );
 
   return (
-    <div
-      className="relative border-y border-[#d9a441]/25 bg-[#070707] py-4 overflow-hidden z-20"
-      aria-hidden
-    >
-      <div className="flex w-max animate-marquee">
-        {row}
-        {row}
+    <div className="relative z-20" aria-hidden>
+      {/* Borda superior — picos de coroa */}
+      <CrownEdge fill="#070707" stroke="rgba(217,164,65,0.45)" height={22} />
+      <div className="bg-[#070707] py-4 overflow-hidden">
+        <div className="flex w-max animate-marquee">
+          {row}
+          {row}
+        </div>
       </div>
+      {/* Borda inferior — picos invertidos */}
+      <CrownEdge fill="#070707" stroke="rgba(217,164,65,0.45)" height={22} flip />
     </div>
   );
 }

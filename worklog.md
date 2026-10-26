@@ -162,3 +162,32 @@ Stage Summary:
 - Informações oficiais completas: 12 modalidades do flyer, 47 aulas/semana do quadro oficial, coletivas com benefícios, convênios/descontos, Gympass/TotalPass/Wellhub, #VemPraCrown
 - Contato real: balão WhatsApp fixo (5519991504548) + Instagram @crownpinhal em footer e CTA
 - Sem emojis, sem ícones de raio/faísca, sem banner rotacionado, sem cantos arredondados
+
+---
+Task ID: 12
+Agent: orchestrator (Z.ai Code)
+Task: Balão WhatsApp redondo + abandonar o 100% quadrado — formatos e identidade visual únicos (silhueta de coroa)
+
+Work Log:
+- Criado src/components/crown/CrownShapes.tsx: CrownEdge (divisor zigue-zague de picos de coroa com stroke dourado opcional e flip), CrownGlyph (3 picos, assinatura dos títulos) e CrownWatermark (coroa grande em traço para fundos)
+- globals.css: novos utilitários clip-blade (cortes opostos), clip-tag (chanfro), clip-shield (brasão), clip-peak (pico no topo), clip-hex (joia), clip-arrow-r (flecha), bg-crown-pattern (padrão sutil de picos) e animate-ping-slow
+- Sistema de formas coerente: flecha = CTAs primários preenchidos; paralelogramo skew = CTAs outline; chanfro = chips pequenos; escudo = ícones/números; hexágono = stats/convênios; losango = checks/separadores
+- WhatsAppFloat redesenhado: balão REDONDO (exceção autorizada) com anel pulsante animate-ping-slow e etiqueta (19) 99150-4548 que desliza no hover desktop
+- Hero: marca d'água de coroa gigante, badge/CTAs/stats em paralelogramos com borda preservada (técnica skew + counter-skew)
+- Marquee: banda com bordas zigue-zague coroa (stroke dourado) topo+base e separadores de losango dourado
+- SectionTitle: CrownGlyph dourado como assinatura sob todos os títulos
+- About: ícones em chips hexagonais 2 camadas, 1ª imagem clip-blade, bloco "Treine como rei" com pico de coroa (clip-peak), selo "Desde 2020" inclinado
+- Modalities: cards clip-blade sem borda + ícones em escudos dourados
+- Coletivas: cards blade 2 camadas (moldura ouro no hover), números de benefícios em escudos
+- ScheduleSection: CrownEdge no topo, padrão bg-crown-pattern, aba ativa chanfrada via clip-path, horários em chips clip-tag ouro
+- Plans: cards blade 2 camadas (moldura ouro no destacado com gold-drop-glow que respeita o recorte), badges inclinados, checks em losangos, convênios numerados em hexágonos, pills Gympass/TotalPass/Wellhub chanfradas
+- CtaSection: CrownEdge topo, watermark central, botão WhatsApp em flecha + Instagram em paralelogramo
+- Gallery: fotos clip-blade sem borda + CrownEdge no topo
+- Footer: CrownEdge com stroke dourado coroando o rodapé, Instagram @crownpinhal em botão ouro inclinado + botão WhatsApp verde inclinado, bloco CROWN PINHAL-SP inclinado
+- AuthGate: card blade 2 camadas, glifos de coroa, botão submit em flecha, visitante em paralelogramo, watermark no painel da marca
+- Verificações: grep sem emojis em src e seed; lint 0/0; browser desktop 1280px (AuthGate, hero, marquee, sobre, modalidades, coletivas, horários com padrão, planos, galeria, CTA, footer com edge coroa, login dono OK) e mobile 390px (hero, CTA, menu Sheet, balão redondo); console e dev.log sem erros
+
+Stage Summary:
+- Identidade visual própria consolidada: a silhueta de COROA (zigue-zague de picos) costura todas as seções, e um sistema de formatos angulares exclusivos (lâmina, escudo, hexágono, losango, flecha, paralelogramo) substituiu o visual 100% quadrado
+- Único elemento redondo do site: o balão do WhatsApp (19 99150-4548), conforme autorizado pelo cliente
+- Nenhum rounded-* reintroduzido; emojis continuam zerados; Instagram e WhatsApp mantidos em destaque

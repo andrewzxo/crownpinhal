@@ -50,7 +50,11 @@ export default function About() {
               {stats.map((st, i) => (
                 <Reveal key={st.label} delay={0.1 + i * 0.08} className="bg-[#0d0d0d]">
                   <div className="group p-5 hover:bg-[#121212] transition-colors duration-300 h-full">
-                    <st.icon className="w-6 h-6 text-[#d9a441] mb-3" />
+                    <span className="clip-hex bg-gold-gradient w-11 h-11 mb-3 flex items-center justify-center">
+                      <span className="clip-hex bg-[#0d0d0d] w-[calc(100%-2px)] h-[calc(100%-2px)] flex items-center justify-center">
+                        <st.icon className="w-5 h-5 text-[#d9a441]" />
+                      </span>
+                    </span>
                     <p className="font-display text-3xl sm:text-4xl text-gold-gradient">
                       {st.value}
                     </p>
@@ -63,11 +67,11 @@ export default function About() {
             </div>
           </div>
 
-          {/* Colagem de imagens */}
+          {/* Colagem de imagens — cortes exclusivos */}
           <Reveal delay={0.2} className="relative">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4">
-                <div className="relative overflow-hidden border border-[#2a2a2a] group">
+                <div className="relative overflow-hidden clip-blade group">
                   <img
                     src={imgs[0]}
                     alt="Recepção da academia CROWN"
@@ -93,7 +97,7 @@ export default function About() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/70 to-transparent" />
                 </div>
-                <div className="bg-gold-gradient p-6 text-black flex flex-col items-center justify-center text-center h-40 sm:h-48">
+                <div className="clip-peak bg-gold-gradient p-6 text-black flex flex-col items-center justify-center text-center h-40 sm:h-48">
                   <Crown className="w-10 h-10 mb-2" />
                   <p className="font-display uppercase text-2xl leading-tight">
                     Treine
@@ -104,9 +108,11 @@ export default function About() {
               </div>
             </div>
 
-            {/* Selo */}
-            <div className="absolute -top-5 -left-5 bg-[#050505] border-2 border-[#d9a441] text-[#d9a441] px-4 py-2 font-display uppercase text-sm gold-glow-sm hidden sm:block">
-              Desde 2020
+            {/* Selo inclinado */}
+            <div className="absolute -top-5 -left-5 hidden sm:block -skew-x-12">
+              <div className="skew-x-12 bg-[#050505] border-2 border-[#d9a441] px-4 py-2 font-display uppercase text-sm text-[#d9a441]">
+                Desde 2020
+              </div>
             </div>
           </Reveal>
         </div>

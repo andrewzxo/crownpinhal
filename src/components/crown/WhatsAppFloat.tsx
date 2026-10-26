@@ -16,14 +16,23 @@ export default function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`Falar com a CROWN no WhatsApp ${phoneLabel}`}
-      initial={{ opacity: 0, scale: 0.6 }}
+      initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 1.2, type: "spring", stiffness: 260, damping: 18 }}
-      className="group fixed bottom-5 right-5 z-50 flex items-center gap-0 h-14 w-14 sm:hover:w-auto sm:hover:gap-3 overflow-hidden bg-[#25D366] text-black px-4 font-heading uppercase tracking-wider text-sm font-bold shadow-[0_8px_30px_-6px_rgba(37,211,102,0.55)] transition-all duration-300 hover:brightness-110"
+      transition={{ delay: 1.2, type: "spring", stiffness: 260, damping: 16 }}
+      className="group fixed bottom-5 right-5 z-50 flex items-center"
     >
-      <WhatsAppIcon className="w-7 h-7 shrink-0" />
-      <span className="hidden sm:inline whitespace-nowrap max-w-0 group-hover:max-w-[220px] group-hover:inline transition-all duration-300 overflow-hidden">
+      {/* Etiqueta flutuante (desktop) */}
+      <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 hidden sm:flex items-center whitespace-nowrap rounded-full border border-[#25D366]/50 bg-black/85 backdrop-blur px-4 py-2 text-xs font-heading uppercase tracking-wider text-foreground opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none">
         {phoneLabel}
+      </span>
+
+      {/* Balão redondo com anel pulsante */}
+      <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-black shadow-[0_10px_32px_-6px_rgba(37,211,102,0.6)] transition-transform duration-300 group-hover:scale-110">
+        <span
+          className="absolute inset-0 rounded-full bg-[#25D366]/50 animate-ping-slow"
+          aria-hidden
+        />
+        <WhatsAppIcon className="relative w-7 h-7" />
       </span>
     </motion.a>
   );
