@@ -18,9 +18,9 @@ const LINKS = [
   { href: "inicio", label: "Início" },
   { href: "modalidades", label: "Modalidades" },
   { href: "horarios", label: "Horários" },
+  { href: "empresas", label: "Empresas" },
   { href: "planos", label: "Planos" },
   { href: "eventos", label: "Eventos" },
-  { href: "empresas", label: "Empresas" },
   { href: "contato", label: "Contato" },
 ];
 

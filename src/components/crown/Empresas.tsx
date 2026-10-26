@@ -55,7 +55,7 @@ export default function Empresas() {
   ];
 
   return (
-    <section id="empresas" className="relative py-24 sm:py-32 bg-[#050505]">
+    <section id="empresas" className="relative py-24 sm:py-32 bg-[#050505] scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Benefícios corporativos"
@@ -64,9 +64,9 @@ export default function Empresas() {
           subtitle="A CROWN aceita Wellhub (antigo Gympass) e TotalPass. Se a sua empresa oferece um desses benefícios, você treina na CROWN — e sem reserva prévia."
         />
 
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+        <div className="mt-16 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8 items-stretch">
           {cards.map((card, i) => (
-            <Reveal key={card.name} delay={i * 0.12} className={card.highlighted ? "lg:-mt-4" : ""}>
+            <Reveal key={card.name} delay={i * 0.12} className={card.highlighted ? "col-span-2 lg:col-span-1" : ""}>
               <article
                 className={`relative h-full clip-blade p-px transition-all duration-300 ${
                   card.highlighted
@@ -75,16 +75,16 @@ export default function Empresas() {
                 }`}
               >
                 <div
-                  className={`clip-blade h-full p-7 flex flex-col ${
+                  className={`clip-blade h-full p-5 sm:p-7 flex flex-col ${
                     card.highlighted ? "bg-[#101010]" : "bg-[#0d0d0d]"
                   }`}
                 >
-                  <div className="flex items-center gap-4">
-                    <span className="clip-shield w-12 h-14 bg-gold-gradient flex items-center justify-center shrink-0">
-                      <card.icon className="w-6 h-6 text-black" />
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <span className="clip-shield w-10 h-12 sm:w-12 sm:h-14 bg-gold-gradient flex items-center justify-center shrink-0">
+                      <card.icon className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
                     </span>
                     <div>
-                      <h3 className="font-display uppercase text-2xl tracking-wide text-foreground">
+                      <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide text-foreground">
                         {card.name}
                       </h3>
                       {card.tagline && (
@@ -95,9 +95,9 @@ export default function Empresas() {
                     </div>
                   </div>
 
-                  <ul className="mt-7 space-y-4 flex-1">
+                  <ul className="mt-5 sm:mt-7 space-y-3 sm:space-y-4 flex-1">
                     {card.bullets.map((b) => (
-                      <li key={b} className="flex items-start gap-3 text-sm text-foreground/85 leading-relaxed">
+                      <li key={b} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/85 leading-relaxed">
                         <span className="mt-0.5 w-[16px] h-[16px] shrink-0 rotate-45 bg-[#d9a441]/15 border border-[#d9a441]/50 flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 text-[#d9a441] -rotate-45" />
                         </span>

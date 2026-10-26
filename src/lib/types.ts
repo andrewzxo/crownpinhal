@@ -27,6 +27,11 @@ export interface ModalityDTO {
   schedules: ScheduleDTO[];
 }
 
+export interface PlanPriceOption {
+  label: string;
+  price: number;
+}
+
 export interface PlanDTO {
   id: string;
   name: string;
@@ -34,6 +39,7 @@ export interface PlanDTO {
   features: string[];
   price: number | null;
   period: string | null;
+  priceOptions: PlanPriceOption[] | null;
   badge: string | null;
   highlighted: boolean;
   order: number;

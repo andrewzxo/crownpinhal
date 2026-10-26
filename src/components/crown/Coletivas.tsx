@@ -57,7 +57,7 @@ export default function Coletivas() {
   }, [modalities]);
 
   return (
-    <section id="coletivas" className="relative py-24 sm:py-32 overflow-hidden border-t border-[#1c1c1c]">
+    <section id="coletivas" className="relative py-24 sm:py-32 overflow-hidden border-t border-[#1c1c1c] scroll-mt-28">
       {/* Fundo com a textura da marca */}
       <img
         src="/img/texture-gold.jpg"
@@ -76,22 +76,22 @@ export default function Coletivas() {
         />
 
         {/* Grade por dia */}
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {days.map((d, i) => (
             <Reveal key={d.day} delay={i * 0.08}>
               <div className="clip-blade bg-[#d9a441]/30 p-px h-full hover:bg-[#d9a441]/80 transition-colors duration-300">
                 <div className="clip-blade bg-[#0b0b0b] h-full flex flex-col">
-                  <p className="bg-gold-gradient text-black font-display uppercase text-lg px-4 py-3">
+                  <p className="bg-gold-gradient text-black font-display uppercase text-sm sm:text-lg px-3 py-2.5 sm:px-4 sm:py-3">
                     {d.label}
                   </p>
-                  <div className="p-4 space-y-3 flex-1">
+                  <div className="p-3 sm:p-4 space-y-2.5 sm:space-y-3 flex-1">
                     {d.classes.map((c) => (
-                      <div key={`${d.day}-${c.name}-${c.time}`} className="flex items-center gap-3">
-                        <span className="font-display text-2xl text-gold-gradient w-20 shrink-0">
+                      <div key={`${d.day}-${c.name}-${c.time}`} className="flex items-center gap-2 sm:gap-3">
+                        <span className="font-display text-base sm:text-2xl text-gold-gradient w-14 sm:w-20 shrink-0">
                           {c.time.replace(":", "h")}
                         </span>
                         <span className="flex-1 h-px bg-[#d9a441]/25" />
-                        <span className="font-heading uppercase tracking-wider text-sm text-foreground text-right">
+                        <span className="font-heading uppercase tracking-wider text-[11px] sm:text-sm text-foreground text-right">
                           {c.name}
                         </span>
                       </div>
@@ -110,7 +110,7 @@ export default function Coletivas() {
         )}
 
         {/* Benefícios */}
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#d9a441]/20 border border-[#d9a441]/20">
+        <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#d9a441]/20 border border-[#d9a441]/20">
           {BENEFITS.map((b, i) => (
             <motion.div
               key={b}
@@ -118,12 +118,12 @@ export default function Coletivas() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="bg-[#080808] px-5 py-6 flex items-center gap-4 hover:bg-[#0e0d0a] transition-colors"
+              className="bg-[#080808] px-4 py-5 sm:px-5 sm:py-6 flex items-center gap-3 sm:gap-4 hover:bg-[#0e0d0a] transition-colors"
             >
-              <span className="clip-shield w-9 h-10 shrink-0 bg-gold-gradient text-black font-display text-sm flex items-center justify-center pt-0.5">
+              <span className="clip-shield w-8 h-9 sm:w-9 sm:h-10 shrink-0 bg-gold-gradient text-black font-display text-sm flex items-center justify-center pt-0.5">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <p className="font-heading uppercase tracking-wider text-sm font-semibold">
+              <p className="font-heading uppercase tracking-wider text-[11px] sm:text-sm font-semibold">
                 {b}
               </p>
             </motion.div>

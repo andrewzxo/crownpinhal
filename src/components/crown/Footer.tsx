@@ -31,7 +31,7 @@ export default function Footer() {
     <>
       {/* Picos de coroa coroando o rodapé */}
       <CrownEdge fill="#070707" stroke="rgba(217,164,65,0.5)" height={26} />
-      <footer id="contato" className="relative mt-auto bg-[#070707]">
+      <footer id="contato" className="relative mt-auto bg-[#070707] scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Marca */}

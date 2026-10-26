@@ -223,48 +223,226 @@ async function main() {
     }
   }
 
-  // ---------- Planos ----------
+  // ---------- Planos (PREÇOS REAIS — flyer oficial "Planos e Valores" + "Planos Crown Club") ----------
   const plansData = [
     {
-      name: 'CROWN START',
-      description: 'Musculação com avaliação física e planilha de treino.',
+      name: 'CROWN GOLD',
+      description: 'CROSS + Musculação | CROSS + Artes Marciais | Musculação + Arte Marcial',
       features: JSON.stringify([
-        'Acesso livre à musculação',
-        'Avaliação física inicial',
-        'Planilha de treino personalizada',
-        'Acesso ao app da CROWN',
+        'CROSS + Musculação',
+        'CROSS + Artes Marciais',
+        'Musculação + Arte Marcial',
       ]),
-      badge: null,
-      highlighted: false,
+      price: 269,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 269 },
+        { label: 'SEMESTRAL', price: 209 },
+        { label: 'ANUAL', price: 189 },
+      ]),
+      badge: '2 MODALIDADES',
+      highlighted: true,
       order: 1,
     },
     {
-      name: 'CROWN BLACK',
-      description: 'Musculação, CROSS, aulas coletivas, HYROX e CROWN RUN.',
+      name: 'MUSCULAÇÃO LIVRE',
+      description: 'Musculação com acesso livre durante todo o funcionamento da academia.',
       features: JSON.stringify([
-        'Acesso total à musculação',
-        'Aulas de CROSS incluídas',
-        'Aulas coletivas: Dance, Bike, Jump e Pilates',
-        'HYROX e CROWN RUN liberados',
-        'Avaliação física mensal',
+        'Acesso livre à musculação',
+        'Seg a Sex 5h às 22h',
+        'Sáb 8h-16h • Dom 8h-14h',
       ]),
-      badge: 'MAIS POPULAR',
-      highlighted: true,
+      price: 159,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 159 },
+        { label: 'SEMESTRAL', price: 139 },
+        { label: 'ANUAL', price: 119 },
+      ]),
+      badge: null,
+      highlighted: false,
       order: 2,
     },
     {
-      name: 'CROWN GOLD',
-      description: 'Tudo do CROWN BLACK com personal trainer e nutricionista.',
+      name: 'CROSS 2X NA SEMANA',
+      description: 'Cross Training com 2 aulas por semana na grade oficial.',
       features: JSON.stringify([
-        'Tudo do plano CROWN BLACK',
-        'Personal trainer 2x por semana',
-        'Plano nutricional personalizado',
-        'Kit CROWN exclusivo de brinde',
-        'Prioridade em eventos e campeonatos',
+        '2 aulas de CROSS por semana',
+        'Programação @herculesfunctional',
       ]),
-      badge: 'VIP',
+      price: 149,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 149 },
+        { label: 'SEMESTRAL', price: 119 },
+        { label: 'ANUAL', price: 109 },
+      ]),
+      badge: null,
       highlighted: false,
       order: 3,
+    },
+    {
+      name: 'CROSS ILIMITADO',
+      description: 'Cross Training ilimitado: treine em todos os horários da grade.',
+      features: JSON.stringify([
+        'CROSS ilimitado na grade semanal',
+        'Programação @herculesfunctional',
+      ]),
+      price: 209,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 209 },
+        { label: 'SEMESTRAL', price: 169 },
+        { label: 'ANUAL', price: 149 },
+      ]),
+      badge: null,
+      highlighted: false,
+      order: 4,
+    },
+    {
+      name: 'ARTES MARCIAIS',
+      description: 'Boxe e/ou Muay Thai — escolha uma modalidade ou faça as duas.',
+      features: JSON.stringify(['Boxe', 'Muay Thai', 'Uma ou as duas modalidades']),
+      price: 159,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 159 },
+        { label: 'TRIMESTRAL', price: 119 },
+      ]),
+      badge: null,
+      highlighted: false,
+      order: 5,
+    },
+    {
+      name: 'CROWN CYCLING',
+      description: 'Aula de Spinning (cycling indoor) da CROWN.',
+      features: JSON.stringify(['Aulas de spinning (cycling indoor)']),
+      price: 109,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 109 },
+        { label: 'TRIMESTRAL', price: 99 },
+      ]),
+      badge: null,
+      highlighted: false,
+      order: 6,
+    },
+    {
+      name: 'BEACH TENNIS',
+      description: 'Quadras de areia da CROWN, com 1x ou 2x na semana.',
+      features: JSON.stringify([
+        'Quadras de areia da CROWN',
+        'Pós-jogo no Arena Beach Bar',
+      ]),
+      price: 199,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL • 1X/SEM', price: 199 },
+        { label: 'MENSAL • 2X/SEM', price: 299 },
+        { label: 'TRIMESTRAL • 1X/SEM', price: 169 },
+        { label: 'TRIMESTRAL • 2X/SEM', price: 259 },
+      ]),
+      badge: null,
+      highlighted: false,
+      order: 7,
+    },
+    {
+      name: 'FUTEVÔLEI',
+      description: 'Quadras de areia da CROWN, com 1x ou 2x na semana.',
+      features: JSON.stringify([
+        'Quadras de areia da CROWN',
+        'Pós-jogo no Arena Beach Bar',
+      ]),
+      price: 139,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL • 1X/SEM', price: 139 },
+        { label: 'MENSAL • 2X/SEM', price: 199 },
+        { label: 'TRIMESTRAL • 1X/SEM', price: 119 },
+        { label: 'TRIMESTRAL • 2X/SEM', price: 179 },
+      ]),
+      badge: null,
+      highlighted: false,
+      order: 8,
+    },
+    {
+      name: 'CROWN CLUB A',
+      description: 'Musculação + CROSS + Artes Marciais',
+      features: JSON.stringify(['Musculação', 'CROSS', 'Artes Marciais']),
+      price: 379,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 379 },
+        { label: 'SEMESTRAL', price: 329 },
+        { label: 'ANUAL', price: 269 },
+      ]),
+      badge: '3 MODALIDADES',
+      highlighted: false,
+      order: 9,
+    },
+    {
+      name: 'CROWN CLUB B',
+      description: 'Musculação + CROSS + Areia',
+      features: JSON.stringify(['Musculação', 'CROSS', 'Areia']),
+      price: 409,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 409 },
+        { label: 'SEMESTRAL', price: 359 },
+        { label: 'ANUAL', price: 319 },
+      ]),
+      badge: '3 MODALIDADES',
+      highlighted: false,
+      order: 10,
+    },
+    {
+      name: 'CROWN CLUB C',
+      description: 'Musculação + CROSS + Artes Marciais + Areia',
+      features: JSON.stringify(['Musculação', 'CROSS', 'Artes Marciais', 'Areia']),
+      price: 519,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 519 },
+        { label: 'SEMESTRAL', price: 469 },
+        { label: 'ANUAL', price: 399 },
+      ]),
+      badge: '4 MODALIDADES',
+      highlighted: false,
+      order: 11,
+    },
+    {
+      name: 'CROWN CLUB D',
+      description: 'Musculação + Areia | ou Arte Marcial + Areia | ou CROSS + Areia',
+      features: JSON.stringify([
+        'Musculação + Areia',
+        'Ou Arte Marcial + Areia',
+        'Ou CROSS + Areia',
+      ]),
+      price: 289,
+      period: 'mês',
+      priceOptions: JSON.stringify([
+        { label: 'MENSAL', price: 289 },
+        { label: 'SEMESTRAL', price: 269 },
+        { label: 'ANUAL', price: 229 },
+      ]),
+      badge: '2 MODALIDADES',
+      highlighted: false,
+      order: 12,
+    },
+    {
+      name: 'DAY USE',
+      description: 'Acesso à academia por hora, sem mensalidade.',
+      features: JSON.stringify([]),
+      price: 100,
+      period: 'day use',
+      priceOptions: JSON.stringify([
+        { label: '1 HORA', price: 100 },
+        { label: '2 HORAS', price: 170 },
+        { label: '3 HORAS', price: 250 },
+      ]),
+      badge: null,
+      highlighted: false,
+      order: 13,
     },
   ]
 
@@ -276,6 +454,13 @@ async function main() {
       await prisma.plan.create({ data: p })
     }
   }
+
+  // Desativa planos antigos que não fazem parte da tabela oficial de valores
+  const keepNames = plansData.map((p) => p.name)
+  await prisma.plan.updateMany({
+    where: { name: { notIn: keepNames } },
+    data: { active: false, highlighted: false },
+  })
 
   // ---------- Galeria (fotos reais + complemento) ----------
   const galleryData = [
@@ -333,8 +518,9 @@ async function main() {
     ticketbroUrl: 'https://crown-gym-pinhal.ticketbro.com/',
     email: '',
     hoursText: 'MUSCULAÇÃO: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h',
-    convenios: 'PLANO FAMÍLIA|PLANO EMPRESA|PLANO HORÁRIO ECONÔMICO|OFICIAIS MILITARES',
-    partners: 'GYMPASS|TOTALPASS|WELLHUB',
+    convenios:
+      'PLANO FAMÍLIA / PLANO EMPRESA → 10% DE DESCONTO|HORÁRIO ECONÔMICO (SEG A SEX 13H ÀS 16H • FINS DE SEMANA LIVRES) → 30% DE DESCONTO|OFICIAIS MILITARES → 20% DE DESCONTO|ESTACIONAMENTO → GRÁTIS PARA OS ALUNOS CROWN',
+    partners: 'WELLHUB (ANTIGO GYMPASS)|TOTALPASS',
   }
 
   for (const [key, value] of Object.entries(settings)) {

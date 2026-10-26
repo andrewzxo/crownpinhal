@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "./Navbar";
+import SectionNav from "./SectionNav";
 import Hero from "./Hero";
 import Marquee from "./Marquee";
 import About from "./About";
@@ -19,6 +20,7 @@ export default function SiteView() {
   return (
     <div className="min-h-screen flex flex-col bg-[#050505]">
       <Navbar />
+      <SectionNav />
       <main className="flex-1">
         <Hero />
         <Marquee />

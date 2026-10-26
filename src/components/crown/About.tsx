@@ -35,7 +35,7 @@ export default function About() {
     .filter(Boolean);
 
   return (
-    <section id="sobre" className="relative py-24 sm:py-32 overflow-hidden">
+    <section id="sobre" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Texto */}

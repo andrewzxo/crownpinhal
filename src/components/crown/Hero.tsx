@@ -23,7 +23,7 @@ export default function Hero() {
   })();
 
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center overflow-hidden grain-overlay">
+    <section id="inicio" className="relative min-h-screen flex items-center overflow-hidden grain-overlay scroll-mt-28">
       {/* Fundo com parallax */}
       <motion.img
         src={s.heroImageUrl || "/img/hero.jpg"}

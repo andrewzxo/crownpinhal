@@ -36,6 +36,7 @@ export async function GET() {
         features: JSON.parse(p.features || "[]"),
         price: p.price,
         period: p.period,
+        priceOptions: p.priceOptions ? JSON.parse(p.priceOptions) : null,
         badge: p.badge,
         highlighted: p.highlighted,
         order: p.order,

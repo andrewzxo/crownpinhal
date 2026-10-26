@@ -38,7 +38,7 @@ export default function Modalities() {
   const setContentFallback = !modalities.length;
 
   return (
-    <section id="modalidades" className="relative py-24 sm:py-32">
+    <section id="modalidades" className="relative py-24 sm:py-32 scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="O que treinar"
@@ -51,13 +51,13 @@ export default function Modalities() {
           }
         />
 
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="mt-14 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
           {modalities.map((m, i) => (
             <Reveal key={m.id} delay={(i % 4) * 0.08}>
               <motion.article
                 whileHover={{ y: -8 }}
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className="group relative h-80 overflow-hidden clip-blade bg-[#0d0d0d] cursor-pointer"
+                className="group relative h-60 sm:h-80 overflow-hidden clip-blade bg-[#0d0d0d] cursor-pointer"
                 onClick={() =>
                   document.getElementById("horarios")?.scrollIntoView({ behavior: "smooth" })
                 }
@@ -79,20 +79,20 @@ export default function Modalities() {
                 <span className="absolute top-0 left-0 h-0.5 w-full bg-gold-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Conteúdo */}
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <div className="clip-shield w-10 h-11 bg-gold-gradient flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                <div className="absolute inset-x-0 bottom-0 p-3.5 sm:p-5">
+                  <div className="clip-shield w-8 h-9 sm:w-10 sm:h-11 bg-gold-gradient flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300">
                     {(() => {
                       const Icon = (m.icon && ICONS[m.icon]) || Dumbbell;
-                      return <Icon className="w-5 h-5 text-black" />;
+                      return <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-black" />;
                     })()}
                   </div>
-                  <h3 className="font-display uppercase text-2xl text-foreground group-hover:text-gold-gradient transition-all">
+                  <h3 className="font-display uppercase text-lg sm:text-2xl text-foreground group-hover:text-gold-gradient transition-all">
                     {m.name}
                   </h3>
-                  <p className="mt-2 text-sm text-muted-foreground line-clamp-2 opacity-90">
+                  <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-muted-foreground line-clamp-2 opacity-90">
                     {m.description}
                   </p>
-                  <p className="mt-3 flex items-center gap-1.5 text-xs font-heading uppercase tracking-wider text-[#d9a441] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="mt-2 sm:mt-3 flex items-center gap-1.5 text-[10px] sm:text-xs font-heading uppercase tracking-wider text-[#d9a441] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <CalendarClock className="w-3.5 h-3.5" />
                     {m.schedules.length > 0
                       ? `${m.schedules.length} horários disponíveis`
@@ -101,7 +101,7 @@ export default function Modalities() {
                 </div>
 
                 {/* Número decorativo */}
-                <span className="absolute top-4 right-4 font-display text-4xl text-outline-gold opacity-40">
+                <span className="absolute top-3 right-3 sm:top-4 sm:right-4 font-display text-2xl sm:text-4xl text-outline-gold opacity-40">
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </motion.article>

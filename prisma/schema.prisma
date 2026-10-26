@@ -55,10 +55,11 @@ model Plan {
   id          String         @id @default(cuid())
   name        String
   description String
-  features    String // JSON string[] de benefícios
-  price       Float? // null = preço ainda não definido
-  period      String? // ex: "mês"
-  badge       String? // ex: "MAIS POPULAR"
+  features     String         // JSON string[] de benefícios
+  price        Float?         // null = preço ainda não definido
+  period       String?        // ex: "mês"
+  priceOptions String?        // JSON [{label: "MENSAL", price: 269}, ...] — tabela de valores real
+  badge        String?        // ex: "MAIS POPULAR"
   highlighted Boolean        @default(false)
   order       Int            @default(0)
   active      Boolean        @default(true)

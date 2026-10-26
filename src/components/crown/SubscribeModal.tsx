@@ -14,7 +14,35 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
 import { useAppStore } from "@/lib/store";
-import type { SubscriptionDTO } from "@/lib/types";
+import type { PlanDTO, PlanPriceOption, SubscriptionDTO } from "@/lib/types";
+
+function brl(v: number) {
+  const s = v.toFixed(2).replace(".", ",");
+  return s.endsWith(",00") ? `R$ ${s.slice(0, -3)}` : `R$ ${s}`;
+}
+
+function PriceTable({ options }: { options: PlanPriceOption[] }) {
+  return (
+    <div className="bg-[#0a0a0a] border border-[#262626] p-4 space-y-2">
+      <p className="font-heading uppercase text-xs tracking-wider text-[#d9a441]">
+        Valores do plano
+      </p>
+      <div className="space-y-1.5">
+        {options.map((o) => (
+          <div key={o.label} className="flex items-baseline gap-2">
+            <span className="font-heading uppercase tracking-wider text-xs text-muted-foreground shrink-0">
+              {o.label}
+            </span>
+            <span className="flex-1 border-b border-dotted border-[#d9a441]/30 -translate-y-[3px]" />
+            <span className="font-display text-lg text-gold-gradient whitespace-nowrap">
+              {brl(o.price)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function SubscribeModal() {
   const planId = useAppStore((s) => s.subscribePlanId);
@@ -96,27 +124,48 @@ export default function SubscribeModal() {
                   Plano <span className="text-gold-gradient">{plan.name}</span>
                 </DialogTitle>
                 <DialogDescription>
-                  {plan.description}{" "}
-                  {plan.price !== null
-                    ? `— R$ ${plan.price.toFixed(2).replace(".", ",")}${plan.period ? ` / ${plan.period}` : ""}`
-                    : "— Valores disponíveis na recepção ou pelo WhatsApp."}
+                  {plan.description}
                 </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-4">
-                <div className="bg-[#0a0a0a] border border-[#262626] p-4 space-y-2">
-                  <p className="font-heading uppercase text-xs tracking-wider text-[#d9a441]">
-                    Incluído no plano
-                  </p>
-                  <ul className="space-y-1.5">
-                    {plan.features.map((f) => (
-                      <li key={f} className="text-sm text-muted-foreground flex items-start gap-2">
-                        <Crown className="w-3.5 h-3.5 mt-0.5 text-[#d9a441] shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {plan.priceOptions && plan.priceOptions.length > 0 ? (
+                  <PriceTable options={plan.priceOptions} />
+                ) : plan.price !== null ? (
+                  <div className="bg-[#0a0a0a] border border-[#262626] p-4">
+                    <p className="font-display text-3xl text-gold-gradient">
+                      {brl(plan.price)}
+                      {plan.period && (
+                        <span className="text-sm font-heading uppercase tracking-wider text-muted-foreground">
+                          {" "}
+                          /{plan.period}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-[#0a0a0a] border border-[#262626] p-4">
+                    <p className="text-sm text-muted-foreground">
+                      Valores disponíveis na recepção ou pelo WhatsApp.
+                    </p>
+                  </div>
+                )}
+
+                {plan.features.length > 0 && (
+                  <div className="bg-[#0a0a0a] border border-[#262626] p-4 space-y-2">
+                    <p className="font-heading uppercase text-xs tracking-wider text-[#d9a441]">
+                      Incluído no plano
+                    </p>
+                    <ul className="space-y-1.5">
+                      {plan.features.map((f) => (
+                        <li key={f} className="text-sm text-muted-foreground flex items-start gap-2">
+                          <Crown className="w-3.5 h-3.5 mt-0.5 text-[#d9a441] shrink-0" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <label

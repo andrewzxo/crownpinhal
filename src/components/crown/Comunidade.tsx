@@ -11,14 +11,6 @@ type EventCard = {
   text: string;
 };
 
-function EventIcon({ icon: Icon }: { icon: LucideIcon }) {
-  return (
-    <span className="clip-shield w-12 h-14 bg-gold-gradient flex items-center justify-center shrink-0">
-      <Icon className="w-6 h-6 text-black" />
-    </span>
-  );
-}
-
 export default function Comunidade() {
   const settings = useAppStore((s) => s.content?.settings);
   const ticketbroUrl =
@@ -43,7 +35,7 @@ export default function Comunidade() {
   ];
 
   return (
-    <section id="eventos" className="relative py-24 sm:py-32 bg-[#050505]">
+    <section id="eventos" className="relative py-24 sm:py-32 bg-[#050505] scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Comunidade & eventos"
@@ -57,12 +49,12 @@ export default function Comunidade() {
           <div className="mt-16 relative clip-blade p-px bg-gold-gradient gold-drop-glow">
             <div className="clip-blade bg-[#0f0f0f] grid lg:grid-cols-2 overflow-hidden">
               {/* Texto */}
-              <div className="relative p-8 sm:p-12">
+              <div className="relative p-6 sm:p-12">
                 <CrownWatermark className="pointer-events-none absolute -bottom-10 -left-10 w-64 text-[#d9a441] opacity-[0.07]" />
                 <p className="font-heading uppercase tracking-[0.35em] text-xs text-[#d9a441]">
                   Competição regional
                 </p>
-                <h3 className="mt-4 font-display uppercase text-4xl sm:text-5xl leading-[0.95] text-foreground">
+                <h3 className="mt-4 font-display uppercase text-3xl sm:text-5xl leading-[0.95] text-foreground">
                   CROWN GAMES <span className="text-gold-gradient">— EDIÇÃO PINHAL</span>
                 </h3>
                 <p className="mt-5 text-muted-foreground leading-relaxed max-w-md">
@@ -73,7 +65,7 @@ export default function Comunidade() {
                   {["INICIANTE", "SCALED", "RX"].map((cat) => (
                     <span
                       key={cat}
-                      className="clip-tag bg-[#d9a441]/10 font-display uppercase text-sm tracking-wide px-4 py-1 text-[#d9a441]"
+                      className="clip-tag bg-[#d9a441]/10 font-display uppercase text-xs sm:text-sm tracking-wide px-3.5 sm:px-4 py-1 text-[#d9a441]"
                     >
                       {cat}
                     </span>
@@ -105,16 +97,18 @@ export default function Comunidade() {
         </Reveal>
 
         {/* Cards de comunidade */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
           {cards.map((card, i) => (
             <Reveal key={card.title} delay={0.1 + i * 0.1}>
               <article className="h-full clip-blade p-px bg-[#262626] hover:bg-[#d9a441]/50 transition-all duration-300">
-                <div className="clip-blade h-full bg-[#0d0d0d] p-7 flex flex-col">
-                  <EventIcon icon={card.icon} />
-                  <h4 className="mt-5 font-display uppercase text-xl tracking-wide text-foreground">
+                <div className="clip-blade h-full bg-[#0d0d0d] p-4 sm:p-7 flex flex-col">
+                  <span className="clip-shield w-10 h-12 sm:w-12 sm:h-14 bg-gold-gradient flex items-center justify-center shrink-0">
+                    <card.icon className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+                  </span>
+                  <h4 className="mt-3.5 sm:mt-5 font-display uppercase text-base sm:text-xl tracking-wide text-foreground">
                     {card.title}
                   </h4>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">
+                  <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed flex-1">
                     {card.text}
                   </p>
                 </div>

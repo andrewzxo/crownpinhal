@@ -50,7 +50,7 @@ export default function ScheduleSection() {
       <CrownEdge fill="#080808" height={20} />
       <section
         id="horarios"
-        className="relative py-24 sm:py-32 bg-[#080808] overflow-hidden"
+        className="relative py-24 sm:py-32 bg-[#080808] overflow-hidden scroll-mt-28"
       >
         {/* Padrão de coroa no fundo */}
         <div className="absolute inset-0 bg-crown-pattern pointer-events-none" aria-hidden />
@@ -94,30 +94,30 @@ export default function ScheduleSection() {
                     Nenhuma aula programada para este dia. Aproveite para treinar por conta!
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto pr-2">
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-h-[60vh] overflow-y-auto pr-1 sm:pr-2">
                     {d.classes.map((c, i) => (
                       <motion.div
                         key={c.id}
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.35, delay: i * 0.05 }}
-                        className="group border border-[#262626] bg-[#0d0d0d] p-5 hover:border-[#d9a441]/60 hover:bg-[#111] transition-all duration-300 border-l-2 border-l-[#d9a441]/60"
+                        className="group border border-[#262626] bg-[#0d0d0d] p-3.5 sm:p-5 hover:border-[#d9a441]/60 hover:bg-[#111] transition-all duration-300 border-l-2 border-l-[#d9a441]/60"
                       >
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="clip-tag bg-gold-gradient text-black font-display text-lg tracking-wide px-3.5 py-1 inline-block">
+                        <div className="flex items-center justify-between gap-2 sm:gap-3">
+                          <span className="clip-tag bg-gold-gradient text-black font-display text-sm sm:text-lg tracking-wide px-3 py-1 sm:px-3.5 inline-block">
                             {c.startTime}
                           </span>
-                          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground font-heading uppercase tracking-wider">
-                            <Clock className="w-3.5 h-3.5" />
+                          <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground font-heading uppercase tracking-wider">
+                            <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                             até {c.endTime}
                           </span>
                         </div>
-                        <p className="mt-3 font-heading uppercase tracking-wider text-lg group-hover:text-[#d9a441] transition-colors">
+                        <p className="mt-2 sm:mt-3 font-heading uppercase tracking-wider text-sm sm:text-lg group-hover:text-[#d9a441] transition-colors">
                           {c.modalityName}
                         </p>
                         {c.instructor && (
-                          <p className="mt-1 text-sm text-muted-foreground flex items-center gap-1.5">
-                            <User className="w-3.5 h-3.5 text-[#d9a441]/70" />
+                          <p className="mt-1 text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+                            <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#d9a441]/70" />
                             {c.instructor}
                           </p>
                         )}

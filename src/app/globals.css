@@ -226,6 +226,13 @@
   .animate-ping-slow {
     animation: ping-slow 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
   }
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @keyframes ping-slow {

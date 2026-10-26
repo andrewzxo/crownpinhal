@@ -25,6 +25,7 @@ export async function GET() {
           features: JSON.parse(s.plan.features || "[]"),
           price: s.plan.price,
           period: s.plan.period,
+          priceOptions: s.plan.priceOptions ? JSON.parse(s.plan.priceOptions) : null,
           badge: s.plan.badge,
           highlighted: s.plan.highlighted,
           order: s.plan.order,
