@@ -9,14 +9,44 @@ function hashPassword(password: string): string {
   return `${salt}:${hash}`
 }
 
-const DAYS = [
-  { day: 1, slots: [['06:00', '07:00'], ['09:00', '10:00'], ['18:00', '19:00'], ['20:00', '21:00']] },
-  { day: 2, slots: [['07:00', '08:00'], ['10:00', '11:00'], ['19:00', '20:00']] },
-  { day: 3, slots: [['06:00', '07:00'], ['09:00', '10:00'], ['18:00', '19:00'], ['20:00', '21:00']] },
-  { day: 4, slots: [['07:00', '08:00'], ['10:00', '11:00'], ['19:00', '20:00']] },
-  { day: 5, slots: [['06:00', '07:00'], ['09:00', '10:00'], ['18:00', '19:00'], ['20:00', '21:00']] },
-  { day: 6, slots: [['08:00', '09:00'], ['10:00', '11:00']] },
-]
+// ---------- Horários reais da CROWN (Quadro oficial) ----------
+// CROSS (end = start + 1h)
+const CROSS_TIMES: Record<number, string[]> = {
+  1: ['05:00', '06:00', '07:00', '08:00', '16:30', '17:30', '18:30', '19:30'], // Segunda
+  2: ['06:00', '07:00', '08:00', '16:30', '17:30', '18:30', '19:30'], // Terça
+  3: ['05:00', '06:00', '07:00', '08:00', '16:30', '17:30', '18:30', '19:30'], // Quarta
+  4: ['06:00', '07:00', '08:00', '16:30', '17:30', '18:30'], // Quinta
+  5: ['06:00', '07:00', '08:00', '16:30', '17:30', '18:30'], // Sexta
+  6: ['08:00'], // Sábado
+}
+
+// HYROX: Seg 7h • Qua 7h • Dom 9h
+const HYROX_TIMES: Record<number, string[]> = {
+  1: ['07:00'],
+  3: ['07:00'],
+  0: ['09:00'],
+}
+
+// CROWN RUN: Todas as terças 19h — Local: Estádio Velho
+const RUN_TIMES: Record<number, string[]> = {
+  2: ['19:00'],
+}
+
+function addHour(start: string): string {
+  const [h, m] = start.split(':').map(Number)
+  return `${String((h + 1) % 24).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+}
+
+function buildSchedules(times: Record<number, string[]>, instructor?: string) {
+  return Object.entries(times).flatMap(([day, starts]) =>
+    starts.map((start) => ({
+      dayOfWeek: Number(day),
+      startTime: start,
+      endTime: addHour(start),
+      instructor: instructor ?? null,
+    }))
+  )
+}
 
 async function main() {
   // ---------- Usuários ----------
@@ -57,71 +87,43 @@ async function main() {
     },
   })
 
-  // ---------- Modalidades ----------
+  // ---------- Modalidades (dados reais) ----------
   const modalitiesData = [
     {
       name: 'Musculação',
       description:
-        'Área completa de força com equipamentos de última geração. Treinos personalizados para hipertrofia, emagrecimento ou condicionamento, com acompanhamento dos nossos professores.',
-      imageUrl: '/img/musculacao.jpg',
+        'Área completa de força com equipamentos de última geração e acompanhamento dos nossos professores. Treine no seu ritmo, na hora que quiser — acesso livre durante todo o funcionamento da academia.',
+      imageUrl: '/img/real-interior.png',
       icon: 'Dumbbell',
       order: 1,
+      schedules: { create: [] },
     },
     {
-      name: 'CrossFit',
+      name: 'CROSS',
       description:
-        'Treinos de alta intensidade combinando força, resistência e agilidade. WODs diários em um box estruturado para todos os níveis, do iniciante ao atleta.',
-      imageUrl: '/img/crossfit.jpg',
+        'A aula mais intensa da CROWN. Treinos de alta intensidade combinando força, resistência e condicionamento, com turmas de manhã e à tarde de segunda a sábado. Do iniciante ao atleta: aqui você evolui.',
+      imageUrl: '/img/cross.jpg',
       icon: 'Flame',
       order: 2,
+      schedules: { create: buildSchedules(CROSS_TIMES) },
     },
     {
-      name: 'Boxe & Muay Thai',
+      name: 'HYROX',
       description:
-        'Aprenda técnicas de golpe, defesa e condicionamento com treinadores experientes. Aulas que desenvolvem disciplina, coordenação e autoconfiança.',
-      imageUrl: '/img/boxe.jpg',
-      icon: 'Swords',
+        'Preparação para a prova HYROX — a corrida fitness que mistura corrida com estações funcionais: sled push, wall balls, burpees e muito mais. Treinos específicos para quem quer competir ou elevar o condicionamento.',
+      imageUrl: '/img/hyrox.jpg',
+      icon: 'Trophy',
       order: 3,
+      schedules: { create: buildSchedules(HYROX_TIMES) },
     },
     {
-      name: 'Spinning',
+      name: 'CROWN RUN',
       description:
-        'Aulas energéticas de ciclismo indoor com iluminação e som imersivos. Queime até 600 calorias por aula pedalando ao ritmo da música.',
-      imageUrl: '/img/spinning.jpg',
-      icon: 'Bike',
+        'Aulas de corrida da CROWN. Encontro toda terça-feira às 19h no Estádio Velho. Corra com a comunidade, melhore seu ritmo e sua resistência com a orientação dos nossos professores.',
+      imageUrl: '/img/run.jpg',
+      icon: 'Footprints',
       order: 4,
-    },
-    {
-      name: 'Treino Funcional',
-      description:
-        'Movimentos que trabalham o corpo como um todo, melhorando força, equilíbrio e flexibilidade. Circuits dinâmicos com kettlebells, cordas e muito mais.',
-      imageUrl: '/img/funcional.jpg',
-      icon: 'Activity',
-      order: 5,
-    },
-    {
-      name: 'Dança & Zumba',
-      description:
-        'Aulas coletivas animadas que unem ritmo, diversão e queima calórica. Dança latina, ritmos brasileiros e muito mais em um ambiente descontraído.',
-      imageUrl: '/img/zumba.jpg',
-      icon: 'Music',
-      order: 6,
-    },
-    {
-      name: 'Jump',
-      description:
-        'Aulas de ginástica em mini trampolins: exercício de baixo impacto, alto gasto calórico e muita diversão. Fortalece pernas, glúteos e sistema cardiovascular.',
-      imageUrl: '/img/jump.jpg',
-      icon: 'Zap',
-      order: 7,
-    },
-    {
-      name: 'Alongamento & Pilates',
-      description:
-        'Melhore postura, flexibilidade e consciência corporal. Aulas tranquilas que complementam treinos intensos e aliviam o estresse do dia a dia.',
-      imageUrl: '/img/pilates.jpg',
-      icon: 'Sparkles',
-      order: 8,
+      schedules: { create: buildSchedules(RUN_TIMES, 'Local: Estádio Velho') },
     },
   ]
 
@@ -129,19 +131,7 @@ async function main() {
     const existing = await prisma.modality.findFirst({ where: { name: m.name } })
     if (!existing) {
       await prisma.modality.create({
-        data: {
-          ...m,
-          schedules: {
-            create: DAYS.flatMap((d, di) =>
-              d.slots.slice(0, di % 2 === 0 ? 3 : 2).map((s, si) => ({
-                dayOfWeek: d.day,
-                startTime: s[0],
-                endTime: s[1],
-                instructor: ['Prof. Carlos', 'Profa. Ana', 'Prof. Rafael', 'Profa. Júlia', 'Prof. Diego'][(di + si) % 5],
-              }))
-            ),
-          },
-        },
+        data: m as never,
       })
     }
   }
@@ -153,9 +143,9 @@ async function main() {
       description: 'Ideal para quem está começando a jornada.',
       features: JSON.stringify([
         'Acesso livre à musculação',
-        'Aulas coletivas incluídas',
         'Avaliação física inicial',
-        'App de treinos CROWN',
+        'Planilha de treino personalizada',
+        'Acesso ao app da CROWN',
       ]),
       badge: null,
       highlighted: false,
@@ -163,13 +153,12 @@ async function main() {
     },
     {
       name: 'CROWN BLACK',
-      description: 'O plano favorito dos nossos alunos.',
+      description: 'O plano favorito da nossa coroa.',
       features: JSON.stringify([
-        'Acesso total a todas as modalidades',
-        'Aulas coletivas ilimitadas',
+        'Acesso total à musculação',
+        'Aulas de CROSS incluídas',
+        'HYROX e CROWN RUN liberados',
         'Avaliação física mensal',
-        'Plano nutricional personalizado',
-        'Acesso à sala de CrossFit',
         'Convite para 1 amigo por mês',
       ]),
       badge: 'MAIS POPULAR',
@@ -182,10 +171,9 @@ async function main() {
       features: JSON.stringify([
         'Tudo do plano CROWN BLACK',
         'Personal trainer 2x por semana',
-        'Acesso VIP 24 horas',
-        'Estacionamento exclusivo',
-        'Kit CROWN de brinde',
-        'Desconto na loja de suplementos',
+        'Plano nutricional personalizado',
+        'Kit CROWN exclusivo de brinde',
+        'Prioridade em eventos e campeonatos',
       ]),
       badge: 'VIP',
       highlighted: false,
@@ -198,12 +186,12 @@ async function main() {
     if (!existing) await prisma.plan.create({ data: p })
   }
 
-  // ---------- Galeria ----------
+  // ---------- Galeria (fotos reais + complemento) ----------
   const galleryData = [
-    { url: '/img/gallery-hall.jpg', title: 'Hall de entrada', order: 1 },
-    { url: '/img/gallery-pesos.jpg', title: 'Área de pesos', order: 2 },
-    { url: '/img/gallery-cardio.jpg', title: 'Área de cardio', order: 3 },
-    { url: '/img/gallery-recepcao.jpg', title: 'Recepção', order: 4 },
+    { url: '/img/real-entrada.png', title: 'Recepção CROWN', order: 1 },
+    { url: '/img/real-interior.png', title: 'Sala de musculação', order: 2 },
+    { url: '/img/gallery-pesos.jpg', title: 'Área de pesos', order: 3 },
+    { url: '/img/gallery-cardio.jpg', title: 'Área de cardio', order: 4 },
   ]
   for (const g of galleryData) {
     const existing = await prisma.galleryImage.findFirst({ where: { url: g.url } })
@@ -212,29 +200,29 @@ async function main() {
 
   // ---------- Configurações ----------
   const settings: Record<string, string> = {
-    heroBadge: 'ACADEMIA CROWN • PINHAL-SP',
+    heroBadge: 'CROWN GYM • PINHAL-SP',
     heroTitle: 'TREINE COMO UM REI',
     heroHighlight: 'COMO UM REI',
     heroSubtitle:
-      'Musculação, CrossFit, lutas e aulas coletivas em um espaço feito para você evoluir. Aqui, cada gota de suor te aproxima da coroa.',
-    heroImageUrl: '/img/hero.jpg',
+      'Musculação completa, CROSS, HYROX e CROWN RUN em um ambiente de alto nível. Aqui, cada treino te aproxima da coroa.',
+    heroImageUrl: '/img/hero-crown.png',
     marqueeItems:
-      'MUSCULAÇÃO • CROSSFIT • BOXE • MUAY THAI • SPINNING • FUNCIONAL • ZUMBA • JUMP • PILATES',
+      'MUSCULAÇÃO • CROSS • HYROX • CROWN RUN • FORÇA • RESISTÊNCIA • COMUNIDADE • COROA',
     aboutTitle: 'MAIS QUE UMA ACADEMIA. UM IMPÉRIO.',
     aboutText:
-      'A CROWN nasceu em Pinhal-SP com um propósito: oferecer um ambiente de alto nível para quem busca resultados reais. Estrutura premium, treinadores qualificados e uma comunidade que se apoia. Aqui você não treina sozinho, você faz parte de algo maior.',
+      'A CROWN nasceu em Pinhal-SP com um propósito: treino de verdade para quem busca resultados reais. Musculação completa, aulas de CROSS de segunda a sábado, preparação HYROX e o CROWN RUN toda terça no Estádio Velho. Estrutura premium, professores qualificados e uma comunidade que se apoia. Aqui você não treina sozinho — você conquista sua coroa.',
     statsMembers: '850+',
-    statsModalities: '8',
+    statsModalities: '4',
     statsTrainers: '12',
     statsYears: '5',
     ctaTitle: 'PRONTO PARA VESTIR A COROA?',
     ctaText: 'Assine um plano hoje e comece sua transformação na CROWN.',
-    address: 'Av. dos Reis, 1234 - Centro, Pinhal-SP',
+    address: 'Pinhal-SP',
     phone: '(19) 99999-9999',
     whatsapp: '5519999999999',
     instagram: '@crownpinhal',
     email: 'contato@crownpinhal.com.br',
-    hoursText: 'Seg a Sex: 5h30 - 23h • Sáb: 8h - 14h • Dom: 8h - 12h',
+    hoursText: 'Seg a Sex: 5h - 22h • Sáb: 8h - 12h • Dom: 9h - 11h',
   }
 
   for (const [key, value] of Object.entries(settings)) {

@@ -101,3 +101,20 @@ Work Log:
 
 Stage Summary:
 - Site 100% funcional e verificado no navegador. 13 imagens IA em public/img. Credenciais: dono@crown.com/crown123, admin@crown.com/admin123, cliente@crown.com/cliente123
+
+---
+Task ID: 9
+Agent: orchestrator (Z.ai Code)
+Task: Integração dos assets reais da marca (logo nova, hero personalizada, fotos reais, horários oficiais)
+
+Work Log:
+- Copiadas fotos reais enviadas pelo usuário: public/img/real-entrada.png (recepção) e real-interior.png (sala de musculação)
+- Geradas 6 imagens IA (sequencial): logo-crown.png (logo completa melhorada skull+crown+CROWN PINHAL-SP), logo-emblem.png (emblem p/ navbar/footer/favicon), img/hero-crown.png (hero personalizada coroa dourada na parede), img/cross.jpg, img/hyrox.jpg, img/run.jpg — atenção: 1440x720 é inválido (múltiplos de 32), usar 1344x768
+- prisma/seed.ts reescrito com dados REAIS: 4 modalidades (Musculação c/ foto real e acesso livre, CROSS, HYROX, CROWN RUN), horários exatos do quadro oficial (CROSS Seg/Qua 5h-8h+16h30-19h30, Ter/Qui/Sex manhã 6h-8h+tarde, Sáb 8h; HYROX Seg 7h, Qua 7h, Dom 9h; CROWN RUN Ter 19h com instructor='Local: Estádio Velho'), galeria com fotos reais primeiro, settings atualizados (hero-crown.png, marquee, sobre, stats 4 modalidades, funcionamento Seg-Sex 5h-22h)
+- DB resetado (rm db/custom.db + db:push + seed) — IMPORTANTE: após resetar SQLite é preciso reiniciar o dev server (descritor de arquivo antigo mantém DB velho vivo)
+- Componentes atualizados: Splash/AuthGate usam logo-crown.png; layout favicon=logo-emblem.png; Navbar (desktop+sheet) e Footer com lockup emblem + CROWN Pinhal-SP tipográfico; Modalities ICONS += Trophy, Footprints; AuthGate badge "CROSS • HYROX • RUN"
+
+Stage Summary:
+- Site com identidade 100% real da CROWN: logo melhorada, hero personalizada com coroa dourada, fotos reais da recepção/interior na galeria e no card de Musculação, grade oficial de horários (40 aulas/semana) com CROSS/HYROX/CROWN RUN
+- Verificado no navegador (desktop 1280px + mobile 390px): AuthGate, visitante, hero, modalidades, horários por dia, galeria, footer sticky, login do dono após reset — tudo OK; lint 0/0; console limpo
+- Credenciais mantidas: dono@crown.com/crown123 (OWNER), admin@crown.com/admin123 (ADMIN), cliente@crown.com/cliente123 (CLIENT)

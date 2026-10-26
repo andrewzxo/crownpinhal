@@ -292,9 +292,9 @@ export default function AuthGate() {
           className="hidden lg:flex flex-col items-center text-center max-w-md"
         >
           <img
-            src="/logo-vertical.jpg"
+            src="/logo-crown.png"
             alt="Logo da Academia CROWN Pinhal-SP"
-            className="w-72 rounded-3xl gold-glow border border-[#d9a441]/30"
+            className="w-64 rounded-3xl gold-glow border border-[#d9a441]/30"
           />
           <h1 className="mt-8 font-display text-4xl uppercase leading-tight">
             Sua coroa não se <span className="text-gold-gradient">ganha.</span>
@@ -307,7 +307,7 @@ export default function AuthGate() {
           </p>
           <div className="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
-              <Dumbbell className="w-4 h-4 text-[#d9a441]" /> +8 modalidades
+              <Dumbbell className="w-4 h-4 text-[#d9a441]" /> CROSS • HYROX • RUN
             </span>
             <span className="flex items-center gap-2">
               <Crown className="w-4 h-4 text-[#d9a441]" /> Estrutura premium
@@ -324,9 +324,9 @@ export default function AuthGate() {
         >
           <div className="lg:hidden flex justify-center mb-6">
             <img
-              src="/logo-horizontal.jpg"
+              src="/logo-crown.png"
               alt="Logo da Academia CROWN Pinhal-SP"
-              className="h-20 rounded-xl border border-[#d9a441]/30 gold-glow"
+              className="h-24 rounded-xl border border-[#d9a441]/30 gold-glow"
             />
           </div>
 

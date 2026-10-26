@@ -17,7 +17,7 @@ function Splash() {
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center gap-6">
       <div className="animate-pulse-gold rounded-3xl">
         <img
-          src="/logo-vertical.jpg"
+          src="/logo-crown.png"
           alt="Carregando CROWN Academia"
           className="w-40 rounded-3xl border border-[#d9a441]/30"
         />

@@ -7,9 +7,11 @@ import {
   CalendarClock,
   Dumbbell,
   Flame,
+  Footprints,
   Music,
   Sparkles,
   Swords,
+  Trophy,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -25,6 +27,8 @@ const ICONS: Record<string, LucideIcon> = {
   Music,
   Zap,
   Sparkles,
+  Trophy,
+  Footprints,
 };
 
 export default function Modalities() {
