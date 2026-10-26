@@ -46,7 +46,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#050505]/90 backdrop-blur-xl border-b border-[#d9a441]/15 py-2"
+          ? "bg-[#101013]/90 backdrop-blur-xl border-b border-white/10 py-2"
           : "bg-transparent py-4"
       }`}
     >
@@ -62,7 +62,7 @@ export default function Navbar() {
             alt="Logo CROWN Academia"
             className={`w-auto transition-all duration-300 ${
               scrolled ? "h-11" : "h-14"
-            } gold-drop-glow`}
+            }`}
           />
         </button>
 
@@ -87,7 +87,7 @@ export default function Navbar() {
           ) : (
             <Button
               onClick={() => openAuthModal(undefined, "login")}
-              className="hidden sm:inline-flex h-10 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-sm gold-glow-sm"
+              className="hidden sm:inline-flex h-10 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-sm"
             >
               <LogIn className="w-4 h-4 mr-2" />
               Entrar
@@ -99,21 +99,21 @@ export default function Navbar() {
             <SheetTrigger asChild>
               <button
                 aria-label="Abrir menu"
-                className="lg:hidden w-11 h-11 flex items-center justify-center border border-[#2a2a2a] bg-[#101010] text-foreground hover:text-[#d9a441] hover:border-[#d9a441]/60 transition-colors"
+                className="lg:hidden w-11 h-11 flex items-center justify-center border border-[#2b2b31] bg-[#17171b] text-foreground hover:text-foreground hover:border-[#52525b] transition-colors"
               >
                 {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="bg-[#0a0a0a] border-[#262626] w-72 p-0"
+              className="bg-[#141418] border-[#2b2b31] w-72 p-0"
             >
-              <SheetHeader className="p-5 border-b border-[#262626]">
+              <SheetHeader className="p-5 border-b border-[#2b2b31]">
                 <SheetTitle className="flex items-center">
                   <img
                     src="/logo.png"
                     alt="Logo CROWN Academia"
-                    className="h-10 w-auto gold-drop-glow"
+                    className="h-10 w-auto"
                   />
                 </SheetTitle>
               </SheetHeader>
@@ -122,7 +122,7 @@ export default function Navbar() {
                   <button
                     key={l.href}
                     onClick={() => go(l.href)}
-                    className="text-left px-4 py-3 font-heading uppercase tracking-wider text-sm text-muted-foreground hover:text-[#d9a441] hover:bg-[#d9a441]/5 border-l-2 border-transparent hover:border-[#d9a441] transition-colors cursor-pointer"
+                    className="text-left px-4 py-3 font-heading uppercase tracking-wider text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 border-l-2 border-transparent hover:border-zinc-400 transition-colors cursor-pointer"
                   >
                     {l.label}
                   </button>

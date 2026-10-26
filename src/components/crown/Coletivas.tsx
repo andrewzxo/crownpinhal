@@ -57,16 +57,7 @@ export default function Coletivas() {
   }, [modalities]);
 
   return (
-    <section id="coletivas" className="relative py-24 sm:py-32 overflow-hidden border-t border-[#1c1c1c] scroll-mt-28">
-      {/* Fundo com a textura da marca */}
-      <img
-        src="/img/texture-gold.jpg"
-        alt=""
-        aria-hidden
-        className="absolute inset-0 w-full h-full object-cover opacity-30"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#050505]/85 to-[#050505]" />
-
+    <section id="coletivas" className="relative py-24 sm:py-32 overflow-hidden bg-[#151518] border-y border-[#2b2b31] scroll-mt-28">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Modalidades coletivas"
@@ -77,21 +68,21 @@ export default function Coletivas() {
 
         {/* Grade por dia */}
         <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-          {days.map((d, i) => (
-            <Reveal key={d.day} delay={i * 0.08}>
-              <div className="clip-blade bg-[#d9a441]/30 p-px h-full hover:bg-[#d9a441]/80 transition-colors duration-300">
-                <div className="clip-blade bg-[#0b0b0b] h-full flex flex-col">
-                  <p className="bg-gold-gradient text-black font-display uppercase text-sm sm:text-lg px-3 py-2.5 sm:px-4 sm:py-3">
+          {days.map((d) => (
+            <Reveal key={d.day} delay={0.08}>
+              <div className="clip-blade bg-[#2b2b31] p-px h-full hover:bg-[#52525b] transition-colors duration-300">
+                <div className="clip-blade bg-[#17171b] h-full flex flex-col">
+                  <p className="bg-[#26262c] border-b border-[#2b2b31] text-foreground font-display uppercase text-sm sm:text-lg px-3 py-2.5 sm:px-4 sm:py-3">
                     {d.label}
                   </p>
                   <div className="p-3 sm:p-4 space-y-2.5 sm:space-y-3 flex-1">
                     {d.classes.map((c) => (
                       <div key={`${d.day}-${c.name}-${c.time}`} className="flex items-center gap-2 sm:gap-3">
-                        <span className="font-display text-base sm:text-2xl text-gold-gradient w-14 sm:w-20 shrink-0">
+                        <span className="font-display text-base sm:text-2xl text-[#d9a441] w-14 sm:w-20 shrink-0">
                           {c.time.replace(":", "h")}
                         </span>
-                        <span className="flex-1 h-px bg-[#d9a441]/25" />
-                        <span className="font-heading uppercase tracking-wider text-[11px] sm:text-sm text-foreground text-right">
+                        <span className="flex-1 h-px bg-[#3a3a42]" />
+                        <span className="font-heading uppercase tracking-wider text-[11px] sm:text-sm text-zinc-200 text-right">
                           {c.name}
                         </span>
                       </div>
@@ -104,13 +95,13 @@ export default function Coletivas() {
         </div>
 
         {days.length === 0 && (
-          <div className="mt-12 border border-dashed border-[#2a2a2a] p-12 text-center text-muted-foreground">
+          <div className="mt-12 border border-dashed border-[#3a3a42] p-12 text-center text-muted-foreground">
             A grade de aulas coletivas será publicada em breve.
           </div>
         )}
 
         {/* Benefícios */}
-        <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#d9a441]/20 border border-[#d9a441]/20">
+        <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#2b2b31] border border-[#2b2b31]">
           {BENEFITS.map((b, i) => (
             <motion.div
               key={b}
@@ -118,12 +109,12 @@ export default function Coletivas() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="bg-[#080808] px-4 py-5 sm:px-5 sm:py-6 flex items-center gap-3 sm:gap-4 hover:bg-[#0e0d0a] transition-colors"
+              className="bg-[#17171b] px-4 py-5 sm:px-5 sm:py-6 flex items-center gap-3 sm:gap-4 hover:bg-[#1b1b20] transition-colors"
             >
-              <span className="clip-shield w-8 h-9 sm:w-9 sm:h-10 shrink-0 bg-gold-gradient text-black font-display text-sm flex items-center justify-center pt-0.5">
+              <span className="w-9 h-10 shrink-0 bg-[#222228] border border-[#3a3a42] text-[#d9a441] font-display text-sm flex items-center justify-center">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <p className="font-heading uppercase tracking-wider text-[11px] sm:text-sm font-semibold">
+              <p className="font-heading uppercase tracking-wider text-[11px] sm:text-sm font-semibold text-zinc-200">
                 {b}
               </p>
             </motion.div>

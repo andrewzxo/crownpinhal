@@ -47,23 +47,21 @@ export default function About() {
               highlight={lastPart}
             />
             <Reveal delay={0.15}>
-              <p className="mt-6 text-lg text-muted-foreground leading-relaxed border-l-2 border-[#d9a441]/40 pl-5">
+              <p className="mt-6 text-lg text-muted-foreground leading-relaxed border-l-2 border-zinc-600 pl-5">
                 {settings?.aboutText ||
                   "Um ambiente acolhedor, focado em rotina e comunidade — ambiente inteiro na mesma energia. Conectando pessoas através do fitness: treino, saúde e convivência além do ferro. Treina na CROWN, joga nas quadras de areia e fecha o dia no Arena Beach Bar."}
               </p>
             </Reveal>
 
             {/* Stats */}
-            <div className="mt-10 grid grid-cols-2 gap-px bg-[#262626] border border-[#262626]">
+            <div className="mt-10 grid grid-cols-2 gap-px bg-[#2b2b31] border border-[#2b2b31]">
               {stats.map((st, i) => (
-                <Reveal key={st.label} delay={0.1 + i * 0.08} className="bg-[#0d0d0d]">
-                  <div className="group p-5 hover:bg-[#121212] transition-colors duration-300 h-full">
-                    <span className="clip-hex bg-gold-gradient w-11 h-11 mb-3 flex items-center justify-center">
-                      <span className="clip-hex bg-[#0d0d0d] w-[calc(100%-2px)] h-[calc(100%-2px)] flex items-center justify-center">
-                        <st.icon className="w-5 h-5 text-[#d9a441]" />
-                      </span>
+                <Reveal key={st.label} delay={0.1 + i * 0.08} className="bg-[#151518]">
+                  <div className="group p-5 hover:bg-[#1b1b20] transition-colors duration-300 h-full">
+                    <span className="w-11 h-11 mb-3 flex items-center justify-center bg-[#222228] border border-[#2b2b31]">
+                      <st.icon className="w-5 h-5 text-[#d9a441]" />
                     </span>
-                    <p className="font-display text-3xl sm:text-4xl text-gold-gradient">
+                    <p className="font-display text-3xl sm:text-4xl text-foreground">
                       {st.value}
                     </p>
                     <p className="text-xs uppercase tracking-widest text-muted-foreground mt-1">
@@ -85,29 +83,29 @@ export default function About() {
                     alt="Recepção da academia CROWN"
                     className="w-full h-64 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
                 </div>
-                <div className="relative overflow-hidden border border-[#2a2a2a] group">
+                <div className="relative overflow-hidden border border-[#2b2b31] group">
                   <img
                     src={imgs[1]}
                     alt="Área de treino da CROWN"
                     className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
                 </div>
               </div>
               <div className="pt-12 space-y-4">
-                <div className="relative overflow-hidden border border-[#2a2a2a] group">
+                <div className="relative overflow-hidden border border-[#2b2b31] group">
                   <img
                     src={imgs[2]}
                     alt="Sala de musculação da CROWN"
                     className="w-full h-56 sm:h-64 object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
                 </div>
-                <div className="clip-peak bg-gold-gradient px-4 py-5 text-black flex flex-col items-center justify-center text-center h-40 sm:h-48">
-                  <Clock className="w-8 h-8 mb-2 shrink-0" />
-                  <p className="font-display uppercase text-base sm:text-lg leading-snug">
+                <div className="clip-peak bg-[#1d1d22] border border-[#2b2b31] px-4 py-5 flex flex-col items-center justify-center text-center h-40 sm:h-48">
+                  <Clock className="w-8 h-8 mb-2 shrink-0 text-[#d9a441]" />
+                  <p className="font-display uppercase text-base sm:text-lg leading-snug text-foreground">
                     {hoursLines.map((line, i) => (
                       <span key={line}>
                         {i > 0 && <br />}

@@ -79,7 +79,7 @@ export default function SectionNav() {
           : "-translate-y-[140%] opacity-0 pointer-events-none"
       }`}
     >
-      <div className="bg-[#050505]/90 backdrop-blur-xl border-b border-[#d9a441]/15 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.9)]">
+      <div className="bg-[#101013]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.9)]">
         <div className="max-w-7xl mx-auto px-2 sm:px-6">
           <div ref={scrollRef} className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2">
             {AREAS.map((a) => {
@@ -90,10 +90,10 @@ export default function SectionNav() {
                   data-area={a.href}
                   onClick={() => go(a.href)}
                   aria-current={isActive ? "location" : undefined}
-                  className={`shrink-0 clip-tag px-3.5 py-1.5 font-heading uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer ${
+                  className={`shrink-0 px-3.5 py-1.5 font-heading uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? "bg-gold-gradient text-black font-bold"
-                      : "bg-[#121212] border border-[#262626] text-muted-foreground hover:text-[#d9a441] hover:border-[#d9a441]/60"
+                      ? "bg-[#d9a441] text-black font-bold"
+                      : "bg-[#1b1b20] border border-[#2b2b31] text-muted-foreground hover:text-foreground hover:border-[#52525b]"
                   }`}
                 >
                   {a.label}

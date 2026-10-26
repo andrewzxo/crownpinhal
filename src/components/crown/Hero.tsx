@@ -1,10 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ChevronDown, Dumbbell, MapPin } from "lucide-react";
+import { ChevronDown, Dumbbell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/store";
-import { CrownWatermark } from "./CrownShapes";
 import { WhatsAppIcon } from "./CtaSection";
 
 export default function Hero() {
@@ -23,45 +22,40 @@ export default function Hero() {
   })();
 
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center overflow-hidden grain-overlay scroll-mt-28">
-      {/* Fundo com parallax */}
+    <section id="inicio" className="relative min-h-[92vh] flex items-center overflow-hidden scroll-mt-28">
+      {/* Fundo */}
       <motion.img
         src={s.heroImageUrl || "/img/hero.jpg"}
         alt="Interior da academia CROWN"
         className="absolute inset-0 w-full h-full object-cover"
-        initial={{ scale: 1.15 }}
+        initial={{ scale: 1.08 }}
         animate={{ scale: 1 }}
-        transition={{ duration: 8, ease: "easeOut" }}
+        transition={{ duration: 6, ease: "easeOut" }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/75 to-[#050505]/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#101013] via-[#101013]/80 to-[#101013]/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#101013] via-transparent to-[#101013]/50" />
 
-      {/* Marca d'água — coroa gigante */}
-      <CrownWatermark className="pointer-events-none absolute -right-16 top-20 z-[1] hidden w-[460px] text-[#d9a441] opacity-[0.09] lg:block" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full pt-32 pb-24">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full pt-28 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
           className="max-w-3xl"
         >
-          {/* Badge — paralelogramo */}
+          {/* Badge */}
           <div className="mb-8 inline-flex -skew-x-12">
-            <div className="flex items-center gap-3 skew-x-12 border border-[#d9a441]/40 bg-black/60 backdrop-blur pl-4 pr-6 py-2">
-              <MapPin className="w-4 h-4 shrink-0 text-[#d9a441]" />
-              <span className="font-heading uppercase tracking-[0.25em] text-xs text-[#d9a441]">
+            <div className="flex items-center gap-3 skew-x-12 border border-white/15 bg-black/50 backdrop-blur pl-4 pr-6 py-2">
+              <span className="w-2 h-2 bg-[#d9a441] rotate-45 shrink-0" aria-hidden />
+              <span className="font-heading uppercase tracking-[0.25em] text-xs text-zinc-300">
                 {s.heroBadge || "ACADEMIA CROWN • PINHAL-SP"}
               </span>
             </div>
           </div>
 
-          {/* Título gigante */}
+          {/* Título */}
           <h1 className="font-display uppercase leading-[0.95] whitespace-pre-line text-[clamp(3rem,9vw,7rem)]">
             {pre && <span className="text-foreground">{pre}</span>}
-            <span className="text-gold-gradient drop-shadow-[0_0_30px_rgba(217,164,65,0.35)]">
-              {heroHighlight}
-            </span>
+            <span className="text-gold-gradient">{heroHighlight}</span>
             {post && <span className="text-foreground">{post}</span>}
           </h1>
 
@@ -69,13 +63,13 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.45 }}
-            className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl leading-relaxed"
+            className="mt-6 text-lg sm:text-xl text-zinc-300 max-w-xl leading-relaxed"
           >
             {s.heroSubtitle ||
-              "Musculação, CROSS, HYROX oficial, lutas, aulas coletivas, corrida e quadras de areia. Um espaço completo para o seu Fitness & Lifestyle no coração de Pinhal."}
+              "Um espaço completo para o seu Fitness & Lifestyle: treino, saúde e convivência no coração de Pinhal."}
           </motion.p>
 
-          {/* CTAs — paralelogramos */}
+          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -101,7 +95,7 @@ export default function Hero() {
                 size="lg"
                 variant="outline"
                 onClick={() => document.getElementById("modalidades")?.scrollIntoView({ behavior: "smooth" })}
-                className="h-14 px-10 skew-x-[10deg] bg-[#050505]/40 backdrop-blur border-[#d9a441]/40 hover:bg-[#d9a441]/10 hover:text-[#d9a441] hover:border-[#d9a441] font-heading uppercase tracking-wider font-semibold text-base transition-all"
+                className="h-14 px-10 skew-x-[10deg] bg-[#101013]/40 backdrop-blur border-white/20 hover:bg-white/10 hover:text-foreground hover:border-white/40 font-heading uppercase tracking-wider font-semibold text-base transition-all"
               >
                 <span className="flex items-center gap-2 skew-x-[10deg]">
                   <Dumbbell className="w-5 h-5" />
@@ -109,44 +103,6 @@ export default function Hero() {
                 </span>
               </Button>
             </div>
-          </motion.div>
-
-          {/* Nota da campanha — informação real */}
-          {(s.heroCtaNote || "7 dias grátis para novos alunos testarem a estrutura • das 5h às 16h") && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.75 }}
-              className="mt-4 text-xs font-heading uppercase tracking-widest text-[#d9a441]/80"
-            >
-              {s.heroCtaNote || "7 dias grátis para novos alunos testarem a estrutura • das 5h às 16h"}
-            </motion.p>
-          )}
-
-          {/* Mini stats — chips inclinados */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-14 flex flex-wrap gap-3"
-          >
-            {[
-              { value: s.statsMembers || "47", label: "Aulas por semana" },
-              { value: s.statsModalities || "12", label: "Modalidades" },
-              { value: s.statsTrainers || "7", label: "Dias por semana" },
-            ].map((st) => (
-              <div
-                key={st.label}
-                className="-skew-x-12 border border-[#d9a441]/30 bg-black/50 backdrop-blur px-5 py-3"
-              >
-                <div className="skew-x-12">
-                  <p className="font-display text-2xl sm:text-3xl text-gold-gradient">{st.value}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">
-                    {st.label}
-                  </p>
-                </div>
-              </div>
-            ))}
           </motion.div>
         </motion.div>
       </div>
@@ -158,21 +114,10 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, y: [0, 8, 0] }}
         transition={{ opacity: { delay: 1.4 }, y: { repeat: Infinity, duration: 1.8 } }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-[#d9a441] cursor-pointer"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-zinc-400 hover:text-foreground cursor-pointer"
       >
         <ChevronDown className="w-8 h-8" />
       </motion.button>
-
-      {/* Faixa lateral decorativa */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-center gap-3">
-        <span className="w-px h-24 bg-gradient-to-b from-transparent to-[#d9a441]/60" />
-        <span className="w-2 h-2 bg-[#d9a441] rotate-45" />
-        <span className="font-heading uppercase tracking-[0.4em] text-[10px] text-[#d9a441]/70 [writing-mode:vertical-rl]">
-          CROWN • PINHAL-SP
-        </span>
-        <span className="w-2 h-2 bg-[#d9a441] rotate-45" />
-        <span className="w-px h-24 bg-gradient-to-t from-transparent to-[#d9a441]/60" />
-      </div>
     </section>
   );
 }

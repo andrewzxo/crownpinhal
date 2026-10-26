@@ -86,7 +86,7 @@ function SubsList() {
         return (
           <div
             key={s.id}
-            className="border border-[#262626] bg-[#0a0a0a] p-4 flex items-start justify-between gap-3"
+            className="border border-[#2b2b31] bg-[#0a0a0a] p-4 flex items-start justify-between gap-3"
           >
             <div className="min-w-0">
               <p className="font-display uppercase tracking-wide text-lg">{s.plan.name}</p>
@@ -121,7 +121,7 @@ export default function MySubscriptionsModal({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#0d0d0d] border-[#2a2a2a] max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="bg-[#141418] border-[#2b2b31] max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-xl uppercase tracking-wide flex items-center gap-2">
             <Crown className="w-5 h-5 text-[#d9a441]" />

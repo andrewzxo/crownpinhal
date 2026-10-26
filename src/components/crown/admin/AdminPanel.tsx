@@ -240,7 +240,7 @@ function ModalitiesTab() {
   }
 
   return (
-    <Card className="gap-4 border-[#262626] bg-card py-4">
+    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
       <CardHeader className="flex flex-wrap items-center justify-between gap-3 px-4 [.border-b]:pb-0">
         <div>
           <CardTitle className="font-display text-lg uppercase tracking-wide">
@@ -267,7 +267,7 @@ function ModalitiesTab() {
             {items.map((m) => (
               <li
                 key={m.id}
-                className="flex items-center gap-3 rounded-lg border border-[#262626] bg-[#0d0d0d] p-3"
+                className="flex items-center gap-3 rounded-lg border border-[#2b2b31] bg-[#141418] p-3"
               >
                 {m.imageUrl ? (
                   <img
@@ -312,7 +312,7 @@ function ModalitiesTab() {
                         <Trash2 className="size-4" />
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="border-[#262626] bg-[#101010]">
+                    <AlertDialogContent className="border-[#2b2b31] bg-[#101010]">
                       <AlertDialogHeader>
                         <AlertDialogTitle className="font-display uppercase tracking-wide">
                           Excluir modalidade?
@@ -341,7 +341,7 @@ function ModalitiesTab() {
       </CardContent>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#262626] bg-[#101010] sm:max-w-lg">
+        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#2b2b31] bg-[#101010] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-display uppercase tracking-wide">
               {editing ? "Editar Modalidade" : "Nova Modalidade"}
@@ -366,7 +366,7 @@ function ModalitiesTab() {
                 value={form.name}
                 onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                 placeholder="Ex.: Musculação"
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <div className="space-y-1.5">
@@ -377,7 +377,7 @@ function ModalitiesTab() {
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 placeholder="Descrição exibida no site"
                 rows={3}
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <div className="space-y-1.5">
@@ -387,10 +387,10 @@ function ModalitiesTab() {
                   <img
                     src={form.imageUrl}
                     alt="Pré-visualização da imagem da modalidade"
-                    className="size-16 rounded-md border border-[#262626] object-cover"
+                    className="size-16 rounded-md border border-[#2b2b31] object-cover"
                   />
                 ) : (
-                  <div className="flex size-16 items-center justify-center rounded-md border border-dashed border-[#262626]">
+                  <div className="flex size-16 items-center justify-center rounded-md border border-dashed border-[#2b2b31]">
                     <ImagePlus className="size-6 text-muted-foreground" aria-hidden />
                   </div>
                 )}
@@ -436,7 +436,7 @@ function ModalitiesTab() {
                 value={form.imageUrl}
                 onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
                 placeholder="ou cole uma URL de imagem"
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -447,7 +447,7 @@ function ModalitiesTab() {
                   value={form.icon}
                   onChange={(e) => setForm((f) => ({ ...f, icon: e.target.value }))}
                   placeholder="Ex.: dumbbell"
-                  className="border-[#262626] bg-[#0d0d0d]"
+                  className="border-[#2b2b31] bg-[#141418]"
                 />
               </div>
               <div className="space-y-1.5">
@@ -459,11 +459,11 @@ function ModalitiesTab() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, order: Number(e.target.value) || 0 }))
                   }
-                  className="border-[#262626] bg-[#0d0d0d]"
+                  className="border-[#2b2b31] bg-[#141418]"
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-[#262626] bg-[#0d0d0d] px-3 py-2.5">
+            <div className="flex items-center justify-between rounded-lg border border-[#2b2b31] bg-[#141418] px-3 py-2.5">
               <Label htmlFor="modality-active" className="cursor-pointer text-sm">
                 Modalidade ativa
               </Label>
@@ -615,7 +615,7 @@ function SchedulesTab() {
   }
 
   return (
-    <Card className="gap-4 border-[#262626] bg-card py-4">
+    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
       <CardHeader className="px-4 [.border-b]:pb-0">
         <CardTitle className="font-display text-lg uppercase tracking-wide">Horários</CardTitle>
         <CardDescription>Gerencie os horários de cada modalidade.</CardDescription>
@@ -631,11 +631,11 @@ function SchedulesTab() {
             >
               <SelectTrigger
                 id="schedule-modality"
-                className="w-full border-[#262626] bg-[#0d0d0d]"
+                className="w-full border-[#2b2b31] bg-[#141418]"
               >
                 <SelectValue placeholder="Selecione uma modalidade" />
               </SelectTrigger>
-              <SelectContent className="border-[#262626] bg-[#101010]">
+              <SelectContent className="border-[#2b2b31] bg-[#101010]">
                 {modalities.map((m) => (
                   <SelectItem key={m.id} value={m.id}>
                     {m.name}
@@ -681,7 +681,7 @@ function SchedulesTab() {
                   {group.schedules.map((s) => (
                     <div
                       key={s.id}
-                      className="flex items-center justify-between gap-3 rounded-lg border border-[#262626] bg-[#0d0d0d] px-3 py-2.5"
+                      className="flex items-center justify-between gap-3 rounded-lg border border-[#2b2b31] bg-[#141418] px-3 py-2.5"
                     >
                       <div className="min-w-0">
                         <p className="font-heading text-sm uppercase tracking-wider text-[#d9a441]">
@@ -712,7 +712,7 @@ function SchedulesTab() {
                               <Trash2 className="size-4" />
                             </Button>
                           </AlertDialogTrigger>
-                          <AlertDialogContent className="border-[#262626] bg-[#101010]">
+                          <AlertDialogContent className="border-[#2b2b31] bg-[#101010]">
                             <AlertDialogHeader>
                               <AlertDialogTitle className="font-display uppercase tracking-wide">
                                 Excluir horário?
@@ -744,7 +744,7 @@ function SchedulesTab() {
       </CardContent>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#262626] bg-[#101010] sm:max-w-md">
+        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#2b2b31] bg-[#101010] sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="font-display uppercase tracking-wide">
               {editing ? "Editar Horário" : "Novo Horário"}
@@ -766,10 +766,10 @@ function SchedulesTab() {
                 value={String(form.dayOfWeek)}
                 onValueChange={(v) => setForm((f) => ({ ...f, dayOfWeek: Number(v) }))}
               >
-                <SelectTrigger className="w-full border-[#262626] bg-[#0d0d0d]">
+                <SelectTrigger className="w-full border-[#2b2b31] bg-[#141418]">
                   <SelectValue placeholder="Selecione o dia" />
                 </SelectTrigger>
-                <SelectContent className="border-[#262626] bg-[#101010]">
+                <SelectContent className="border-[#2b2b31] bg-[#101010]">
                   {DAY_ORDER.map((day) => (
                     <SelectItem key={day} value={String(day)}>
                       {DAY_NAMES[day]}
@@ -786,7 +786,7 @@ function SchedulesTab() {
                   type="time"
                   value={form.startTime}
                   onChange={(e) => setForm((f) => ({ ...f, startTime: e.target.value }))}
-                  className="border-[#262626] bg-[#0d0d0d]"
+                  className="border-[#2b2b31] bg-[#141418]"
                 />
               </div>
               <div className="space-y-1.5">
@@ -796,7 +796,7 @@ function SchedulesTab() {
                   type="time"
                   value={form.endTime}
                   onChange={(e) => setForm((f) => ({ ...f, endTime: e.target.value }))}
-                  className="border-[#262626] bg-[#0d0d0d]"
+                  className="border-[#2b2b31] bg-[#141418]"
                 />
               </div>
             </div>
@@ -807,7 +807,7 @@ function SchedulesTab() {
                 value={form.instructor}
                 onChange={(e) => setForm((f) => ({ ...f, instructor: e.target.value }))}
                 placeholder="Nome do instrutor (opcional)"
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <DialogFooter>
@@ -977,7 +977,7 @@ function PlansTab() {
   }
 
   return (
-    <Card className="gap-4 border-[#262626] bg-card py-4">
+    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
       <CardHeader className="flex flex-wrap items-center justify-between gap-3 px-4 [.border-b]:pb-0">
         <div>
           <CardTitle className="font-display text-lg uppercase tracking-wide">Planos</CardTitle>
@@ -1004,8 +1004,8 @@ function PlansTab() {
                 <div
                   key={p.id}
                   className={cn(
-                    "flex flex-col gap-3 rounded-lg border bg-[#0d0d0d] p-4",
-                    p.highlighted ? "border-[#d9a441]/50" : "border-[#262626]"
+                    "flex flex-col gap-3 rounded-lg border bg-[#141418] p-4",
+                    p.highlighted ? "border-[#d9a441]/50" : "border-[#2b2b31]"
                   )}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -1054,7 +1054,7 @@ function PlansTab() {
                       <ActiveBadge active={p.active} />
                       <Badge
                         variant="outline"
-                        className="border-[#262626] text-muted-foreground"
+                        className="border-[#2b2b31] text-muted-foreground"
                       >
                         Ordem {p.order}
                       </Badge>
@@ -1080,7 +1080,7 @@ function PlansTab() {
                             <Trash2 className="size-4" />
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent className="border-[#262626] bg-[#101010]">
+                        <AlertDialogContent className="border-[#2b2b31] bg-[#101010]">
                           <AlertDialogHeader>
                             <AlertDialogTitle className="font-display uppercase tracking-wide">
                               Excluir plano?
@@ -1111,7 +1111,7 @@ function PlansTab() {
       </CardContent>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#262626] bg-[#101010] sm:max-w-lg">
+        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#2b2b31] bg-[#101010] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-display uppercase tracking-wide">
               {editing ? "Editar Plano" : "Novo Plano"}
@@ -1134,7 +1134,7 @@ function PlansTab() {
                 value={form.name}
                 onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                 placeholder="Ex.: Plano Black"
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <div className="space-y-1.5">
@@ -1144,7 +1144,7 @@ function PlansTab() {
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 rows={2}
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <div className="space-y-1.5">
@@ -1155,7 +1155,7 @@ function PlansTab() {
                 onChange={(e) => setForm((f) => ({ ...f, featuresText: e.target.value }))}
                 rows={4}
                 placeholder={"Acesso livre à academia\nAulas coletivas"}
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -1169,7 +1169,7 @@ function PlansTab() {
                   value={form.priceText}
                   onChange={(e) => setForm((f) => ({ ...f, priceText: e.target.value }))}
                   placeholder="vazio = sem preço"
-                  className="border-[#262626] bg-[#0d0d0d]"
+                  className="border-[#2b2b31] bg-[#141418]"
                 />
               </div>
               <div className="space-y-1.5">
@@ -1179,7 +1179,7 @@ function PlansTab() {
                   value={form.period}
                   onChange={(e) => setForm((f) => ({ ...f, period: e.target.value }))}
                   placeholder="ex.: mês"
-                  className="border-[#262626] bg-[#0d0d0d]"
+                  className="border-[#2b2b31] bg-[#141418]"
                 />
               </div>
             </div>
@@ -1191,7 +1191,7 @@ function PlansTab() {
                   value={form.badge}
                   onChange={(e) => setForm((f) => ({ ...f, badge: e.target.value }))}
                   placeholder="ex.: Mais popular"
-                  className="border-[#262626] bg-[#0d0d0d]"
+                  className="border-[#2b2b31] bg-[#141418]"
                 />
               </div>
               <div className="space-y-1.5">
@@ -1203,11 +1203,11 @@ function PlansTab() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, order: Number(e.target.value) || 0 }))
                   }
-                  className="border-[#262626] bg-[#0d0d0d]"
+                  className="border-[#2b2b31] bg-[#141418]"
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-[#262626] bg-[#0d0d0d] px-3 py-2.5">
+            <div className="flex items-center justify-between rounded-lg border border-[#2b2b31] bg-[#141418] px-3 py-2.5">
               <Label htmlFor="plan-highlighted" className="cursor-pointer text-sm">
                 Plano destaque
               </Label>
@@ -1219,7 +1219,7 @@ function PlansTab() {
                 }
               />
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-[#262626] bg-[#0d0d0d] px-3 py-2.5">
+            <div className="flex items-center justify-between rounded-lg border border-[#2b2b31] bg-[#141418] px-3 py-2.5">
               <Label htmlFor="plan-active" className="cursor-pointer text-sm">
                 Plano ativo
               </Label>
@@ -1354,7 +1354,7 @@ function GalleryTab() {
   }
 
   return (
-    <Card className="gap-4 border-[#262626] bg-card py-4">
+    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
       <CardHeader className="flex flex-wrap items-center justify-between gap-3 px-4 [.border-b]:pb-0">
         <div>
           <CardTitle className="font-display text-lg uppercase tracking-wide">Galeria</CardTitle>
@@ -1387,7 +1387,7 @@ function GalleryTab() {
               {items.map((g) => (
                 <div
                   key={g.id}
-                  className="overflow-hidden rounded-lg border border-[#262626] bg-[#0d0d0d]"
+                  className="overflow-hidden rounded-lg border border-[#2b2b31] bg-[#141418]"
                 >
                   <div className="relative aspect-[4/3]">
                     <img
@@ -1427,7 +1427,7 @@ function GalleryTab() {
                             <Trash2 className="size-4" />
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent className="border-[#262626] bg-[#101010]">
+                        <AlertDialogContent className="border-[#2b2b31] bg-[#101010]">
                           <AlertDialogHeader>
                             <AlertDialogTitle className="font-display uppercase tracking-wide">
                               Excluir imagem?
@@ -1457,7 +1457,7 @@ function GalleryTab() {
       </CardContent>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#262626] bg-[#101010] sm:max-w-md">
+        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#2b2b31] bg-[#101010] sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="font-display uppercase tracking-wide">
               Adicionar Imagem
@@ -1478,10 +1478,10 @@ function GalleryTab() {
                   <img
                     src={form.url}
                     alt="Pré-visualização da imagem"
-                    className="h-16 w-24 rounded-md border border-[#262626] object-cover"
+                    className="h-16 w-24 rounded-md border border-[#2b2b31] object-cover"
                   />
                 ) : (
-                  <div className="flex h-16 w-24 items-center justify-center rounded-md border border-dashed border-[#262626]">
+                  <div className="flex h-16 w-24 items-center justify-center rounded-md border border-dashed border-[#2b2b31]">
                     <ImagePlus className="size-6 text-muted-foreground" aria-hidden />
                   </div>
                 )}
@@ -1516,7 +1516,7 @@ function GalleryTab() {
                 value={form.url}
                 onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
                 placeholder="ou cole uma URL de imagem"
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <div className="space-y-1.5">
@@ -1526,7 +1526,7 @@ function GalleryTab() {
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                 placeholder="Título da imagem (opcional)"
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <div className="space-y-1.5">
@@ -1536,7 +1536,7 @@ function GalleryTab() {
                 type="number"
                 value={form.order}
                 onChange={(e) => setForm((f) => ({ ...f, order: Number(e.target.value) || 0 }))}
-                className="border-[#262626] bg-[#0d0d0d]"
+                className="border-[#2b2b31] bg-[#141418]"
               />
             </div>
             <DialogFooter>
@@ -1590,12 +1590,12 @@ const SETTING_SECTIONS: SettingSection[] = [
     ],
   },
   {
-    title: "Marquee / Sobre",
+    title: "Sobre / CTA",
     icon: Megaphone,
     fields: [
-      { key: "marqueeItems", label: "Itens do Marquee (separados por vírgula)" },
       { key: "aboutTitle", label: "Título do Sobre" },
       { key: "aboutText", label: "Texto do Sobre", type: "textarea" },
+      { key: "ctaEyebrow", label: "Linha superior do CTA" },
       { key: "ctaTitle", label: "Título do CTA" },
       { key: "ctaText", label: "Texto do CTA", type: "textarea" },
     ],
@@ -1691,7 +1691,7 @@ function SettingsTab() {
 
   if (loading) {
     return (
-      <Card className="gap-4 border-[#262626] bg-card py-4">
+      <Card className="gap-4 border-[#2b2b31] bg-card py-4">
         <CardHeader className="px-4 [.border-b]:pb-0">
           <CardTitle className="font-display text-lg uppercase tracking-wide">
             Configurações
@@ -1705,7 +1705,7 @@ function SettingsTab() {
   }
 
   return (
-    <Card className="gap-4 border-[#262626] bg-card py-4">
+    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
       <CardHeader className="px-4 [.border-b]:pb-0">
         <CardTitle className="font-display text-lg uppercase tracking-wide">
           Configurações
@@ -1727,7 +1727,7 @@ function SettingsTab() {
             return (
               <section
                 key={section.title}
-                className="rounded-lg border border-[#262626] bg-[#0d0d0d] p-4"
+                className="rounded-lg border border-[#2b2b31] bg-[#141418] p-4"
                 aria-label={`Seção ${section.title}`}
               >
                 <h3 className="font-heading mb-4 flex items-center gap-2 text-sm uppercase tracking-widest text-[#d9a441]">
@@ -1748,10 +1748,10 @@ function SettingsTab() {
                               <img
                                 src={values[field.key]}
                                 alt="Pré-visualização da imagem do hero"
-                                className="h-16 w-28 rounded-md border border-[#262626] object-cover"
+                                className="h-16 w-28 rounded-md border border-[#2b2b31] object-cover"
                               />
                             ) : (
-                              <div className="flex h-16 w-28 items-center justify-center rounded-md border border-dashed border-[#262626]">
+                              <div className="flex h-16 w-28 items-center justify-center rounded-md border border-dashed border-[#2b2b31]">
                                 <ImagePlus className="size-5 text-muted-foreground" aria-hidden />
                               </div>
                             )}
@@ -1787,7 +1787,7 @@ function SettingsTab() {
                             value={values[field.key] ?? ""}
                             onChange={(e) => setValue(field.key, e.target.value)}
                             placeholder="URL da imagem"
-                            className="border-[#262626] bg-[#141414]"
+                            className="border-[#2b2b31] bg-[#141414]"
                           />
                         </div>
                       ) : field.type === "textarea" ? (
@@ -1796,7 +1796,7 @@ function SettingsTab() {
                           value={values[field.key] ?? ""}
                           onChange={(e) => setValue(field.key, e.target.value)}
                           rows={3}
-                          className="border-[#262626] bg-[#141414]"
+                          className="border-[#2b2b31] bg-[#141414]"
                         />
                       ) : (
                         <Input
@@ -1804,7 +1804,7 @@ function SettingsTab() {
                           value={values[field.key] ?? ""}
                           onChange={(e) => setValue(field.key, e.target.value)}
                           placeholder={field.placeholder}
-                          className="border-[#262626] bg-[#141414]"
+                          className="border-[#2b2b31] bg-[#141414]"
                         />
                       )}
                     </div>
@@ -1841,7 +1841,7 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#050505] text-foreground">
+    <div className="flex min-h-screen flex-col bg-[#101013] text-foreground">
       <PanelHeader
         titleA="PAINEL"
         titleB="ADMIN"

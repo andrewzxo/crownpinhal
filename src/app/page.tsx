@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Crown } from "lucide-react";
+import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { useAppStore, VISITOR_KEY } from "@/lib/store";
 import type { SessionUser } from "@/lib/types";
@@ -14,13 +15,13 @@ import OwnerDashboard from "@/components/crown/admin/OwnerDashboard";
 
 function Splash() {
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center gap-10">
+    <div className="min-h-screen bg-[#101013] flex flex-col items-center justify-center gap-10">
       <img
         src="/logo.png"
         alt="Carregando CROWN Academia"
-        className="w-72 sm:w-96 gold-drop-glow animate-pulse"
+        className="w-72 sm:w-96 animate-pulse"
       />
-      <p className="font-heading uppercase tracking-[0.4em] text-xs text-[#d9a441]/70">
+      <p className="font-heading uppercase tracking-[0.4em] text-xs text-zinc-500">
         Carregando...
       </p>
     </div>
@@ -37,6 +38,40 @@ export default function Home() {
   const refreshContent = useAppStore((s) => s.refreshContent);
 
   useEffect(() => {
+    // Retorno do login com Google
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const googleError = params.get("googleError");
+      const googleSuccess = params.get("googleSuccess");
+      if (googleError || googleSuccess) {
+        let msg = "";
+        if (googleError === "config") {
+          msg =
+            "Login com Google ainda não configurado. Adicione GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET no arquivo .env do servidor.";
+        } else if (googleError === "state") {
+          msg = "Sessão de login com Google expirada. Tente novamente.";
+        } else if (googleError) {
+          msg = "Não foi possível entrar com o Google. Tente novamente.";
+        } else {
+          msg = "Login com Google realizado!";
+        }
+        // pequeno atraso: evita perder o toast no remount do StrictMode
+        const kind = googleError ? "error" : "success";
+        setTimeout(() => {
+          if (kind === "error") toast.error(msg);
+          else toast.success(msg);
+        }, 150);
+        params.delete("googleError");
+        params.delete("googleSuccess");
+        const qs = params.toString();
+        window.history.replaceState(
+          {},
+          "",
+          window.location.pathname + (qs ? `?${qs}` : "")
+        );
+      }
+    }
+
     (async () => {
       try {
         const { user } = await api<{ user: SessionUser | null }>("/api/auth/me");

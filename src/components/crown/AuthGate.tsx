@@ -4,9 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
-  Clock,
   Crown,
-  Dumbbell,
   Eye,
   EyeOff,
   Loader2,
@@ -24,10 +22,42 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { SessionUser } from "@/lib/types";
-import { CrownGlyph, CrownWatermark } from "./CrownShapes";
+import { CrownGlyph } from "./CrownShapes";
 
 const inputCls =
-  "h-11 bg-[#0a0a0a] border-[#2a2a2a] text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-[#d9a441]/50 focus-visible:border-[#d9a441]/60 transition-all";
+  "h-11 bg-[#141418] border-[#2b2b31] text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-[#d9a441]/50 focus-visible:border-[#d9a441]/60 transition-all";
+
+export function GoogleButton({ className = "" }: { className?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        window.location.href = "/api/auth/google";
+      }}
+      className={`w-full h-12 flex items-center justify-center gap-3 bg-white text-[#1f1f1f] hover:bg-zinc-100 transition-colors font-medium text-sm cursor-pointer ${className}`}
+    >
+      <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden>
+        <path
+          fill="#4285F4"
+          d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82Z"
+        />
+        <path
+          fill="#34A853"
+          d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24Z"
+        />
+        <path
+          fill="#FBBC05"
+          d="M5.27 14.29A7.2 7.2 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a12 12 0 0 0 0 10.76l3.98-3.09Z"
+        />
+        <path
+          fill="#EA4335"
+          d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42A11.98 11.98 0 0 0 12 0 11.99 11.99 0 0 0 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75Z"
+        />
+      </svg>
+      Entrar com Google
+    </button>
+  );
+}
 
 export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
   const setUser = useAppStore((s) => s.setUser);
@@ -89,17 +119,17 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
 
   return (
     <Tabs defaultValue="login" className="w-full">
-      <TabsList className="grid w-full grid-cols-2 h-12 bg-[#0a0a0a] border border-[#262626] p-1">
+      <TabsList className="grid w-full grid-cols-2 h-12 bg-[#141418] border border-[#2b2b31] p-1">
         <TabsTrigger
           value="login"
-          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-semibold"
+          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-[#d9a441] data-[state=active]:text-black data-[state=active]:font-semibold"
         >
           <LogIn className="w-4 h-4 mr-2" />
           Entrar
         </TabsTrigger>
         <TabsTrigger
           value="register"
-          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-gold-gradient data-[state=active]:text-black data-[state=active]:font-semibold"
+          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-[#d9a441] data-[state=active]:text-black data-[state=active]:font-semibold"
         >
           <UserPlus className="w-4 h-4 mr-2" />
           Criar conta
@@ -154,7 +184,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
           <Button
             type="submit"
             disabled={loading !== null}
-            className="w-full h-12 rounded-none clip-arrow-r bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base transition-all hover:scale-[1.01]"
+            className="w-full h-12 rounded-none bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base transition-all hover:scale-[1.01]"
           >
             {loading === "login" ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
             Entrar agora
@@ -257,13 +287,26 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
           <Button
             type="submit"
             disabled={loading !== null}
-            className="w-full h-12 rounded-none clip-arrow-r bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base transition-all hover:scale-[1.01]"
+            className="w-full h-12 rounded-none bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base transition-all hover:scale-[1.01]"
           >
             {loading === "register" ? <Loader2 className="w-5 h-5 animate-spin" /> : <Crown className="w-5 h-5" />}
             Criar minha conta
           </Button>
         </form>
       </TabsContent>
+
+      {/* ---------- GOOGLE ---------- */}
+      <div className="relative my-5">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-[#2b2b31]" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-[#17171b] px-4 text-xs uppercase tracking-widest text-muted-foreground">
+            ou
+          </span>
+        </div>
+      </div>
+      <GoogleButton />
     </Tabs>
   );
 }
@@ -272,15 +315,15 @@ export default function AuthGate() {
   const setVisitor = useAppStore((s) => s.setVisitor);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-foreground relative overflow-hidden grain-overlay">
+    <div className="min-h-screen bg-[#101013] text-foreground relative overflow-hidden">
       {/* Fundo */}
       <img
         src="/img/hero.jpg"
         alt=""
         aria-hidden
-        className="absolute inset-0 w-full h-full object-cover opacity-20"
+        className="absolute inset-0 w-full h-full object-cover opacity-15"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/85 via-[#050505]/60 to-[#050505]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#101013]/85 via-[#101013]/60 to-[#101013]" />
 
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center max-w-6xl mx-auto px-4 py-10 gap-8 lg:gap-16 lg:flex-row lg:justify-between">
         {/* Marca */}
@@ -290,29 +333,20 @@ export default function AuthGate() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="hidden lg:flex flex-col items-center text-center max-w-md relative"
         >
-          <CrownWatermark className="pointer-events-none absolute -top-16 -left-24 w-80 text-[#d9a441] opacity-[0.08]" />
           <img
             src="/logo.png"
             alt="Logo da Academia CROWN Pinhal-SP"
-            className="w-80 gold-drop-glow"
+            className="w-80"
           />
           <h1 className="mt-8 font-display text-4xl uppercase leading-tight">
-            12 <span className="text-gold-gradient">modalidades.</span>
+            12 <span className="text-[#d9a441]">modalidades.</span>
             <br />
-            7 <span className="text-gold-gradient">dias por semana.</span>
+            7 <span className="text-[#d9a441]">dias por semana.</span>
           </h1>
           <CrownGlyph className="mt-5 w-16 h-4 text-[#d9a441]" />
           <p className="mt-4 text-muted-foreground leading-relaxed">
             Entre para acompanhar seus treinos, conhecer as modalidades e garantir seu plano.
           </p>
-          <div className="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <Dumbbell className="w-4 h-4 text-[#d9a441]" /> 12 MODALIDADES
-            </span>
-            <span className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#d9a441]" /> 7 DIAS POR SEMANA
-            </span>
-          </div>
         </motion.div>
 
         {/* Card de acesso */}
@@ -326,39 +360,27 @@ export default function AuthGate() {
             <img
               src="/logo.png"
               alt="Logo da Academia CROWN Pinhal-SP"
-              className="h-20 w-auto gold-drop-glow"
+              className="h-20 w-auto"
             />
           </div>
 
-          <div className="clip-blade bg-[#d9a441]/30 p-px shadow-2xl">
-            <div className="clip-blade bg-[#0d0d0d]/95 backdrop-blur-xl p-6 sm:p-8">
+          <div className="clip-blade border border-[#2b2b31] bg-[#17171b]/95 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
             <div className="text-center mb-6">
               <CrownGlyph className="mx-auto w-14 h-4 text-[#d9a441] mb-4" />
-              <p className="font-heading uppercase tracking-[0.3em] text-xs text-[#d9a441]">
+              <p className="font-heading uppercase tracking-[0.3em] text-xs text-zinc-400">
                 Acesso CROWN
               </p>
               <h2 className="mt-2 font-display text-2xl uppercase">
-                Bem-vindo à <span className="text-gold-gradient">CROWN</span>
+                Bem-vindo à <span className="text-[#d9a441]">CROWN</span>
               </h2>
             </div>
 
             <AuthForm />
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-[#262626]" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-[#0d0d0d] px-4 text-xs uppercase tracking-widest text-muted-foreground">
-                  ou
-                </span>
-              </div>
-            </div>
-
             <Button
               variant="outline"
               onClick={() => setVisitor(true)}
-              className="w-full h-12 -skew-x-[10deg] rounded-none bg-transparent border-[#3a3a3a] hover:bg-[#d9a441]/10 hover:text-[#d9a441] hover:border-[#d9a441]/50 font-heading uppercase tracking-wider transition-all"
+              className="w-full h-12 mt-4 -skew-x-[10deg] rounded-none bg-transparent border-[#3a3a42] hover:bg-white/10 hover:text-foreground hover:border-[#52525b] font-heading uppercase tracking-wider transition-all"
             >
               <span className="flex items-center justify-center gap-2 skew-x-[10deg]">
                 <Eye className="w-5 h-5" />
@@ -371,7 +393,6 @@ export default function AuthGate() {
               Para assinar um plano, o cadastro é necessário.
             </p>
             </div>
-          </div>
 
           <p className="mt-6 text-center text-xs text-muted-foreground/60">
             © {new Date().getFullYear()} CROWN Academia — Pinhal-SP

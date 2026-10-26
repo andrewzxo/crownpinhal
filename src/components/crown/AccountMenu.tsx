@@ -38,7 +38,7 @@ export default function AccountMenu() {
         <DropdownMenuTrigger asChild>
           <button
             aria-label="Menu da conta"
-            className="flex items-center gap-2 border border-[#2a2a2a] bg-[#101010] hover:border-[#d9a441]/60 transition-colors pl-1 pr-3 py-1 cursor-pointer"
+            className="flex items-center gap-2 border border-[#2b2b31] bg-[#101010] hover:border-[#d9a441]/60 transition-colors pl-1 pr-3 py-1 cursor-pointer"
           >
             <Avatar className="w-8 h-8 rounded-none border border-[#d9a441]/50">
               <AvatarFallback className="rounded-none bg-gold-gradient text-black text-xs font-bold">
@@ -52,7 +52,7 @@ export default function AccountMenu() {
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-56 bg-[#0d0d0d] border-[#2a2a2a] text-foreground"
+          className="w-56 bg-[#141418] border-[#2b2b31] text-foreground"
         >
           <DropdownMenuLabel>
             <div className="flex flex-col">
@@ -63,7 +63,7 @@ export default function AccountMenu() {
               </span>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuSeparator className="bg-[#262626]" />
+          <DropdownMenuSeparator className="bg-[#2b2b31]" />
           <DropdownMenuItem
             onClick={() => setShowSubs(true)}
             className="cursor-pointer focus:bg-[#d9a441]/10 focus:text-[#d9a441]"
@@ -86,7 +86,7 @@ export default function AccountMenu() {
               <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard do Dono
             </DropdownMenuItem>
           )}
-          <DropdownMenuSeparator className="bg-[#262626]" />
+          <DropdownMenuSeparator className="bg-[#2b2b31]" />
           <DropdownMenuItem
             onClick={() => logout()}
             className="cursor-pointer text-red-400 focus:text-red-300 focus:bg-red-500/10"

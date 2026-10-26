@@ -1,10 +1,8 @@
 "use client";
 
 import { Building2, Check, CreditCard, Users, type LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
-import { WhatsAppIcon } from "./CtaSection";
 
 type CorporateCard = {
   icon: LucideIcon;
@@ -55,7 +53,7 @@ export default function Empresas() {
   ];
 
   return (
-    <section id="empresas" className="relative py-24 sm:py-32 bg-[#050505] scroll-mt-28">
+    <section id="empresas" className="relative py-24 sm:py-32 bg-[#151518] border-y border-[#2b2b31] scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Benefícios corporativos"
@@ -68,80 +66,54 @@ export default function Empresas() {
           {cards.map((card, i) => (
             <Reveal key={card.name} delay={i * 0.12} className={card.highlighted ? "col-span-2 lg:col-span-1" : ""}>
               <article
-                className={`relative h-full clip-blade p-px transition-all duration-300 ${
+                className={`relative h-full clip-blade border p-5 sm:p-7 flex flex-col transition-all duration-300 ${
                   card.highlighted
-                    ? "bg-gold-gradient gold-drop-glow"
-                    : "bg-[#262626] hover:bg-[#d9a441]/50"
+                    ? "border-[#d9a441]/60 bg-[#1b1b20]"
+                    : "border-[#2b2b31] bg-[#17171b] hover:border-[#52525b]"
                 }`}
               >
-                <div
-                  className={`clip-blade h-full p-5 sm:p-7 flex flex-col ${
-                    card.highlighted ? "bg-[#101010]" : "bg-[#0d0d0d]"
-                  }`}
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <span className="clip-shield w-10 h-12 sm:w-12 sm:h-14 bg-gold-gradient flex items-center justify-center shrink-0">
-                      <card.icon className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
-                    </span>
-                    <div>
-                      <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide text-foreground">
-                        {card.name}
-                      </h3>
-                      {card.tagline && (
-                        <p className="text-xs font-heading uppercase tracking-widest text-[#d9a441] mt-0.5">
-                          {card.tagline}
-                        </p>
-                      )}
-                    </div>
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <span className="w-11 h-12 bg-[#222228] border border-[#3a3a42] flex items-center justify-center shrink-0">
+                    <card.icon className="w-5 h-5 text-[#d9a441]" />
+                  </span>
+                  <div>
+                    <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide text-foreground">
+                      {card.name}
+                    </h3>
+                    {card.tagline && (
+                      <p className="text-xs font-heading uppercase tracking-widest text-zinc-400 mt-0.5">
+                        {card.tagline}
+                      </p>
+                    )}
                   </div>
-
-                  <ul className="mt-5 sm:mt-7 space-y-3 sm:space-y-4 flex-1">
-                    {card.bullets.map((b) => (
-                      <li key={b} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/85 leading-relaxed">
-                        <span className="mt-0.5 w-[16px] h-[16px] shrink-0 rotate-45 bg-[#d9a441]/15 border border-[#d9a441]/50 flex items-center justify-center">
-                          <Check className="w-2.5 h-2.5 text-[#d9a441] -rotate-45" />
-                        </span>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {card.highlighted && (
-                    <p className="mt-6 text-xs font-heading uppercase tracking-widest text-[#d9a441]/80 border-t border-[#262626] pt-4">
-                      Vantagem do plano Basic: musculação já inclusa
-                    </p>
-                  )}
                 </div>
+
+                <ul className="mt-5 sm:mt-7 space-y-3 sm:space-y-4 flex-1">
+                  {card.bullets.map((b) => (
+                    <li key={b} className="flex items-start gap-3 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                      <Check className="mt-0.5 w-4 h-4 shrink-0 text-[#d9a441]" />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
               </article>
             </Reveal>
           ))}
         </div>
 
         <Reveal delay={0.35}>
-          <div className="mt-12 flex flex-col items-center gap-4">
-            <p className="text-sm text-muted-foreground text-center max-w-xl">
-              Funcionário de empresa conveniada? Apresente seu benefício na recepção ou tire dúvidas
-              direto com o nosso time.
-            </p>
-            <div className="-skew-x-[10deg]">
-              <Button
-                size="lg"
-                asChild
-                className="h-12 px-8 skew-x-[10deg] bg-transparent border border-[#25D366]/60 text-[#25D366] hover:bg-[#25D366]/10 hover:border-[#25D366] font-heading uppercase tracking-wider font-semibold text-sm transition-all"
-              >
-                <a
-                  href={waLink(whatsapp, "Olá! Trabalho em uma empresa e quero saber mais sobre o Wellhub e o TotalPass na CROWN.")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className="flex items-center gap-2 skew-x-[10deg]">
-                    <WhatsAppIcon className="w-4 h-4" />
-                    Tirar dúvidas no WhatsApp
-                  </span>
-                </a>
-              </Button>
-            </div>
-          </div>
+          <p className="mt-12 text-sm text-muted-foreground text-center max-w-2xl mx-auto">
+            Funcionário de empresa conveniada?{' '}
+            <a
+              href={waLink(whatsapp, "Olá! Trabalho em uma empresa e quero saber mais sobre o Wellhub e o TotalPass na CROWN.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#d9a441] underline underline-offset-4 hover:brightness-125 transition-all"
+            >
+              Fale com a recepção no WhatsApp
+            </a>
+            {' '}e leve a CROWN para a sua empresa.
+          </p>
         </Reveal>
       </div>
     </section>

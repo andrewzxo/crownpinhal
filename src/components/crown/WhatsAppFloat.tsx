@@ -27,12 +27,8 @@ export default function WhatsAppFloat() {
         {phoneLabel}
       </span>
 
-      {/* Balão redondo com anel pulsante */}
-      <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-black shadow-[0_10px_32px_-6px_rgba(37,211,102,0.6)] transition-transform duration-300 group-hover:scale-110">
-        <span
-          className="absolute inset-0 rounded-full bg-[#25D366]/50 animate-ping-slow"
-          aria-hidden
-        />
+      {/* Balão redondo */}
+      <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-black shadow-lg transition-transform duration-300 group-hover:scale-110">
         <WhatsAppIcon className="relative w-7 h-7" />
       </span>
     </motion.a>

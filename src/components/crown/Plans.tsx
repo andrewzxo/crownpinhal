@@ -6,7 +6,6 @@ import { Crown, Hourglass, Info } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import type { PlanDTO } from "@/lib/types";
 import Reveal, { SectionTitle } from "./Reveal";
-import { CrownEdge } from "./CrownShapes";
 
 type CategoryKey = "todos" | "planos" | "club" | "dia";
 
@@ -50,11 +49,6 @@ export default function Plans() {
       return { name: name.trim(), detail: rest.join("→").trim() };
     });
 
-  const partners = (settings?.partners || "WELLHUB (ANTIGO GYMPASS)|TOTALPASS")
-    .split("|")
-    .map((t) => t.trim())
-    .filter(Boolean);
-
   const visible = useMemo(
     () => plans.filter((p) => cat === "todos" || planCategory(p) === cat),
     [plans, cat]
@@ -72,9 +66,7 @@ export default function Plans() {
   }
 
   return (
-    <>
-      <CrownEdge fill="#050505" height={20} />
-      <section id="planos" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28">
+    <section id="planos" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <SectionTitle
           eyebrow="Planos CROWN"
@@ -98,10 +90,10 @@ export default function Plans() {
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setCat(c.key)}
-                  className={`shrink-0 clip-tag px-4 sm:px-5 py-2 font-heading uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
+                  className={`shrink-0 px-4 sm:px-5 py-2 font-heading uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? "bg-gold-gradient text-black font-bold"
-                      : "bg-[#121212] border border-[#262626] text-muted-foreground hover:text-[#d9a441] hover:border-[#d9a441]/60"
+                      ? "bg-[#d9a441] text-black font-bold"
+                      : "bg-[#1b1b20] border border-[#2b2b31] text-muted-foreground hover:text-foreground hover:border-[#52525b]"
                   }`}
                 >
                   {c.label}
@@ -119,96 +111,85 @@ export default function Plans() {
               className={p.highlighted ? "col-span-2 md:col-span-1" : ""}
             >
               <motion.article
-                whileHover={{ y: -6 }}
+                whileHover={{ y: -4 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className={`relative h-full clip-blade p-px transition-all duration-300 ${
+                className={`relative h-full flex flex-col p-4 sm:p-6 transition-all duration-300 ${
                   p.highlighted
-                    ? "bg-gold-gradient gold-drop-glow"
-                    : "bg-[#262626] hover:bg-[#d9a441]/50"
+                    ? "border border-[#d9a441]/70 bg-[#1b1b20]"
+                    : "border border-[#2b2b31] bg-[#17171b] hover:border-[#52525b]"
                 }`}
               >
-                <div
-                  className={`clip-blade h-full flex flex-col p-4 sm:p-6 relative ${
-                    p.highlighted ? "bg-[#101010]" : "bg-[#0d0d0d]"
-                  }`}
-                >
-                  {/* Badge DENTRO do card — não é cortado pelo clip */}
-                  {p.badge && (
-                    <span className="-skew-x-12 self-start mb-3">
-                      <span
-                        className={`block skew-x-12 whitespace-nowrap px-2.5 py-1 font-heading uppercase tracking-widest text-[10px] sm:text-xs font-bold ${
-                          p.highlighted
-                            ? "bg-gold-gradient text-black"
-                            : "bg-[#050505] border border-[#d9a441]/50 text-[#d9a441]"
-                        }`}
-                      >
-                        {p.badge}
-                      </span>
-                    </span>
-                  )}
-
-                  <h3 className="font-display uppercase text-lg sm:text-2xl tracking-wide leading-tight">
-                    {p.name}
-                  </h3>
-                  <p className="mt-1.5 text-[11px] sm:text-sm text-muted-foreground line-clamp-2">
-                    {p.description}
-                  </p>
-
-                  {/* Tabela de valores oficial */}
-                  <div className="mt-4 mb-5 space-y-1.5">
-                    {p.priceOptions && p.priceOptions.length > 0 ? (
-                      p.priceOptions.map((opt) => (
-                        <div key={opt.label} className="flex items-baseline gap-2">
-                          <span className="font-heading uppercase tracking-wider text-[10px] sm:text-xs text-muted-foreground shrink-0">
-                            {opt.label}
-                          </span>
-                          <span className="flex-1 border-b border-dotted border-[#d9a441]/30 -translate-y-[3px]" />
-                          <span className="font-display text-base sm:text-xl text-gold-gradient whitespace-nowrap">
-                            {brl(opt.price)}
-                          </span>
-                        </div>
-                      ))
-                    ) : p.price !== null ? (
-                      <p className="font-display text-2xl sm:text-4xl text-gold-gradient">
-                        {brl(p.price)}
-                        {p.period && (
-                          <span className="text-xs sm:text-sm font-heading uppercase tracking-wider text-muted-foreground">
-                            {" "}
-                            /{p.period}
-                          </span>
-                        )}
-                      </p>
-                    ) : (
-                      <div className="flex items-center gap-2.5">
-                        <Hourglass className="w-5 h-5 text-[#d9a441] shrink-0" />
-                        <p className="font-heading uppercase tracking-wider text-xs text-[#d9a441]">
-                          Consulte na recepção
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={() => handleSubscribe(p.id)}
-                    className={`mt-auto w-full h-10 sm:h-12 font-heading uppercase tracking-wider font-bold text-[11px] sm:text-sm transition-all hover:scale-[1.02] cursor-pointer flex items-center justify-center gap-2 ${
+                {/* Badge no fluxo do card — nunca cortado */}
+                {p.badge && (
+                  <span
+                    className={`self-start mb-3 px-2.5 py-1 font-heading uppercase tracking-widest text-[10px] sm:text-xs font-bold ${
                       p.highlighted
-                        ? "clip-arrow-r bg-gold-gradient hover:brightness-110 text-black"
-                        : "-skew-x-[10deg] bg-[#1a1a1a] border border-[#d9a441]/50 text-[#d9a441] hover:bg-[#d9a441] hover:text-black"
+                        ? "bg-[#d9a441] text-black"
+                        : "bg-[#222228] border border-[#3a3a42] text-zinc-300"
                     }`}
                   >
-                    <span className={`flex items-center justify-center gap-2 ${p.highlighted ? "" : "skew-x-[10deg]"}`}>
-                      <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      Quero esse plano
-                    </span>
-                  </button>
+                    {p.badge}
+                  </span>
+                )}
+
+                <h3 className="font-display uppercase text-lg sm:text-2xl tracking-wide leading-tight">
+                  {p.name}
+                </h3>
+                <p className="mt-1.5 text-[11px] sm:text-sm text-muted-foreground line-clamp-2">
+                  {p.description}
+                </p>
+
+                {/* Tabela de valores oficial — label e preço em linhas separadas (sem sobreposição) */}
+                <div className="mt-4 mb-5 space-y-2.5">
+                  {p.priceOptions && p.priceOptions.length > 0 ? (
+                    p.priceOptions.map((opt) => (
+                      <div key={opt.label} className="flex flex-col gap-0.5">
+                        <span className="font-heading uppercase tracking-wider text-[10px] sm:text-[11px] text-zinc-400 leading-tight">
+                          {opt.label}
+                        </span>
+                        <span className="font-display text-lg sm:text-xl text-[#d9a441] whitespace-nowrap">
+                          {brl(opt.price)}
+                        </span>
+                      </div>
+                    ))
+                  ) : p.price !== null ? (
+                    <p className="font-display text-2xl sm:text-4xl text-[#d9a441]">
+                      {brl(p.price)}
+                      {p.period && (
+                        <span className="text-xs sm:text-sm font-heading uppercase tracking-wider text-muted-foreground">
+                          {" "}
+                          /{p.period}
+                        </span>
+                      )}
+                    </p>
+                  ) : (
+                    <div className="flex items-center gap-2.5">
+                      <Hourglass className="w-5 h-5 text-zinc-400 shrink-0" />
+                      <p className="font-heading uppercase tracking-wider text-xs text-zinc-400">
+                        Consulte na recepção
+                      </p>
+                    </div>
+                  )}
                 </div>
+
+                <button
+                  onClick={() => handleSubscribe(p.id)}
+                  className={`mt-auto w-full h-10 sm:h-12 font-heading uppercase tracking-wider font-bold text-[11px] sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                    p.highlighted
+                      ? "bg-[#d9a441] hover:brightness-110 text-black"
+                      : "bg-[#222228] border border-[#3a3a42] text-zinc-200 hover:bg-[#2b2b31] hover:border-[#52525b]"
+                  }`}
+                >
+                  <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  Quero esse plano
+                </button>
               </motion.article>
             </Reveal>
           ))}
         </div>
 
         {visible.length === 0 && (
-          <div className="mt-12 border border-dashed border-[#2a2a2a] p-12 text-center text-muted-foreground">
+          <div className="mt-12 border border-dashed border-[#3a3a42] p-12 text-center text-muted-foreground">
             Nenhum plano nesta categoria no momento.
           </div>
         )}
@@ -222,19 +203,16 @@ export default function Plans() {
 
         {/* Descontos oficiais + estacionamento grátis */}
         <Reveal delay={0.25}>
-          <div className="mt-12 border border-[#262626] bg-[#0b0b0b]">
-            <div className="bg-[#111] border-b border-[#262626] px-6 py-4 flex items-center justify-center">
+          <div className="mt-12 border border-[#2b2b31] bg-[#151518]">
+            <div className="bg-[#1b1b20] border-b border-[#2b2b31] px-6 py-4 flex items-center justify-center">
               <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide">
-                Descontos e <span className="text-gold-gradient">vantagens</span>
+                Descontos e <span className="text-[#d9a441]">vantagens</span>
               </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#262626]">
-              {convenios.map((c, i) => (
-                <div key={c.name} className="bg-[#0b0b0b] px-5 py-6 text-center hover:bg-[#111] transition-colors">
-                  <span className="clip-hex bg-gold-gradient text-black font-display text-sm w-10 h-10 mx-auto mb-3 flex items-center justify-center">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <p className="font-heading uppercase tracking-wider text-xs sm:text-sm font-semibold">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#2b2b31]">
+              {convenios.map((c) => (
+                <div key={c.name} className="bg-[#151518] px-5 py-6 text-center hover:bg-[#1b1b20] transition-colors">
+                  <p className="font-heading uppercase tracking-wider text-xs sm:text-sm font-semibold text-zinc-100">
                     {c.name}
                   </p>
                   {c.detail && (
@@ -245,23 +223,9 @@ export default function Plans() {
                 </div>
               ))}
             </div>
-            <div className="border-t border-[#262626] px-6 py-5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 flex-wrap">
-              <span className="font-heading uppercase tracking-[0.3em] text-xs text-muted-foreground">
-                Aceitamos
-              </span>
-              {partners.map((p) => (
-                <span
-                  key={p}
-                  className="clip-tag bg-[#d9a441]/10 font-display uppercase text-base sm:text-lg tracking-wide px-5 py-1.5 text-[#d9a441]"
-                >
-                  {p}
-                </span>
-              ))}
-            </div>
           </div>
         </Reveal>
       </div>
-      </section>
-    </>
+    </section>
   );
 }

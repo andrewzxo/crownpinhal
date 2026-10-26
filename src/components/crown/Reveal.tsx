@@ -50,14 +50,14 @@ export function SectionTitle({
 
   return (
     <Reveal className={align === "center" ? "text-center" : "text-left"}>
-      <p className="font-heading uppercase tracking-[0.35em] text-xs text-[#d9a441] flex items-center gap-3 justify-center data-[align=left]:justify-start" data-align={align}>
-        <span className="w-8 h-px bg-[#d9a441]/60" />
+      <p className="font-heading uppercase tracking-[0.35em] text-xs text-zinc-400 flex items-center gap-3 justify-center data-[align=left]:justify-start" data-align={align}>
+        <span className="w-8 h-px bg-zinc-600" />
         {eyebrow}
-        <span className="w-8 h-px bg-[#d9a441]/60" />
+        <span className="w-8 h-px bg-zinc-600" />
       </p>
       <h2 className="mt-4 font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.95]">
         {pre}
-        {highlight && <span className="text-gold-gradient">{highlight}</span>}
+        {highlight && <span className="text-[#d9a441]">{highlight}</span>}
         {post}
       </h2>
       <CrownGlyph

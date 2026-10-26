@@ -23,18 +23,17 @@ function brl(v: number) {
 
 function PriceTable({ options }: { options: PlanPriceOption[] }) {
   return (
-    <div className="bg-[#0a0a0a] border border-[#262626] p-4 space-y-2">
-      <p className="font-heading uppercase text-xs tracking-wider text-[#d9a441]">
+    <div className="bg-[#141418] border border-[#2b2b31] p-4 space-y-2">
+      <p className="font-heading uppercase text-xs tracking-wider text-zinc-400">
         Valores do plano
       </p>
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         {options.map((o) => (
-          <div key={o.label} className="flex items-baseline gap-2">
-            <span className="font-heading uppercase tracking-wider text-xs text-muted-foreground shrink-0">
+          <div key={o.label} className="flex flex-col gap-0.5">
+            <span className="font-heading uppercase tracking-wider text-xs text-zinc-400 leading-tight">
               {o.label}
             </span>
-            <span className="flex-1 border-b border-dotted border-[#d9a441]/30 -translate-y-[3px]" />
-            <span className="font-display text-lg text-gold-gradient whitespace-nowrap">
+            <span className="font-display text-lg text-[#d9a441] whitespace-nowrap">
               {brl(o.price)}
             </span>
           </div>
@@ -88,16 +87,16 @@ export default function SubscribeModal() {
 
   return (
     <Dialog open={!!planId} onOpenChange={(open) => !open && closeSubscribe()}>
-      <DialogContent className="bg-[#0d0d0d] border-[#2a2a2a] max-w-md">
+      <DialogContent className="bg-[#17171b] border-[#2b2b31] max-w-md">
         {plan ? (
           done ? (
             <div className="py-6 text-center">
-              <div className="mx-auto w-16 h-16 bg-gold-gradient flex items-center justify-center gold-glow mb-4">
-                <BadgeCheck className="w-8 h-8 text-black" />
+              <div className="mx-auto w-16 h-16 bg-[#222228] border border-[#3a3a42] flex items-center justify-center mb-4">
+                <BadgeCheck className="w-8 h-8 text-[#d9a441]" />
               </div>
               <DialogHeader>
                 <DialogTitle className="text-center font-display text-2xl uppercase">
-                  Pedido <span className="text-gold-gradient">enviado!</span>
+                  Pedido <span className="text-[#d9a441]">enviado!</span>
                 </DialogTitle>
                 <DialogDescription className="text-center text-muted-foreground mt-2">
                   Recebemos seu interesse no plano <strong className="text-[#d9a441]">{plan.name}</strong>.
@@ -117,11 +116,11 @@ export default function SubscribeModal() {
           ) : (
             <>
               <DialogHeader>
-                <p className="font-heading uppercase tracking-[0.3em] text-xs text-[#d9a441]">
+                <p className="font-heading uppercase tracking-[0.3em] text-xs text-zinc-400">
                   Assinatura CROWN
                 </p>
                 <DialogTitle className="font-display text-2xl uppercase tracking-wide">
-                  Plano <span className="text-gold-gradient">{plan.name}</span>
+                  Plano <span className="text-[#d9a441]">{plan.name}</span>
                 </DialogTitle>
                 <DialogDescription>
                   {plan.description}
@@ -132,8 +131,8 @@ export default function SubscribeModal() {
                 {plan.priceOptions && plan.priceOptions.length > 0 ? (
                   <PriceTable options={plan.priceOptions} />
                 ) : plan.price !== null ? (
-                  <div className="bg-[#0a0a0a] border border-[#262626] p-4">
-                    <p className="font-display text-3xl text-gold-gradient">
+                  <div className="bg-[#141418] border border-[#2b2b31] p-4">
+                    <p className="font-display text-3xl text-[#d9a441]">
                       {brl(plan.price)}
                       {plan.period && (
                         <span className="text-sm font-heading uppercase tracking-wider text-muted-foreground">
@@ -144,7 +143,7 @@ export default function SubscribeModal() {
                     </p>
                   </div>
                 ) : (
-                  <div className="bg-[#0a0a0a] border border-[#262626] p-4">
+                  <div className="bg-[#141418] border border-[#2b2b31] p-4">
                     <p className="text-sm text-muted-foreground">
                       Valores disponíveis na recepção ou pelo WhatsApp.
                     </p>
@@ -152,8 +151,8 @@ export default function SubscribeModal() {
                 )}
 
                 {plan.features.length > 0 && (
-                  <div className="bg-[#0a0a0a] border border-[#262626] p-4 space-y-2">
-                    <p className="font-heading uppercase text-xs tracking-wider text-[#d9a441]">
+                  <div className="bg-[#141418] border border-[#2b2b31] p-4 space-y-2">
+                    <p className="font-heading uppercase text-xs tracking-wider text-zinc-400">
                       Incluído no plano
                     </p>
                     <ul className="space-y-1.5">
@@ -183,7 +182,7 @@ export default function SubscribeModal() {
                   />
                 </div>
 
-                <div className="bg-[#d9a441]/5 border border-[#d9a441]/20 p-3 text-xs text-muted-foreground">
+                <div className="bg-[#141418] border border-[#2b2b31] p-3 text-xs text-muted-foreground">
                   Pedido será feito em nome de{" "}
                   <strong className="text-foreground">{user?.name}</strong> ({user?.email}). O
                   dono da academia receberá seu pedido no painel de controle.
@@ -192,7 +191,7 @@ export default function SubscribeModal() {
                 <Button
                   onClick={handleSubscribe}
                   disabled={loading}
-                  className="w-full h-12 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base gold-glow-sm"
+                  className="w-full h-12 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base"
                 >
                   {loading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

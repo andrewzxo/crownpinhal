@@ -210,13 +210,8 @@ async function main() {
 
   for (const m of modalitiesData) {
     const existing = await prisma.modality.findFirst({ where: { name: m.name } })
-    if (existing) {
-      // re-seed atualiza descrições/imagens — NÃO toca em schedules (evita duplicar horários)
-      await prisma.modality.update({
-        where: { id: existing.id },
-        data: { description: m.description, imageUrl: m.imageUrl, icon: m.icon, order: m.order, active: true },
-      })
-    } else {
+    if (!existing) {
+      // seed é NÃO destrutivo: só cria o que falta. Edições feitas no admin NUNCA são sobrescritas.
       await prisma.modality.create({
         data: m as never,
       })
@@ -448,19 +443,11 @@ async function main() {
 
   for (const p of plansData) {
     const existing = await prisma.plan.findFirst({ where: { name: p.name } })
-    if (existing) {
-      await prisma.plan.update({ where: { id: existing.id }, data: p })
-    } else {
+    if (!existing) {
+      // seed é NÃO destrutivo: só cria o que falta. Preços editados no admin ficam intactos.
       await prisma.plan.create({ data: p })
     }
   }
-
-  // Desativa planos antigos que não fazem parte da tabela oficial de valores
-  const keepNames = plansData.map((p) => p.name)
-  await prisma.plan.updateMany({
-    where: { name: { notIn: keepNames } },
-    data: { active: false, highlighted: false },
-  })
 
   // ---------- Galeria (fotos reais + complemento) ----------
   const galleryData = [
@@ -480,17 +467,15 @@ async function main() {
   // ---------- Configurações ----------
   // IMPORTANTE: bordões/frases de marketing inventadas NÃO são permitidas —
   // somente informações reais da academia (nome, modalidades, horários, contatos).
+  // NÃO destrutivo: settings editados pelo admin NUNCA são sobrescritos pelo seed.
   const settings: Record<string, string> = {
     // HERO — slogan real da CROWN ("Conectando pessoas através do fitness")
     heroBadge: 'FITNESS & LIFESTYLE • ESPÍRITO SANTO DO PINHAL-SP',
     heroTitle: 'CONECTANDO\nPESSOAS\nATRAVÉS DO\nFITNESS',
     heroHighlight: 'FITNESS',
     heroSubtitle:
-      'Musculação, CROSS, HYROX oficial, lutas, aulas coletivas, corrida e quadras de areia. Um espaço completo para o seu Fitness & Lifestyle no coração de Pinhal.',
-    heroCtaNote: '7 dias grátis para novos alunos testarem a estrutura • das 5h às 16h',
+      'Um espaço completo para o seu Fitness & Lifestyle: treino, saúde e convivência no coração de Pinhal.',
     heroImageUrl: '/img/hero-crown.png',
-    marqueeItems:
-      'MUSCULAÇÃO • CROSS • HYROX • CROWN RUN • CROWN DANCE • BIKE • JUMP • PILATES • MUAY THAI • BOXE • BEACH TENNIS • FUTEVÔLEI',
     // SOBRE A VIBE CROWN — conceito real: "Um espaço completo para o seu Fitness & Lifestyle. Conectando pessoas através do fitness."
     aboutTitle: 'MAIS QUE UMA ACADEMIA. SEU FITNESS & LIFESTYLE.',
     aboutText:
@@ -499,8 +484,8 @@ async function main() {
     statsModalities: '12',
     statsTrainers: '7',
     statsYears: '5h',
-    // CTA — campanha real "7 Dias Grátis" + "Projeto Verão Crown — 90 dias pra mudar"
-    ctaEyebrow: 'PROJETO VERÃO CROWN — 90 DIAS PRA MUDAR',
+    // CTA — campanha real "7 Dias Grátis"
+    ctaEyebrow: 'CROWN PINHAL-SP',
     ctaTitle: 'COMEÇA COM 7 DIAS GRÁTIS',
     ctaText:
       'Novos alunos testam toda a estrutura das 5h às 16h. Agende sua aula experimental pelo WhatsApp ou pelo hub da CROWN — é rápido.',
@@ -524,7 +509,7 @@ async function main() {
   }
 
   for (const [key, value] of Object.entries(settings)) {
-    await prisma.setting.upsert({ where: { key }, update: { value }, create: { key, value } })
+    await prisma.setting.upsert({ where: { key }, update: {}, create: { key, value } })
   }
 
   console.log('Seed concluído!')

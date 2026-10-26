@@ -5,7 +5,7 @@
 
 /** Divisor em zigue-zague — picos de coroa entre seções. */
 export function CrownEdge({
-  fill = "#070707",
+  fill = "#0c0c0e",
   stroke,
   height = 24,
   flip = false,
@@ -62,23 +62,6 @@ export function CrownGlyph({ className = "" }: { className?: string }) {
         strokeWidth="2.5"
         strokeLinecap="square"
       />
-    </svg>
-  );
-}
-
-/** Coroa grande em traço — marca d'água de fundo. */
-export function CrownWatermark({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 120 96" fill="none" aria-hidden className={className}>
-      <path
-        d="M8 74 L8 26 L36 48 L60 12 L84 48 L112 26 L112 74 Z"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      <path d="M8 84 L112 84" stroke="currentColor" strokeWidth="2" />
-      <circle cx="8" cy="19" r="3.5" stroke="currentColor" strokeWidth="2" />
-      <circle cx="60" cy="5" r="3.5" stroke="currentColor" strokeWidth="2" />
-      <circle cx="112" cy="19" r="3.5" stroke="currentColor" strokeWidth="2" />
     </svg>
   );
 }

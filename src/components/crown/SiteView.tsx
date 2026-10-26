@@ -3,7 +3,6 @@
 import Navbar from "./Navbar";
 import SectionNav from "./SectionNav";
 import Hero from "./Hero";
-import Marquee from "./Marquee";
 import About from "./About";
 import Modalities from "./Modalities";
 import Coletivas from "./Coletivas";
@@ -18,12 +17,11 @@ import WhatsAppFloat from "./WhatsAppFloat";
 
 export default function SiteView() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#050505]">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <SectionNav />
       <main className="flex-1">
         <Hero />
-        <Marquee />
         <About />
         <Modalities />
         <Coletivas />
