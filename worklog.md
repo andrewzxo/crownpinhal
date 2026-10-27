@@ -412,3 +412,24 @@ Stage Summary:
 - Todas as informações de login vivem no banco SQLite: User (credenciais), Session (sessões) e o novo LoginLog (histórico de acessos), com visualização "Acessos" no Dashboard do Dono.
 - Site público praticamente sem ícones decorativos — apenas tipografia, traços dourados finos e ícones de marca/funcionais (WhatsApp, Instagram, Maps, menu, olho de senha, spinners).
 - Artefatos: src/components/crown/admin/OrdersShared.tsx (novo), src/app/api/owner/login-logs/route.ts (novo), prisma/schema.prisma (model LoginLog), 16 componentes/rotas editados.
+
+---
+Task ID: 21
+Agent: Z.ai Code (orchestrator)
+Task: Nos cards de planos, "MENSAL / SEMESTRAL / ANUAL" viraram opções de escolha; ao fazer o pedido do plano, o pedido é redirecionado para o WhatsApp da academia com todas as informações do pedido + o nome de quem fez o pedido (print do card CROSS ILIMITADO).
+
+Work Log:
+- CARDS (Plans.tsx): a tabela de valores virou RADIOGROUP selecionável — cada período é um botão (label à esquerda, preço à direita, min-h-11 p/ toque); selecionado ganha borda e preço dourados; padrão = primeira opção; role=radio/aria-checked; clique leva o período escolhido para o modal.
+- Store: openSubscribe(planId, optionLabel) — novo estado subscribeOptionLabel; closeSubscribe limpa ambos.
+- SubscribeModal: novo OptionPicker (períodos selecionáveis também dentro do modal, pré-marcados com a escolha do card e ajustáveis); novo texto/info "Pedido em nome de X (e-mail)… você será levado ao WhatsApp"; botão "CONFIRMAR E ENVIAR AO WHATSAPP".
+- REDIRECIONAMENTO WHATSAPP: após confirmar, o pedido salva no banco e window.open abre wa.me/5519991504548 com a mensagem: "Olá, CROWN! Quero assinar um plano." + Nome + E-mail + Plano + Período + Valor + Observação (se houver) + "Pedido feito pelo site da CROWN."; se o pop-up for bloqueado, a tela de sucesso mostra o botão verde "ABRIR WHATSAPP COM O PEDIDO" (mesma mensagem).
+- Banco: Prisma Subscription ganhou coluna optionLabel (bun run db:push ok); POST /api/subscriptions salva optionLabel; GET /api/owner/subscriptions e /api/subscriptions/mine retornam; SubscriptionDTO com optionLabel.
+- Painéis: OrdersTab (compartilhado ADMIN+OWNER) ganhou coluna PERÍODO (dourado) na tabela de pedidos; Meus Pedidos do cliente mostra o período sob o nome do plano.
+- Correção no caminho: primeira tentativa de pedido falhou com PrismaClientValidationError (dev server com Prisma Client antigo sem optionLabel) — resolvido reiniciando o dev server (mesma lição do Task 20).
+- VERIFICAÇÃO BROWSER (desktop 1280x800 + mobile 390x844): seleção MENSAL/SEMESTRAL/ANUAL no card funciona (aria-checked confere); escolha ANUAL no card chegou pré-marcada no modal; pedido confirmado → redirecionou para api.whatsapp.com/send/?phone=5519991504548 com a mensagem completa decodificada: "Nome: Cliente Exemplo / E-mail: cliente@crown.com / Plano: CROSS ILIMITADO / Período: ANUAL / Valor: R$ 149 / Observação: Prefiro treinar à noite, depois das 19h"; pedido gravado no banco com optionLabel=ANUAL; aba PEDIDOS do ADMIN exibiu a linha com Período ANUAL; Meus Pedidos do cliente mostra o período; seleção trocável dentro do modal; mobile 2 colunas sem cortes; console e dev.log limpos; lint 0/0.
+- Limpeza: pedido de teste excluído (DELETE /api/owner/subscriptions, 0 assinaturas restantes).
+
+Stage Summary:
+- Período do plano agora é ESCOLHA (card e modal), não mais tabela estática.
+- Pedido do plano vai para o WhatsApp (19) 99150-4548 com nome, e-mail, plano, período, valor e observação — e continua registrando no banco com o período, visível ao ADMIN e ao OWNER na aba Pedidos.
+- Artefatos: prisma/schema.prisma (Subscription.optionLabel), src/lib/store.ts, src/lib/types.ts, Plans.tsx, SubscribeModal.tsx, OrdersShared.tsx, MySubscriptionsModal.tsx, /api/subscriptions, /api/subscriptions/mine, /api/owner/subscriptions.

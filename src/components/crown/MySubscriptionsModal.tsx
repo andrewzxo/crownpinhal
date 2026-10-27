@@ -87,6 +87,11 @@ function SubsList() {
           >
             <div className="min-w-0">
               <p className="font-display uppercase tracking-wide text-lg">{s.plan.name}</p>
+              {s.optionLabel && (
+                <p className="font-heading uppercase tracking-wider text-xs font-bold text-[#d9a441] mt-0.5">
+                  {s.optionLabel}
+                </p>
+              )}
               <p className="text-xs text-zinc-400 mt-0.5">
                 {fmtDate.format(new Date(s.createdAt))}
               </p>

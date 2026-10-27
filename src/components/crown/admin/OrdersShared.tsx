@@ -161,6 +161,7 @@ export default function OrdersTab({ onChanged }: { onChanged?: () => void }) {
                   <TableHead className="text-[#d9a441]">Data</TableHead>
                   <TableHead className="text-[#d9a441]">Cliente</TableHead>
                   <TableHead className="text-[#d9a441]">Plano</TableHead>
+                  <TableHead className="text-[#d9a441]">Período</TableHead>
                   <TableHead className="text-[#d9a441]">Status</TableHead>
                   <TableHead className="text-[#d9a441]">Observações</TableHead>
                   <TableHead className="text-right text-[#d9a441]">Ações</TableHead>
@@ -183,6 +184,15 @@ export default function OrdersTab({ onChanged }: { onChanged?: () => void }) {
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-sm">
                       {s.plan.name}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap text-sm">
+                      {s.optionLabel ? (
+                        <span className="font-heading uppercase tracking-wider text-xs font-bold text-[#d9a441]">
+                          {s.optionLabel}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <SubscriptionStatusBadge status={s.status} />

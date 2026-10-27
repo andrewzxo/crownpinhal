@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
 import { useAppStore } from "@/lib/store";
+import { WhatsAppIcon } from "./CtaSection";
 import type { PlanDTO, PlanPriceOption, SubscriptionDTO } from "@/lib/types";
 
 function brl(v: number) {
@@ -21,23 +22,58 @@ function brl(v: number) {
   return s.endsWith(",00") ? `R$ ${s.slice(0, -3)}` : `R$ ${s}`;
 }
 
-function PriceTable({ options }: { options: PlanPriceOption[] }) {
+function OptionPicker({
+  plan,
+  selectedLabel,
+  onSelect,
+}: {
+  plan: PlanDTO;
+  selectedLabel: string | null;
+  onSelect: (label: string) => void;
+}) {
+  const options = plan.priceOptions ?? [];
   return (
-    <div className="bg-[#141418] border border-[#2b2b31] p-4 space-y-2">
+    <div
+      role="radiogroup"
+      aria-label={`Período do plano ${plan.name}`}
+      className="bg-[#141418] border border-[#2b2b31] p-4 space-y-2"
+    >
       <p className="font-heading uppercase text-xs tracking-wider text-zinc-400">
-        Valores do plano
+        Escolha o período
       </p>
       <div className="space-y-2">
-        {options.map((o) => (
-          <div key={o.label} className="flex flex-col gap-0.5">
-            <span className="font-heading uppercase tracking-wider text-xs text-zinc-400 leading-tight">
-              {o.label}
-            </span>
-            <span className="font-display text-lg text-[#d9a441] whitespace-nowrap">
-              {brl(o.price)}
-            </span>
-          </div>
-        ))}
+        {options.map((o: PlanPriceOption) => {
+          const isSelected = selectedLabel === o.label;
+          return (
+            <button
+              key={o.label}
+              type="button"
+              role="radio"
+              aria-checked={isSelected}
+              onClick={() => onSelect(o.label)}
+              className={`w-full min-h-11 px-3 py-2 flex items-center justify-between gap-2 text-left transition-all duration-150 cursor-pointer ${
+                isSelected
+                  ? "border border-[#d9a441] bg-[#d9a441]/10"
+                  : "border border-[#2b2b31] bg-[#0a0a0a] hover:border-[#3a3a42]"
+              }`}
+            >
+              <span
+                className={`font-heading uppercase tracking-wider text-[11px] leading-tight ${
+                  isSelected ? "text-[#d9a441] font-bold" : "text-zinc-400"
+                }`}
+              >
+                {o.label}
+              </span>
+              <span
+                className={`font-display text-lg whitespace-nowrap ${
+                  isSelected ? "text-[#d9a441]" : "text-zinc-200"
+                }`}
+              >
+                {brl(o.price)}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -45,23 +81,62 @@ function PriceTable({ options }: { options: PlanPriceOption[] }) {
 
 export default function SubscribeModal() {
   const planId = useAppStore((s) => s.subscribePlanId);
+  const optionFromCard = useAppStore((s) => s.subscribeOptionLabel);
   const closeSubscribe = useAppStore((s) => s.closeSubscribe);
   const content = useAppStore((s) => s.content);
   const user = useAppStore((s) => s.user);
   const openAuthModal = useAppStore((s) => s.openAuthModal);
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [waHref, setWaHref] = useState<string | null>(null);
 
   const plan = content?.plans.find((p) => p.id === planId) ?? null;
+  const whatsapp = content?.settings?.whatsapp || "5519991504548";
 
   useEffect(() => {
     if (!planId) {
+      setSelectedLabel(null);
       setNotes("");
       setDone(false);
       setLoading(false);
+      setWaHref(null);
     }
   }, [planId]);
+
+  // Pré-seleciona o período escolhido no card do plano
+  useEffect(() => {
+    if (planId && plan) {
+      const valid =
+        optionFromCard && plan.priceOptions?.some((o) => o.label === optionFromCard)
+          ? optionFromCard
+          : plan.priceOptions?.[0]?.label ?? null;
+      setSelectedLabel(valid);
+    }
+  }, [planId]);
+
+  const selectedOption =
+    plan?.priceOptions?.find((o) => o.label === selectedLabel) ?? null;
+
+  function buildWhatsAppHref(): string {
+    const lines = [
+      "Olá, CROWN! Quero assinar um plano.",
+      "",
+      `Nome: ${user?.name ?? "—"}`,
+      `E-mail: ${user?.email ?? "—"}`,
+      `Plano: ${plan?.name ?? "—"}`,
+    ];
+    if (selectedOption) {
+      lines.push(`Período: ${selectedOption.label}`);
+      lines.push(`Valor: ${brl(selectedOption.price)}`);
+    }
+    if (notes.trim()) {
+      lines.push(`Observação: ${notes.trim()}`);
+    }
+    lines.push("", "Pedido feito pelo site da CROWN.");
+    return `https://wa.me/${whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`;
+  }
 
   async function handleSubscribe() {
     if (!plan) return;
@@ -74,10 +149,17 @@ export default function SubscribeModal() {
     try {
       await api<{ subscription: SubscriptionDTO }>("/api/subscriptions", {
         method: "POST",
-        body: JSON.stringify({ planId: plan.id, notes }),
+        body: JSON.stringify({ planId: plan.id, notes, optionLabel: selectedLabel }),
       });
+      const href = buildWhatsAppHref();
+      setWaHref(href);
       setDone(true);
-      toast.success(`Pedido do plano ${plan.name} enviado! Em breve entraremos em contato.`);
+      toast.success(`Pedido do plano ${plan.name} enviado! Abrindo o WhatsApp...`);
+      // Redireciona o pedido para o WhatsApp da academia com todas as informações
+      const win = window.open(href, "_blank", "noopener,noreferrer");
+      if (!win) {
+        toast.error("Pop-up bloqueado. Toque no botão verde para abrir o WhatsApp.");
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao assinar plano.");
     } finally {
@@ -96,15 +178,32 @@ export default function SubscribeModal() {
                   Pedido <span className="text-[#d9a441]">enviado!</span>
                 </DialogTitle>
                 <DialogDescription className="text-center text-zinc-400 mt-2">
-                  Recebemos seu interesse no plano <strong className="text-[#d9a441]">{plan.name}</strong>.
-                  Nossa equipe entrará em contato pelo e-mail{" "}
-                  <strong className="text-zinc-100">{user?.email}</strong> para finalizar sua
-                  assinatura.
+                  Seu pedido do plano <strong className="text-[#d9a441]">{plan.name}</strong>
+                  {selectedOption ? (
+                    <>
+                      {" "}
+                      ({selectedOption.label} — {brl(selectedOption.price)})
+                    </>
+                  ) : null}{" "}
+                  ficou registrado em nome de <strong className="text-zinc-100">{user?.name}</strong>.
+                  Finalize pelo WhatsApp com todas as informações do pedido.
                 </DialogDescription>
               </DialogHeader>
+              {waHref && (
+                <a
+                  href={waHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 w-full h-12 inline-flex items-center justify-center gap-2.5 bg-[#25D366] hover:brightness-110 text-black font-heading uppercase tracking-wider font-bold text-sm transition-all"
+                >
+                  <WhatsAppIcon className="w-5 h-5 shrink-0" />
+                  Abrir WhatsApp com o pedido
+                </a>
+              )}
               <Button
                 onClick={closeSubscribe}
-                className="mt-6 w-full h-11 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold"
+                variant="ghost"
+                className="mt-3 w-full h-10 font-heading uppercase tracking-wider text-zinc-400 hover:text-white"
               >
                 Entendi
               </Button>
@@ -125,7 +224,11 @@ export default function SubscribeModal() {
 
               <div className="space-y-4">
                 {plan.priceOptions && plan.priceOptions.length > 0 ? (
-                  <PriceTable options={plan.priceOptions} />
+                  <OptionPicker
+                    plan={plan}
+                    selectedLabel={selectedLabel}
+                    onSelect={setSelectedLabel}
+                  />
                 ) : plan.price !== null ? (
                   <div className="bg-[#141418] border border-[#2b2b31] p-4">
                     <p className="font-display text-3xl text-[#d9a441]">
@@ -179,9 +282,10 @@ export default function SubscribeModal() {
                 </div>
 
                 <div className="bg-[#141418] border border-[#2b2b31] p-3 text-xs text-zinc-400">
-                  Pedido será feito em nome de{" "}
-                  <strong className="text-zinc-100">{user?.name}</strong> ({user?.email}). O
-                  dono da academia receberá seu pedido no painel de controle.
+                  Pedido em nome de <strong className="text-zinc-100">{user?.name}</strong> (
+                  {user?.email}). Ao confirmar, você será levado ao WhatsApp da academia com
+                  todas as informações do pedido — e o pedido também fica registrado no painel
+                  CROWN.
                 </div>
 
                 <Button
@@ -190,7 +294,7 @@ export default function SubscribeModal() {
                   className="w-full h-12 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                  Confirmar assinatura
+                  Confirmar e enviar ao WhatsApp
                 </Button>
               </div>
             </>

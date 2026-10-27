@@ -17,6 +17,7 @@ export async function GET() {
         id: s.id,
         status: s.status as SubscriptionDTO["status"],
         notes: s.notes,
+        optionLabel: s.optionLabel,
         createdAt: s.createdAt.toISOString(),
         plan: {
           id: s.plan.id,

@@ -20,6 +20,7 @@ interface AppState {
   contentLoading: boolean;
   authModal: AuthModalState;
   subscribePlanId: string | null;
+  subscribeOptionLabel: string | null;
 
   setUser: (user: SessionUser | null) => void;
   setVisitor: (visitor: boolean) => void;
@@ -27,7 +28,7 @@ interface AppState {
   setContent: (content: ContentResponse | null) => void;
   openAuthModal: (reason?: string | null, tab?: "login" | "register") => void;
   closeAuthModal: () => void;
-  openSubscribe: (planId: string) => void;
+  openSubscribe: (planId: string, optionLabel?: string | null) => void;
   closeSubscribe: () => void;
   refreshContent: () => Promise<void>;
   logout: () => Promise<void>;
@@ -44,6 +45,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   contentLoading: true,
   authModal: { open: false, reason: null, tab: "login" },
   subscribePlanId: null,
+  subscribeOptionLabel: null,
 
   setUser: (user) =>
     set({
@@ -65,8 +67,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ authModal: { open: true, reason, tab } }),
   closeAuthModal: () => set({ authModal: { open: false, reason: null, tab: "login" } }),
 
-  openSubscribe: (planId) => set({ subscribePlanId: planId }),
-  closeSubscribe: () => set({ subscribePlanId: null }),
+  openSubscribe: (planId, optionLabel = null) =>
+    set({ subscribePlanId: planId, subscribeOptionLabel: optionLabel ?? null }),
+  closeSubscribe: () => set({ subscribePlanId: null, subscribeOptionLabel: null }),
 
   refreshContent: async () => {
     try {

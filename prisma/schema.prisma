@@ -76,15 +76,16 @@ model GalleryImage {
 }
 
 model Subscription {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  planId    String
-  plan      Plan     @relation(fields: [planId], references: [id])
-  status    String   @default("PENDING") // PENDING | ACTIVE | CANCELLED
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId      String
+  plan        Plan     @relation(fields: [planId], references: [id])
+  status      String   @default("PENDING") // PENDING | ACTIVE | CANCELLED
+  optionLabel String? // Período escolhido no pedido (ex.: MENSAL, SEMESTRAL, ANUAL)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Setting {

@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const planId = String(body.planId ?? "");
     const notes = String(body.notes ?? "").trim() || null;
+    const optionLabel = String(body.optionLabel ?? "").trim() || null;
 
     const plan = await db.plan.findFirst({ where: { id: planId, active: true } });
     if (!plan) {
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
     }
 
     const subscription = await db.subscription.create({
-      data: { userId: user.id, planId, notes },
+      data: { userId: user.id, planId, notes, optionLabel },
       include: { plan: true },
     });
 
@@ -41,6 +42,7 @@ export async function POST(req: Request) {
           id: subscription.id,
           status: subscription.status,
           notes: subscription.notes,
+          optionLabel: subscription.optionLabel,
           createdAt: subscription.createdAt,
           plan: {
             id: plan.id,

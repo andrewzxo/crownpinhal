@@ -75,6 +75,7 @@ export interface SubscriptionDTO {
   id: string;
   status: "PENDING" | "ACTIVE" | "CANCELLED";
   notes: string | null;
+  optionLabel?: string | null;
   createdAt: string;
   plan: PlanDTO;
   user?: {

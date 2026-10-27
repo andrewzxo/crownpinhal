@@ -35,6 +35,8 @@ export default function Plans() {
   const openSubscribe = useAppStore((s) => s.openSubscribe);
   const openAuthModal = useAppStore((s) => s.openAuthModal);
   const [cat, setCat] = useState<CategoryKey>("todos");
+  // Período escolhido em cada card (planId → índice da opção). Padrão: primeira opção.
+  const [selected, setSelected] = useState<Record<string, number>>({});
 
   // Descontos oficiais (formato "NOME → DETALHE", separados por |)
   const convenios = (
@@ -62,7 +64,10 @@ export default function Plans() {
       );
       return;
     }
-    openSubscribe(planId);
+    const plan = plans.find((p) => p.id === planId);
+    const idx = selected[planId] ?? 0;
+    const option = plan?.priceOptions?.[idx] ?? null;
+    openSubscribe(planId, option?.label ?? null);
   }
 
   return (
@@ -72,7 +77,7 @@ export default function Plans() {
           eyebrow="Planos CROWN"
           title="PLANOS E VALORES"
           highlight="VALORES"
-          subtitle="Tabela oficial de valores da CROWN. Escolha o plano, toque em Quero esse plano e a recepção finaliza sua assinatura."
+          subtitle="Tabela oficial de valores da CROWN. Selecione o período no plano, toque em Quero esse plano e envie seu pedido direto no WhatsApp da academia."
         />
 
         {/* Botões de categoria — pular direto para o grupo desejado */}
@@ -143,23 +148,49 @@ export default function Plans() {
                   {p.description}
                 </p>
 
-                {/* Tabela de valores oficial — label e preço em linhas separadas (sem sobreposição) */}
-                <div className="mt-4 mb-5 space-y-2.5">
+                {/* Períodos selecionáveis — escolha antes de pedir o plano */}
+                <div className="mt-4 mb-5">
                   {p.priceOptions && p.priceOptions.length > 0 ? (
-                    p.priceOptions.map((opt) => (
-                      <div key={opt.label} className="flex flex-col gap-0.5">
-                        <span className={`font-heading uppercase tracking-wider text-[10px] sm:text-[11px] leading-tight ${
-                          p.highlighted ? "text-zinc-400" : "text-zinc-500"
-                        }`}>
-                          {opt.label}
-                        </span>
-                        <span className={`font-display text-lg sm:text-xl whitespace-nowrap ${
-                          p.highlighted ? "text-[#d9a441]" : "text-[#d9a441]"
-                        }`}>
-                          {brl(opt.price)}
-                        </span>
-                      </div>
-                    ))
+                    <div
+                      role="radiogroup"
+                      aria-label={`Período do plano ${p.name}`}
+                      className="space-y-2"
+                    >
+                      {p.priceOptions.map((opt, idx) => {
+                        const isSelected = (selected[p.id] ?? 0) === idx;
+                        return (
+                          <button
+                            key={opt.label}
+                            type="button"
+                            role="radio"
+                            aria-checked={isSelected}
+                            onClick={() => setSelected((prev) => ({ ...prev, [p.id]: idx }))}
+                            className={`w-full min-h-11 px-3 py-2 flex items-center justify-between gap-2 text-left transition-all duration-150 cursor-pointer ${
+                              isSelected
+                                ? "border border-[#d9a441] bg-[#d9a441]/10"
+                                : "border border-[#2b2b31] bg-[#141418] hover:border-[#3a3a42]"
+                            }`}
+                          >
+                            <span
+                              className={`font-heading uppercase tracking-wider text-[10px] sm:text-[11px] leading-tight shrink-0 ${
+                                isSelected
+                                  ? "text-[#d9a441] font-bold"
+                                  : "text-zinc-400"
+                              }`}
+                            >
+                              {opt.label}
+                            </span>
+                            <span
+                              className={`font-display text-base sm:text-lg whitespace-nowrap ${
+                                isSelected ? "text-[#d9a441]" : "text-zinc-200"
+                              }`}
+                            >
+                              {brl(opt.price)}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   ) : p.price !== null ? (
                     <p className={`font-display text-2xl sm:text-4xl ${
                       p.highlighted ? "text-[#d9a441]" : "text-[#d9a441]"
