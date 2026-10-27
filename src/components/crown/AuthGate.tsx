@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,74 @@ import type { SessionUser } from "@/lib/types";
 
 const inputCls =
   "h-11 bg-[#141418] border-[#2b2b31] text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#d9a441]/50 focus-visible:border-[#d9a441]/60 transition-all";
+
+/** Contas prontas do site (senhas também visíveis no painel do dono → Usuários). */
+const DEMO_ACCOUNTS = [
+  { role: "Dono", email: "dono@crown.com", password: "crown123" },
+  { role: "Admin", email: "admin@crown.com", password: "admin123" },
+  { role: "Cliente", email: "cliente@crown.com", password: "cliente123" },
+];
+
+/**
+ * Lista compacta dos acessos existentes, com botão "Usar" que preenche
+ * e entra na hora — evita que o dono fique preso sem saber a senha.
+ */
+function DemoAccounts({
+  onUse,
+}: {
+  onUse: (email: string, password: string) => void;
+}) {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <div className="mt-5 border border-dashed border-[#3a3a42] bg-[#141418]">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        className="w-full flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[#17171b] transition-colors"
+      >
+        <span className="font-heading uppercase tracking-[0.2em] text-[10px] text-zinc-400">
+          Acessos de demonstração
+        </span>
+        <ChevronDown
+          className={`w-4 h-4 text-zinc-500 transition-transform ${open ? "rotate-180" : ""}`}
+          aria-hidden
+        />
+      </button>
+      {open && (
+        <div className="px-4 pb-4 space-y-2">
+          {DEMO_ACCOUNTS.map((a) => (
+            <div
+              key={a.email}
+              className="flex items-center justify-between gap-3 bg-[#17171b] border border-[#2b2b31] px-3 py-2"
+            >
+              <div className="min-w-0">
+                <p className="text-[10px] font-heading uppercase tracking-widest text-[#d9a441]">
+                  {a.role}
+                </p>
+                <p className="text-xs text-zinc-300 truncate">
+                  {a.email} <span className="text-zinc-500">• {a.password}</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onUse(a.email, a.password)}
+                className="shrink-0 border border-[#d9a441]/50 text-[#d9a441] hover:bg-[#d9a441]/10 px-3 py-1.5 text-[10px] font-heading uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                Usar
+              </button>
+            </div>
+          ))}
+          <p className="text-[11px] text-zinc-500 leading-relaxed pt-1">
+            Cada conta tem a própria senha. Para trocá-las: entre como dono e abra
+            o painel → Usuários → Redefinir Senha.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
 
 /**
  * Botão "Entrar com Google".
@@ -96,6 +164,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
   const setUser = useAppStore((s) => s.setUser);
   const [loading, setLoading] = useState<"login" | "register" | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const loginFormRef = useRef<HTMLFormElement>(null);
   const [login, setLogin] = useState({ email: "", password: "" });
   const [register, setRegister] = useState({
     name: "",
@@ -169,7 +238,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
 
       {/* ---------- LOGIN ---------- */}
       <TabsContent value="login">
-        <form onSubmit={handleLogin} className="space-y-4 pt-4">
+        <form ref={loginFormRef} onSubmit={handleLogin} className="space-y-4 pt-4">
           <div className="space-y-2">
             <Label htmlFor="login-email" className="font-heading uppercase text-xs tracking-wider text-[#d9a441]">
               E-mail
@@ -219,6 +288,14 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
             Entrar agora
           </Button>
         </form>
+
+        <DemoAccounts
+          onUse={(email, password) => {
+            setLogin({ email, password });
+            // entra direto com a conta escolhida
+            setTimeout(() => loginFormRef.current?.requestSubmit(), 50);
+          }}
+        />
       </TabsContent>
 
       {/* ---------- CADASTRO ---------- */}
