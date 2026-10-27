@@ -47,7 +47,7 @@ export default function ScheduleSection() {
   return (
     <section
       id="horarios"
-      className="relative py-24 sm:py-32 bg-[#151518] scroll-mt-28"
+      className="relative py-24 sm:py-32 bg-zinc-100 scroll-mt-28"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <SectionTitle
@@ -63,13 +63,13 @@ export default function ScheduleSection() {
 
         <Reveal delay={0.15} className="mt-12">
           <Tabs defaultValue={String(defaultDay)} className="w-full">
-            <TabsList className="w-full grid grid-cols-7 h-auto bg-[#17171b] border border-[#2b2b31] p-1.5 gap-1 overflow-x-auto">
+            <TabsList className="w-full grid grid-cols-7 h-auto bg-white border border-zinc-200 p-1.5 gap-1 overflow-x-auto">
               {DAYS.map((d) => (
                 <TabsTrigger
                   key={d.value}
                   value={String(d.value)}
                   className={`font-heading uppercase tracking-wider text-xs sm:text-sm py-2.5 rounded-none cursor-pointer data-[state=active]:bg-[#d9a441] dark:data-[state=active]:bg-[#d9a441] data-[state=active]:text-black dark:data-[state=active]:text-black data-[state=active]:font-bold ${
-                    d.value === today ? "text-[#d9a441]" : "text-muted-foreground"
+                    d.value === today ? "text-[#a87421]" : "text-muted-foreground"
                   }`}
                 >
                   {d.label}
@@ -79,13 +79,13 @@ export default function ScheduleSection() {
 
             {entries.map((d) => (
               <TabsContent key={d.value} value={String(d.value)} className="mt-6">
-                <p className="font-display uppercase text-xl text-zinc-300 mb-4 flex items-center gap-2">
-                  <CalendarDays className="w-5 h-5 text-[#d9a441]" />
+                <p className="font-display uppercase text-xl text-zinc-700 mb-4 flex items-center gap-2">
+                  <CalendarDays className="w-5 h-5 text-[#a87421]" />
                   {d.full}
                 </p>
 
                 {d.classes.length === 0 ? (
-                  <div className="border border-dashed border-[#3a3a42] p-10 text-center text-muted-foreground">
+                  <div className="border border-dashed border-zinc-300 p-10 text-center text-muted-foreground">
                     Nenhuma aula programada para este dia. Aproveite para treinar por conta!
                   </div>
                 ) : (
@@ -96,10 +96,10 @@ export default function ScheduleSection() {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.35, delay: i * 0.05 }}
-                        className="group border border-[#2b2b31] bg-[#17171b] p-3.5 sm:p-5 hover:border-[#52525b] hover:bg-[#1b1b20] transition-all duration-300"
+                        className="group border border-zinc-200 bg-white p-3.5 sm:p-5 hover:border-zinc-300 hover:bg-zinc-50 transition-all duration-300"
                       >
                         <div className="flex items-center justify-between gap-2 sm:gap-3">
-                          <span className="bg-[#222228] border border-[#3a3a42] text-foreground font-display text-sm sm:text-lg tracking-wide px-3 py-1 sm:px-3.5 inline-block">
+                          <span className="bg-zinc-900 border border-zinc-900 text-white font-display text-sm sm:text-lg tracking-wide px-3 py-1 sm:px-3.5 inline-block">
                             {c.startTime}
                           </span>
                           <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground font-heading uppercase tracking-wider">
@@ -107,12 +107,12 @@ export default function ScheduleSection() {
                             até {c.endTime}
                           </span>
                         </div>
-                        <p className="mt-2 sm:mt-3 font-heading uppercase tracking-wider text-sm sm:text-lg group-hover:text-[#d9a441] transition-colors">
+                        <p className="mt-2 sm:mt-3 font-heading uppercase tracking-wider text-sm sm:text-lg text-zinc-900 group-hover:text-[#a87421] transition-colors">
                           {c.modalityName}
                         </p>
                         {c.instructor && (
                           <p className="mt-1 text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
-                            <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-500" />
+                            <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-400" />
                             {c.instructor}
                           </p>
                         )}

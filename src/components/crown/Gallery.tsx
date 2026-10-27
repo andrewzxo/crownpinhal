@@ -7,7 +7,7 @@ export default function Gallery() {
   const gallery = useAppStore((s) => s.content?.gallery) ?? [];
 
   return (
-    <section id="galeria" className="relative py-24 sm:py-32 bg-[#151518] border-y border-[#2b2b31] scroll-mt-28">
+    <section id="galeria" className="relative py-24 sm:py-32 bg-white scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Conheça o espaço"
@@ -17,14 +17,14 @@ export default function Gallery() {
         />
 
         {gallery.length === 0 ? (
-          <div className="mt-12 border border-dashed border-[#3a3a42] p-12 text-center text-muted-foreground">
+          <div className="mt-12 border border-dashed border-zinc-300 p-12 text-center text-muted-foreground">
             As fotos da estrutura serão publicadas em breve.
           </div>
         ) : (
           <div className="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
             {gallery.map((g, i) => (
               <Reveal key={g.id} delay={(i % 3) * 0.08} className="mb-4 break-inside-avoid">
-                <figure className="group relative overflow-hidden clip-blade bg-[#17171b] border border-[#2b2b31] cursor-pointer">
+                <figure className="group relative overflow-hidden clip-blade bg-white border border-zinc-200 shadow-sm cursor-pointer">
                   <img
                     src={g.url}
                     alt={g.title || "Foto da estrutura da academia CROWN"}

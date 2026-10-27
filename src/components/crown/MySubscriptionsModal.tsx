@@ -50,7 +50,7 @@ function SubsList() {
 
   if (error) {
     return (
-      <div className="py-10 text-center text-muted-foreground">
+      <div className="py-10 text-center text-zinc-400">
         Não foi possível carregar seus pedidos. Tente novamente.
       </div>
     );
@@ -70,10 +70,10 @@ function SubsList() {
     return (
       <div className="py-10 text-center">
         <PackageOpen className="w-12 h-12 mx-auto text-[#d9a441]/40" />
-        <p className="mt-4 text-muted-foreground">
+        <p className="mt-4 text-zinc-400">
           Você ainda não fez nenhum pedido de plano.
         </p>
-        <p className="text-sm text-muted-foreground/60">Escolha um plano para assinar.</p>
+        <p className="text-sm text-zinc-500">Escolha um plano para assinar.</p>
       </div>
     );
   }
@@ -90,11 +90,11 @@ function SubsList() {
           >
             <div className="min-w-0">
               <p className="font-display uppercase tracking-wide text-lg">{s.plan.name}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-zinc-400 mt-0.5">
                 {fmtDate.format(new Date(s.createdAt))}
               </p>
               {s.notes && (
-                <p className="text-xs text-muted-foreground mt-2 italic line-clamp-2">
+                <p className="text-xs text-zinc-400 mt-2 italic line-clamp-2">
                   “{s.notes}”
                 </p>
               )}
@@ -121,13 +121,13 @@ export default function MySubscriptionsModal({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#141418] border-[#2b2b31] max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="bg-[#141418] border-[#2b2b31] text-zinc-100 max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl uppercase tracking-wide flex items-center gap-2">
+          <DialogTitle className="font-display text-xl uppercase tracking-wide text-white flex items-center gap-2">
             <Crown className="w-5 h-5 text-[#d9a441]" />
             Meus <span className="text-gold-gradient">pedidos</span>
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-zinc-400">
             Acompanhe o status das suas assinaturas na CROWN.
           </DialogDescription>
         </DialogHeader>

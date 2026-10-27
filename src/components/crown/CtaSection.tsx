@@ -19,17 +19,17 @@ export default function CtaSection() {
   const ctaPre = ctaWords.join(" ");
 
   return (
-    <section className="relative py-24 sm:py-32 bg-[#151518] border-t border-[#2b2b31] overflow-hidden">
+    <section className="relative py-24 sm:py-32 bg-[#101013] overflow-hidden">
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
         <Reveal>
           <p className="font-heading uppercase tracking-[0.3em] text-xs text-zinc-400 mb-6">
             {settings?.ctaEyebrow || "Aula experimental"}
           </p>
           <h2 className="font-display uppercase text-5xl sm:text-7xl lg:text-8xl leading-[0.95]">
-            {ctaPre && <span className="text-foreground">{ctaPre} </span>}
+            {ctaPre && <span className="text-white">{ctaPre} </span>}
             <span className="text-[#d9a441]">{ctaLast}</span>
           </h2>
-          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto">
             {settings?.ctaText ||
               "Novos alunos testam toda a estrutura das 5h às 16h. Agende sua aula experimental pelo WhatsApp ou pelo hub da CROWN — é rápido."}
           </p>
@@ -49,7 +49,7 @@ export default function CtaSection() {
               size="lg"
               variant="outline"
               asChild
-              className="h-14 px-10 bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground hover:border-white/40 font-heading uppercase tracking-wider font-semibold text-base transition-all"
+              className="h-14 px-10 bg-transparent border-white/20 hover:bg-white/10 hover:text-white hover:border-white/40 font-heading uppercase tracking-wider font-semibold text-base transition-all"
             >
               <a href={beaconsUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-4 h-4 mr-2" />
@@ -60,7 +60,7 @@ export default function CtaSection() {
               size="lg"
               variant="outline"
               asChild
-              className="h-14 px-10 bg-transparent border-white/20 hover:bg-white/10 hover:text-foreground hover:border-white/40 font-heading uppercase tracking-wider font-semibold text-base transition-all"
+              className="h-14 px-10 bg-transparent border-white/20 hover:bg-white/10 hover:text-white hover:border-white/40 font-heading uppercase tracking-wider font-semibold text-base transition-all"
             >
               <a
                 href={`https://instagram.com/${instagram}`}

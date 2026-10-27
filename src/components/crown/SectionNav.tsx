@@ -93,7 +93,7 @@ export default function SectionNav() {
                   className={`shrink-0 px-3.5 py-1.5 font-heading uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer ${
                     isActive
                       ? "bg-[#d9a441] text-black font-bold"
-                      : "bg-[#1b1b20] border border-[#2b2b31] text-muted-foreground hover:text-foreground hover:border-[#52525b]"
+                      : "bg-[#1b1b20] border border-[#2b2b31] text-zinc-300 hover:text-white hover:border-[#52525b]"
                   }`}
                 >
                   {a.label}

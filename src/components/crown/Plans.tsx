@@ -66,7 +66,7 @@ export default function Plans() {
   }
 
   return (
-    <section id="planos" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28">
+    <section id="planos" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28 bg-zinc-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <SectionTitle
           eyebrow="Planos CROWN"
@@ -93,7 +93,7 @@ export default function Plans() {
                   className={`shrink-0 px-4 sm:px-5 py-2 font-heading uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
                     isActive
                       ? "bg-[#d9a441] text-black font-bold"
-                      : "bg-[#1b1b20] border border-[#2b2b31] text-muted-foreground hover:text-foreground hover:border-[#52525b]"
+                      : "bg-white border border-zinc-300 text-zinc-600 hover:text-zinc-900 hover:border-zinc-400"
                   }`}
                 >
                   {c.label}
@@ -115,8 +115,8 @@ export default function Plans() {
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
                 className={`relative h-full flex flex-col p-4 sm:p-6 transition-all duration-300 ${
                   p.highlighted
-                    ? "border border-[#d9a441]/70 bg-[#1b1b20]"
-                    : "border border-[#2b2b31] bg-[#17171b] hover:border-[#52525b]"
+                    ? "border border-[#d9a441]/70 bg-zinc-900 text-white"
+                    : "border border-zinc-200 bg-white shadow-sm hover:border-zinc-300"
                 }`}
               >
                 {/* Badge no fluxo do card — nunca cortado */}
@@ -125,17 +125,21 @@ export default function Plans() {
                     className={`self-start mb-3 px-2.5 py-1 font-heading uppercase tracking-widest text-[10px] sm:text-xs font-bold ${
                       p.highlighted
                         ? "bg-[#d9a441] text-black"
-                        : "bg-[#222228] border border-[#3a3a42] text-zinc-300"
+                        : "bg-zinc-100 border border-zinc-200 text-zinc-600"
                     }`}
                   >
                     {p.badge}
                   </span>
                 )}
 
-                <h3 className="font-display uppercase text-lg sm:text-2xl tracking-wide leading-tight">
+                <h3 className={`font-display uppercase text-lg sm:text-2xl tracking-wide leading-tight ${
+                  p.highlighted ? "text-white" : "text-zinc-900"
+                }`}>
                   {p.name}
                 </h3>
-                <p className="mt-1.5 text-[11px] sm:text-sm text-muted-foreground line-clamp-2">
+                <p className={`mt-1.5 text-[11px] sm:text-sm line-clamp-2 ${
+                  p.highlighted ? "text-zinc-400" : "text-muted-foreground"
+                }`}>
                   {p.description}
                 </p>
 
@@ -144,19 +148,27 @@ export default function Plans() {
                   {p.priceOptions && p.priceOptions.length > 0 ? (
                     p.priceOptions.map((opt) => (
                       <div key={opt.label} className="flex flex-col gap-0.5">
-                        <span className="font-heading uppercase tracking-wider text-[10px] sm:text-[11px] text-zinc-400 leading-tight">
+                        <span className={`font-heading uppercase tracking-wider text-[10px] sm:text-[11px] leading-tight ${
+                          p.highlighted ? "text-zinc-400" : "text-zinc-500"
+                        }`}>
                           {opt.label}
                         </span>
-                        <span className="font-display text-lg sm:text-xl text-[#d9a441] whitespace-nowrap">
+                        <span className={`font-display text-lg sm:text-xl whitespace-nowrap ${
+                          p.highlighted ? "text-[#d9a441]" : "text-[#a87421]"
+                        }`}>
                           {brl(opt.price)}
                         </span>
                       </div>
                     ))
                   ) : p.price !== null ? (
-                    <p className="font-display text-2xl sm:text-4xl text-[#d9a441]">
+                    <p className={`font-display text-2xl sm:text-4xl ${
+                      p.highlighted ? "text-[#d9a441]" : "text-[#a87421]"
+                    }`}>
                       {brl(p.price)}
                       {p.period && (
-                        <span className="text-xs sm:text-sm font-heading uppercase tracking-wider text-muted-foreground">
+                        <span className={`text-xs sm:text-sm font-heading uppercase tracking-wider ${
+                          p.highlighted ? "text-zinc-400" : "text-muted-foreground"
+                        }`}>
                           {" "}
                           /{p.period}
                         </span>
@@ -164,8 +176,8 @@ export default function Plans() {
                     </p>
                   ) : (
                     <div className="flex items-center gap-2.5">
-                      <Hourglass className="w-5 h-5 text-zinc-400 shrink-0" />
-                      <p className="font-heading uppercase tracking-wider text-xs text-zinc-400">
+                      <Hourglass className="w-5 h-5 text-zinc-500 shrink-0" />
+                      <p className="font-heading uppercase tracking-wider text-xs text-zinc-500">
                         Consulte na recepção
                       </p>
                     </div>
@@ -177,7 +189,7 @@ export default function Plans() {
                   className={`mt-auto w-full h-10 sm:h-12 font-heading uppercase tracking-wider font-bold text-[11px] sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2 ${
                     p.highlighted
                       ? "bg-[#d9a441] hover:brightness-110 text-black"
-                      : "bg-[#222228] border border-[#3a3a42] text-zinc-200 hover:bg-[#2b2b31] hover:border-[#52525b]"
+                      : "bg-zinc-900 text-white hover:bg-zinc-800"
                   }`}
                 >
                   <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -189,34 +201,34 @@ export default function Plans() {
         </div>
 
         {visible.length === 0 && (
-          <div className="mt-12 border border-dashed border-[#3a3a42] p-12 text-center text-muted-foreground">
+          <div className="mt-12 border border-dashed border-zinc-300 p-12 text-center text-muted-foreground">
             Nenhum plano nesta categoria no momento.
           </div>
         )}
 
         <Reveal delay={0.2}>
           <p className="mt-8 text-center text-xs sm:text-sm text-muted-foreground flex items-center justify-center gap-2">
-            <Info className="w-4 h-4 text-[#d9a441] shrink-0" />
+            <Info className="w-4 h-4 text-[#a87421] shrink-0" />
             Ao assinar, o dono da academia recebe seu pedido e entra em contato para finalizar.
           </p>
         </Reveal>
 
         {/* Descontos oficiais + estacionamento grátis */}
         <Reveal delay={0.25}>
-          <div className="mt-12 border border-[#2b2b31] bg-[#151518]">
-            <div className="bg-[#1b1b20] border-b border-[#2b2b31] px-6 py-4 flex items-center justify-center">
-              <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide">
+          <div className="mt-12 border border-zinc-200 bg-white shadow-sm">
+            <div className="bg-zinc-900 border-b border-zinc-900 px-6 py-4 flex items-center justify-center">
+              <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide text-white">
                 Descontos e <span className="text-[#d9a441]">vantagens</span>
               </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#2b2b31]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-zinc-200">
               {convenios.map((c) => (
-                <div key={c.name} className="bg-[#151518] px-5 py-6 text-center hover:bg-[#1b1b20] transition-colors">
-                  <p className="font-heading uppercase tracking-wider text-xs sm:text-sm font-semibold text-zinc-100">
+                <div key={c.name} className="bg-white px-5 py-6 text-center hover:bg-zinc-50 transition-colors">
+                  <p className="font-heading uppercase tracking-wider text-xs sm:text-sm font-semibold text-zinc-900">
                     {c.name}
                   </p>
                   {c.detail && (
-                    <p className="mt-1.5 font-heading uppercase tracking-wider text-xs text-[#d9a441] font-semibold">
+                    <p className="mt-1.5 font-heading uppercase tracking-wider text-xs text-[#a87421] font-semibold">
                       {c.detail}
                     </p>
                   )}

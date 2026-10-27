@@ -29,8 +29,10 @@ export default function Footer() {
 
   return (
     <>
-      {/* Picos de coroa coroando o rodapé */}
-      <CrownEdge fill="#0c0c0e" height={22} />
+      {/* Picos de coroa coroando o rodapé (fundo = cor do CTA acima) */}
+      <div className="bg-[#101013]">
+        <CrownEdge fill="#0c0c0e" height={22} />
+      </div>
       <footer id="contato" className="relative mt-auto bg-[#0c0c0e] scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -41,7 +43,7 @@ export default function Footer() {
             alt="Logo CROWN Academia"
             className="h-16 w-auto mb-5"
           />
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-sm text-zinc-400 leading-relaxed">
               Um espaço completo para o seu Fitness & Lifestyle em Espírito Santo do Pinhal.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
@@ -69,7 +71,7 @@ export default function Footer() {
                 <li key={l.href}>
                   <button
                     onClick={() => go(l.href)}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    className="text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer"
                   >
                     {l.label}
                   </button>
@@ -83,12 +85,12 @@ export default function Footer() {
             <h3 className="font-heading uppercase tracking-[0.25em] text-sm text-zinc-200 mb-5">
               Contato
             </h3>
-            <ul className="space-y-3.5 text-sm text-muted-foreground">
+            <ul className="space-y-3.5 text-sm text-zinc-400">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 mt-0.5 text-zinc-500 shrink-0" />
                 <span>
                   <span className="block text-zinc-200">{s.address || "Av. Washington Luís, 45 — Espírito Santo do Pinhal-SP"}</span>
-                  <span className="block mt-0.5 text-xs text-muted-foreground/70">
+                  <span className="block mt-0.5 text-xs text-zinc-500">
                     {s.addressNote || "A ~700m da Praça Nestor de Almeida Vergueiro • CEP 13990-000"}
                   </span>
                   <a
@@ -127,7 +129,7 @@ export default function Footer() {
             <h3 className="font-heading uppercase tracking-[0.25em] text-sm text-zinc-200 mb-5">
               Funcionamento
             </h3>
-            <p className="text-sm text-muted-foreground flex items-start gap-2.5 leading-relaxed">
+            <p className="text-sm text-zinc-400 flex items-start gap-2.5 leading-relaxed">
               <Clock className="w-4 h-4 mt-0.5 text-zinc-500 shrink-0" />
               {s.hoursText || "Musculação: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h"}
             </p>
@@ -136,7 +138,7 @@ export default function Footer() {
                 href={beaconsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
               >
                 <ExternalLink className="w-4 h-4 text-zinc-500 shrink-0" />
                 Hub de agendamento
@@ -145,7 +147,7 @@ export default function Footer() {
                 href={ticketbroUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
               >
                 <Ticket className="w-4 h-4 text-zinc-500 shrink-0" />
                 Ingressos e eventos
@@ -158,10 +160,10 @@ export default function Footer() {
       {/* Barra inferior */}
       <div className="border-t border-[#1e1e24]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 text-center lg:text-left">
-          <p className="text-xs text-muted-foreground/70">
+          <p className="text-xs text-zinc-500">
             © {new Date().getFullYear()} Crown Pinhal — Todos os direitos reservados.
           </p>
-          <p className="text-[11px] text-muted-foreground/40 mt-1">
+          <p className="text-[11px] text-zinc-600 mt-1">
             {s.cnpj || "Lrt Atividades em Condicionamento Fisico LTDA • CNPJ 57.249.247/0001-63"}
           </p>
         </div>

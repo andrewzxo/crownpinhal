@@ -72,7 +72,7 @@ export default function Navbar() {
             <button
               key={l.href}
               onClick={() => go(l.href)}
-              className="px-3 py-2 font-heading uppercase text-sm tracking-wider text-muted-foreground hover:text-[#d9a441] transition-colors relative group cursor-pointer"
+              className="px-3 py-2 font-heading uppercase text-sm tracking-wider text-zinc-300 hover:text-[#d9a441] transition-colors relative group cursor-pointer"
             >
               {l.label}
               <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gold-gradient group-hover:w-2/3 transition-all duration-300" />
@@ -99,7 +99,7 @@ export default function Navbar() {
             <SheetTrigger asChild>
               <button
                 aria-label="Abrir menu"
-                className="lg:hidden w-11 h-11 flex items-center justify-center border border-[#2b2b31] bg-[#17171b] text-foreground hover:text-foreground hover:border-[#52525b] transition-colors"
+                className="lg:hidden w-11 h-11 flex items-center justify-center border border-[#2b2b31] bg-[#17171b] text-zinc-100 hover:text-white hover:border-[#52525b] transition-colors"
               >
                 {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -122,7 +122,7 @@ export default function Navbar() {
                   <button
                     key={l.href}
                     onClick={() => go(l.href)}
-                    className="text-left px-4 py-3 font-heading uppercase tracking-wider text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 border-l-2 border-transparent hover:border-zinc-400 transition-colors cursor-pointer"
+                    className="text-left px-4 py-3 font-heading uppercase tracking-wider text-sm text-zinc-300 hover:text-white hover:bg-white/5 border-l-2 border-transparent hover:border-zinc-400 transition-colors cursor-pointer"
                   >
                     {l.label}
                   </button>

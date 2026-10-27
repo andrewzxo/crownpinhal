@@ -53,7 +53,7 @@ export default function Empresas() {
   ];
 
   return (
-    <section id="empresas" className="relative py-24 sm:py-32 bg-[#151518] border-y border-[#2b2b31] scroll-mt-28">
+    <section id="empresas" className="relative py-24 sm:py-32 bg-white scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Benefícios corporativos"
@@ -68,20 +68,20 @@ export default function Empresas() {
               <article
                 className={`relative h-full clip-blade border p-5 sm:p-7 flex flex-col transition-all duration-300 ${
                   card.highlighted
-                    ? "border-[#d9a441]/60 bg-[#1b1b20]"
-                    : "border-[#2b2b31] bg-[#17171b] hover:border-[#52525b]"
+                    ? "border-[#d9a441] bg-[#fbf5e6]"
+                    : "border-zinc-200 bg-white shadow-sm hover:border-zinc-300"
                 }`}
               >
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <span className="w-11 h-12 bg-[#222228] border border-[#3a3a42] flex items-center justify-center shrink-0">
+                  <span className="w-11 h-12 bg-zinc-900 border border-zinc-900 flex items-center justify-center shrink-0">
                     <card.icon className="w-5 h-5 text-[#d9a441]" />
                   </span>
                   <div>
-                    <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide text-foreground">
+                    <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide text-zinc-900">
                       {card.name}
                     </h3>
                     {card.tagline && (
-                      <p className="text-xs font-heading uppercase tracking-widest text-zinc-400 mt-0.5">
+                      <p className="text-xs font-heading uppercase tracking-widest text-zinc-500 mt-0.5">
                         {card.tagline}
                       </p>
                     )}
@@ -90,8 +90,8 @@ export default function Empresas() {
 
                 <ul className="mt-5 sm:mt-7 space-y-3 sm:space-y-4 flex-1">
                   {card.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-3 text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                      <Check className="mt-0.5 w-4 h-4 shrink-0 text-[#d9a441]" />
+                    <li key={b} className="flex items-start gap-3 text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                      <Check className="mt-0.5 w-4 h-4 shrink-0 text-[#a87421]" />
                       {b}
                     </li>
                   ))}
@@ -108,7 +108,7 @@ export default function Empresas() {
               href={waLink(whatsapp, "Olá! Trabalho em uma empresa e quero saber mais sobre o Wellhub e o TotalPass na CROWN.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#d9a441] underline underline-offset-4 hover:brightness-125 transition-all"
+              className="text-[#a87421] underline underline-offset-4 hover:brightness-125 transition-all"
             >
               Fale com a recepção no WhatsApp
             </a>

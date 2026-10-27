@@ -25,7 +25,7 @@ import type { SessionUser } from "@/lib/types";
 import { CrownGlyph } from "./CrownShapes";
 
 const inputCls =
-  "h-11 bg-[#141418] border-[#2b2b31] text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-[#d9a441]/50 focus-visible:border-[#d9a441]/60 transition-all";
+  "h-11 bg-[#141418] border-[#2b2b31] text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#d9a441]/50 focus-visible:border-[#d9a441]/60 transition-all";
 
 export function GoogleButton({ className = "" }: { className?: string }) {
   return (
@@ -122,14 +122,14 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
       <TabsList className="grid w-full grid-cols-2 h-12 bg-[#141418] border border-[#2b2b31] p-1">
         <TabsTrigger
           value="login"
-          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-[#d9a441] data-[state=active]:text-black data-[state=active]:font-semibold"
+          className="font-heading uppercase tracking-wider text-sm text-zinc-400 data-[state=active]:bg-[#d9a441] data-[state=active]:text-black data-[state=active]:font-semibold"
         >
           <LogIn className="w-4 h-4 mr-2" />
           Entrar
         </TabsTrigger>
         <TabsTrigger
           value="register"
-          className="font-heading uppercase tracking-wider text-sm data-[state=active]:bg-[#d9a441] data-[state=active]:text-black data-[state=active]:font-semibold"
+          className="font-heading uppercase tracking-wider text-sm text-zinc-400 data-[state=active]:bg-[#d9a441] data-[state=active]:text-black data-[state=active]:font-semibold"
         >
           <UserPlus className="w-4 h-4 mr-2" />
           Criar conta
@@ -144,7 +144,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
               E-mail
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <Input
                 id="login-email"
                 type="email"
@@ -161,7 +161,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
               Senha
             </Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <Input
                 id="login-password"
                 type={showPassword ? "text" : "password"}
@@ -175,7 +175,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
                 type="button"
                 aria-label="Mostrar ou ocultar senha"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#d9a441] transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-[#d9a441] transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -200,7 +200,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
               Nome completo
             </Label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <Input
                 id="reg-name"
                 required
@@ -217,7 +217,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
                 E-mail
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="reg-email"
                   type="email"
@@ -231,10 +231,10 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="reg-phone" className="font-heading uppercase text-xs tracking-wider text-[#d9a441]">
-                WhatsApp <span className="text-muted-foreground normal-case">(opcional)</span>
+                WhatsApp <span className="text-zinc-400 normal-case">(opcional)</span>
               </Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="reg-phone"
                   type="tel"
@@ -252,7 +252,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
                 Senha
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="reg-password"
                   type={showPassword ? "text" : "password"}
@@ -270,7 +270,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
                 Confirmar senha
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="reg-confirm"
                   type={showPassword ? "text" : "password"}
@@ -301,7 +301,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
           <span className="w-full border-t border-[#2b2b31]" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-[#17171b] px-4 text-xs uppercase tracking-widest text-muted-foreground">
+          <span className="bg-[#17171b] px-4 text-xs uppercase tracking-widest text-zinc-500">
             ou
           </span>
         </div>
@@ -315,7 +315,7 @@ export default function AuthGate() {
   const setVisitor = useAppStore((s) => s.setVisitor);
 
   return (
-    <div className="min-h-screen bg-[#101013] text-foreground relative overflow-hidden">
+    <div className="min-h-screen bg-[#101013] text-zinc-50 relative overflow-hidden">
       {/* Fundo */}
       <img
         src="/img/hero.jpg"
@@ -344,7 +344,7 @@ export default function AuthGate() {
             7 <span className="text-[#d9a441]">dias por semana.</span>
           </h1>
           <CrownGlyph className="mt-5 w-16 h-4 text-[#d9a441]" />
-          <p className="mt-4 text-muted-foreground leading-relaxed">
+          <p className="mt-4 text-zinc-400 leading-relaxed">
             Entre para acompanhar seus treinos, conhecer as modalidades e garantir seu plano.
           </p>
         </motion.div>
@@ -380,21 +380,21 @@ export default function AuthGate() {
             <Button
               variant="outline"
               onClick={() => setVisitor(true)}
-              className="w-full h-12 mt-4 -skew-x-[10deg] rounded-none bg-transparent border-[#3a3a42] hover:bg-white/10 hover:text-foreground hover:border-[#52525b] font-heading uppercase tracking-wider transition-all"
+              className="w-full h-12 mt-4 -skew-x-[10deg] rounded-none bg-transparent border-[#3a3a42] hover:bg-white/10 hover:text-white hover:border-[#52525b] font-heading uppercase tracking-wider transition-all"
             >
               <span className="flex items-center justify-center gap-2 skew-x-[10deg]">
                 <Eye className="w-5 h-5" />
                 Entrar como visitante
               </span>
             </Button>
-            <p className="mt-3 text-center text-xs text-muted-foreground">
+            <p className="mt-3 text-center text-xs text-zinc-400">
               Explore as modalidades e horários sem criar conta.
               <br />
               Para assinar um plano, o cadastro é necessário.
             </p>
             </div>
 
-          <p className="mt-6 text-center text-xs text-muted-foreground/60">
+          <p className="mt-6 text-center text-xs text-zinc-500">
             © {new Date().getFullYear()} CROWN Academia — Pinhal-SP
           </p>
         </motion.div>

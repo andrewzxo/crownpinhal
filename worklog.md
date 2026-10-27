@@ -291,3 +291,28 @@ Stage Summary:
 - Login com Google completo (OAuth 2.0 + fallback amigável) — para ativar em produção basta preencher GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET no .env
 - seed 100% não-destrutivo: edições do painel admin/dono são permanentes mesmo com re-seed
 - Nenhum bordão inventado: ctaEyebrow "CROWN PINHAL-SP" e heroSubtitle factual
+
+---
+Task ID: 12
+Agent: Z.ai Code (orchestrator)
+Task: Mudar a paleta de cores do site — branco nas partes menos importantes (pedido: "mude a paleta de cores do site, faça ter branco também em partes que não são tão importantes")
+
+Work Log:
+- PALETA CLARA NO ROOT (globals.css): vars :root invertidas para tema claro — --background #ffffff, --foreground #18181b, --card #ffffff, --border #e4e4e7, --muted-foreground #52525b, --accent #f4f4f5 (dourado #d9a441 mantido como primary); scrollbar claro (track #f4f4f5, thumb #d4d4d8); .bg-brand-dark criado e depois removido (não era emitido pelo Tailwind v4 — CTA passou a usar bg-[#101013] arbitrário)
+- html.dark REMOVIDO do layout.tsx (escurecia componentes shadcn via variantes dark: e agora o site é base claro)
+- ESTRATÉGIA DUPLA: "chrome" da marca continua preto+dourado (Navbar, SectionNav, Hero, AuthGate, modais Auth/Subscribe/MeusPedidos, card CROWN GOLD, card Crown Games, CTA, Footer, Splash) e TODO o conteúdo passa a branco/cinza claro
+- SEÇÕES ALTERNADAS BRANCO/CINZA: Sobre bg-white, Modalidades bg-zinc-100, Coletivas bg-white, Horários bg-zinc-100, Empresas bg-white, Planos bg-zinc-100, Galeria bg-white, Eventos bg-zinc-100, CTA #101013, Footer #0c0c0e
+- CARDS CLAROS: stats do Sobre (branco + chips de ícone bg-zinc-900 com ícone dourado — novo motivo recorrente), dias de Coletivas (cabeçalho do dia zinc-900, horários em #a87421), aulas de Horários (chip de hora zinc-900), Empresas (Wellhub destacado com bg #fbf5e6 + borda dourada), Planos não-destacados (branco + sombra, preços #a87421), Galeria (branco + sombra), cards de Eventos (branco)
+- DOURADO CALIBRADO POR FUNDO: #d9a441 sobre escuro; #a87421 sobre claro (preços, links, ícones pequenos, palavra destacada dos títulos via SectionTitle) para contraste WCAG
+- HERO: título/subtítulo com text-white explícito (tokens semânticos agora são escuros); CTA/hover brancos; imagem do hero CORRIGIDA no banco (heroImageUrl era URL assinada do Google expirada → /img/hero.jpg local via scripts/fix-hero-once.ts, seed não-destrutivo preserva)
+- MODAIS ESCUROS CONSERTADOS: AuthGate/AuthForm (inputs text-zinc-100, tabs text-zinc-400, ícones zinc-400), AuthModal/SubscribeModal/MySubscriptionsModal (DialogContent + text-zinc-100, títulos text-white, descrições text-zinc-400, textarea clara), AccountMenu (trigger e dropdown com texto claro)
+- NAVBAR/SECTIONNAV (escuros): links text-zinc-300 hover gold/branco, menu mobile e chips ajustados
+- FOOTER: text-muted-foreground → zinc-400/500/600; CrownEdge agora dentro de wrapper bg-[#101013] (as frestas do zigue-zague não mostram mais o fundo branco do body)
+- ADMIN 100% CLARO via remap: #101010/#141414→#f4f4f5, #101013→#fafafa, #141418/#17171b→#ffffff, #1c1c1c/#1a1a1a→#fafafa, #222228→#f4f4f5, #2a2a2a/#2b2b31→#e4e4e7, #3a3a42→#d4d4d8 (AdminPanel, OwnerDashboard, panel-shared); badge zinc corrigido
+- VERIFICAÇÃO BROWSER (desktop 1280x800 + mobile 390x844): AuthGate escuro com Google branco; hero com foto real do ginásio; Sobre/Modalidades/Coletivas/Horários/Empresas/Planos/Galeria/Eventos claros e legíveis; CROWN GOLD e Crown Games escuros com borda dourada; badges 100% visíveis; tabela de preços sem sobreposição; modal de assinatura escuro legível com Google; login admin OK; Painel Admin totalmente claro (modalidades + configurações); mobile 2 cards/fileira e CROWN GOLD full-width; footer escuro fixo no fim; console sem erros; dev.log limpo; lint 0/0
+
+Stage Summary:
+- Site com identidade dual: preto+dourado só nos momentos de marca (hero, CTA, rodapé, gate, modais, destaques) e branco/cinza claro em todo o conteúdo — exatamente o pedido de "branco nas partes menos importantes"
+- Contraste WCAG calibrado (#a87421 sobre claro, #d9a441 sobre escuro); zero texto escuro sobre fundo escuro restante
+- Bonus: heroimage quebrada (URL assinada expirada) corrigida para /img/hero.jpg
+- seed continua não-destrutivo; todas as edições do admin persistem no banco

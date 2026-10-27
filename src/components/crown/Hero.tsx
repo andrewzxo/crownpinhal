@@ -54,9 +54,9 @@ export default function Hero() {
 
           {/* Título */}
           <h1 className="font-display uppercase leading-[0.95] whitespace-pre-line text-[clamp(3rem,9vw,7rem)]">
-            {pre && <span className="text-foreground">{pre}</span>}
+            {pre && <span className="text-white">{pre}</span>}
             <span className="text-gold-gradient">{heroHighlight}</span>
-            {post && <span className="text-foreground">{post}</span>}
+            {post && <span className="text-white">{post}</span>}
           </h1>
 
           <motion.p
@@ -95,7 +95,7 @@ export default function Hero() {
                 size="lg"
                 variant="outline"
                 onClick={() => document.getElementById("modalidades")?.scrollIntoView({ behavior: "smooth" })}
-                className="h-14 px-10 skew-x-[10deg] bg-[#101013]/40 backdrop-blur border-white/20 hover:bg-white/10 hover:text-foreground hover:border-white/40 font-heading uppercase tracking-wider font-semibold text-base transition-all"
+                className="h-14 px-10 skew-x-[10deg] bg-[#101013]/40 backdrop-blur border-white/20 hover:bg-white/10 hover:text-white hover:border-white/40 font-heading uppercase tracking-wider font-semibold text-base transition-all"
               >
                 <span className="flex items-center gap-2 skew-x-[10deg]">
                   <Dumbbell className="w-5 h-5" />
@@ -114,7 +114,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, y: [0, 8, 0] }}
         transition={{ opacity: { delay: 1.4 }, y: { repeat: Infinity, duration: 1.8 } }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-zinc-400 hover:text-foreground cursor-pointer"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-zinc-400 hover:text-white cursor-pointer"
       >
         <ChevronDown className="w-8 h-8" />
       </motion.button>

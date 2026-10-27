@@ -35,10 +35,10 @@ export const GOLD = "#d9a441";
 /* ------------------------------------------------------------------ */
 
 export const scrollbarY =
-  "overflow-y-auto [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#2b2b31] [&::-webkit-scrollbar-track]:bg-transparent";
+  "overflow-y-auto [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#e4e4e7] [&::-webkit-scrollbar-track]:bg-transparent";
 
 export const scrollbarX =
-  "overflow-x-auto [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#2b2b31] [&::-webkit-scrollbar-track]:bg-transparent";
+  "overflow-x-auto [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#e4e4e7] [&::-webkit-scrollbar-track]:bg-transparent";
 
 /* ------------------------------------------------------------------ */
 /* Formatadores pt-BR                                                  */
@@ -92,7 +92,7 @@ interface PanelHeaderProps {
 export function PanelHeader({ titleA, titleB, subtitle, children }: PanelHeaderProps) {
   const setView = useAppStore((s) => s.setView);
   return (
-    <header className="sticky top-0 z-40 border-b border-[#d9a441]/25 bg-[#101013]/95 backdrop-blur supports-[backdrop-filter]:bg-[#101013]/80">
+    <header className="sticky top-0 z-40 border-b border-[#d9a441]/25 bg-[#fafafa]/95 backdrop-blur supports-[backdrop-filter]:bg-[#fafafa]/80">
       <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
         <div className="min-w-0 flex-1">
           <h1 className="font-display truncate text-xl uppercase tracking-wide text-foreground sm:text-2xl">
@@ -160,7 +160,7 @@ export function PanelNav({ tabs, active, onChange, ariaLabel }: PanelNavProps) {
                 "border-l-2",
                 isActive
                   ? "border-[#d9a441]/40 border-l-[#d9a441] bg-[#d9a441]/10 text-[#d9a441]"
-                  : "border-transparent border-l-transparent text-muted-foreground hover:bg-[#141414] hover:text-foreground"
+                  : "border-transparent border-l-transparent text-muted-foreground hover:bg-[#f4f4f5] hover:text-foreground"
               )}
             >
               <Icon className="size-4 shrink-0" aria-hidden />
@@ -214,7 +214,7 @@ export function ListSkeleton({ rows = 3 }: { rows?: number }) {
   return (
     <div className="space-y-3">
       {Array.from({ length: rows }).map((_, i) => (
-        <Skeleton key={i} className="h-16 w-full bg-[#141414]" />
+        <Skeleton key={i} className="h-16 w-full bg-[#f4f4f5]" />
       ))}
     </div>
   );
@@ -224,7 +224,7 @@ export function TableSkeleton({ rows = 5, height = "h-12" }: { rows?: number; he
   return (
     <div className="space-y-2">
       {Array.from({ length: rows }).map((_, i) => (
-        <Skeleton key={i} className={cn("w-full bg-[#141414]", height)} />
+        <Skeleton key={i} className={cn("w-full bg-[#f4f4f5]", height)} />
       ))}
     </div>
   );
@@ -233,8 +233,8 @@ export function TableSkeleton({ rows = 5, height = "h-12" }: { rows?: number; he
 export function AccessDeniedCard() {
   const setView = useAppStore((s) => s.setView);
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#101013] p-4">
-      <Card className="w-full max-w-sm border-[#2b2b31] bg-[#101010]">
+    <div className="flex min-h-screen items-center justify-center bg-[#fafafa] p-4">
+      <Card className="w-full max-w-sm border-[#e4e4e7] bg-[#f4f4f5]">
         <CardContent className="flex flex-col items-center gap-4 px-6 text-center">
           <ShieldAlert className="size-12 text-[#d9a441]" aria-hidden />
           <div>
@@ -263,7 +263,7 @@ export const goldButtonClass =
   "bg-gold-gradient font-heading uppercase tracking-wider text-black hover:opacity-90";
 
 export const outlineButtonClass =
-  "border-[#2b2b31] bg-transparent text-foreground hover:bg-[#1a1a1a] hover:text-foreground";
+  "border-[#e4e4e7] bg-transparent text-foreground hover:bg-[#f4f4f5] hover:text-foreground";
 
 /* ------------------------------------------------------------------ */
 /* Badges de status compartilhados                                     */
@@ -275,7 +275,7 @@ export function ActiveBadge({ active }: { active: boolean }) {
       Ativa
     </span>
   ) : (
-    <span className="inline-flex items-center rounded-md border border-[#2b2b31] bg-transparent px-2 py-0.5 text-xs font-medium text-muted-foreground">
+    <span className="inline-flex items-center rounded-md border border-[#e4e4e7] bg-transparent px-2 py-0.5 text-xs font-medium text-muted-foreground">
       Inativa
     </span>
   );

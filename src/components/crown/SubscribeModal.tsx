@@ -87,7 +87,7 @@ export default function SubscribeModal() {
 
   return (
     <Dialog open={!!planId} onOpenChange={(open) => !open && closeSubscribe()}>
-      <DialogContent className="bg-[#17171b] border-[#2b2b31] max-w-md">
+      <DialogContent className="bg-[#17171b] border-[#2b2b31] text-zinc-100 max-w-md">
         {plan ? (
           done ? (
             <div className="py-6 text-center">
@@ -95,13 +95,13 @@ export default function SubscribeModal() {
                 <BadgeCheck className="w-8 h-8 text-[#d9a441]" />
               </div>
               <DialogHeader>
-                <DialogTitle className="text-center font-display text-2xl uppercase">
+                <DialogTitle className="text-center font-display text-2xl uppercase text-white">
                   Pedido <span className="text-[#d9a441]">enviado!</span>
                 </DialogTitle>
-                <DialogDescription className="text-center text-muted-foreground mt-2">
+                <DialogDescription className="text-center text-zinc-400 mt-2">
                   Recebemos seu interesse no plano <strong className="text-[#d9a441]">{plan.name}</strong>.
                   Nossa equipe entrará em contato pelo e-mail{" "}
-                  <strong className="text-foreground">{user?.email}</strong> para finalizar sua
+                  <strong className="text-zinc-100">{user?.email}</strong> para finalizar sua
                   assinatura.
                 </DialogDescription>
               </DialogHeader>
@@ -119,10 +119,10 @@ export default function SubscribeModal() {
                 <p className="font-heading uppercase tracking-[0.3em] text-xs text-zinc-400">
                   Assinatura CROWN
                 </p>
-                <DialogTitle className="font-display text-2xl uppercase tracking-wide">
+                <DialogTitle className="font-display text-2xl uppercase tracking-wide text-white">
                   Plano <span className="text-[#d9a441]">{plan.name}</span>
                 </DialogTitle>
-                <DialogDescription>
+                <DialogDescription className="text-zinc-400">
                   {plan.description}
                 </DialogDescription>
               </DialogHeader>
@@ -135,7 +135,7 @@ export default function SubscribeModal() {
                     <p className="font-display text-3xl text-[#d9a441]">
                       {brl(plan.price)}
                       {plan.period && (
-                        <span className="text-sm font-heading uppercase tracking-wider text-muted-foreground">
+                        <span className="text-sm font-heading uppercase tracking-wider text-zinc-400">
                           {" "}
                           /{plan.period}
                         </span>
@@ -144,7 +144,7 @@ export default function SubscribeModal() {
                   </div>
                 ) : (
                   <div className="bg-[#141418] border border-[#2b2b31] p-4">
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-zinc-400">
                       Valores disponíveis na recepção ou pelo WhatsApp.
                     </p>
                   </div>
@@ -157,7 +157,7 @@ export default function SubscribeModal() {
                     </p>
                     <ul className="space-y-1.5">
                       {plan.features.map((f) => (
-                        <li key={f} className="text-sm text-muted-foreground flex items-start gap-2">
+                        <li key={f} className="text-sm text-zinc-400 flex items-start gap-2">
                           <Crown className="w-3.5 h-3.5 mt-0.5 text-[#d9a441] shrink-0" />
                           {f}
                         </li>
@@ -171,20 +171,20 @@ export default function SubscribeModal() {
                     htmlFor="sub-notes"
                     className="font-heading uppercase text-xs tracking-wider text-[#d9a441]"
                   >
-                    Observação <span className="text-muted-foreground normal-case">(opcional)</span>
+                    Observação <span className="text-zinc-400 normal-case">(opcional)</span>
                   </label>
                   <Textarea
                     id="sub-notes"
                     placeholder="Ex: tenho interesse em musculação à noite, gostaria de saber mais sobre as condições..."
-                    className="bg-[#0a0a0a] border-[#2a2a2a] min-h-[80px] focus-visible:ring-[#d9a441]/50"
+                    className="bg-[#0a0a0a] border-[#2a2a2a] text-zinc-100 placeholder:text-zinc-500 min-h-[80px] focus-visible:ring-[#d9a441]/50"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                   />
                 </div>
 
-                <div className="bg-[#141418] border border-[#2b2b31] p-3 text-xs text-muted-foreground">
+                <div className="bg-[#141418] border border-[#2b2b31] p-3 text-xs text-zinc-400">
                   Pedido será feito em nome de{" "}
-                  <strong className="text-foreground">{user?.name}</strong> ({user?.email}). O
+                  <strong className="text-zinc-100">{user?.name}</strong> ({user?.email}). O
                   dono da academia receberá seu pedido no painel de controle.
                 </div>
 

@@ -38,7 +38,7 @@ export default function AccountMenu() {
         <DropdownMenuTrigger asChild>
           <button
             aria-label="Menu da conta"
-            className="flex items-center gap-2 border border-[#2b2b31] bg-[#101010] hover:border-[#d9a441]/60 transition-colors pl-1 pr-3 py-1 cursor-pointer"
+            className="flex items-center gap-2 border border-[#2b2b31] bg-[#101010] text-zinc-100 hover:border-[#d9a441]/60 transition-colors pl-1 pr-3 py-1 cursor-pointer"
           >
             <Avatar className="w-8 h-8 rounded-none border border-[#d9a441]/50">
               <AvatarFallback className="rounded-none bg-gold-gradient text-black text-xs font-bold">
@@ -52,12 +52,12 @@ export default function AccountMenu() {
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="w-56 bg-[#141418] border-[#2b2b31] text-foreground"
+          className="w-56 bg-[#141418] border-[#2b2b31] text-zinc-100"
         >
           <DropdownMenuLabel>
             <div className="flex flex-col">
               <span className="font-medium truncate">{user.name}</span>
-              <span className="text-xs text-muted-foreground truncate">{user.email}</span>
+              <span className="text-xs text-zinc-400 truncate">{user.email}</span>
               <span className="mt-1 inline-flex items-center gap-1 text-[10px] font-heading uppercase tracking-wider text-[#d9a441]">
                 <Crown className="w-3 h-3" /> {roleLabel}
               </span>

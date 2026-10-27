@@ -52,37 +52,38 @@
   --gold-light: #f0d090;
   --gold-dark: #a87421;
 
-  /* Paleta em tons de CINZA (menos preto puro, menos dourado) */
-  --background: #101013;
-  --foreground: #f4f4f5;
-  --card: #17171b;
-  --card-foreground: #f4f4f5;
-  --popover: #1b1b20;
-  --popover-foreground: #f4f4f5;
+  /* Paleta CLARA: branco/cinza nas áreas de conteúdo, preto+dourado só nos
+     momentos de marca (hero, CTA, rodapé, navbar e destaques) */
+  --background: #ffffff;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
   --primary: #d9a441;
   --primary-foreground: #0a0a0a;
-  --secondary: #1e1e24;
-  --secondary-foreground: #f4f4f5;
-  --muted: #1e1e24;
-  --muted-foreground: #a6a6ae;
-  --accent: #d9a441;
-  --accent-foreground: #0a0a0a;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #52525b;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
   --destructive: #e5484d;
-  --border: #2b2b31;
-  --input: #303038;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
   --ring: #d9a441;
   --chart-1: #d9a441;
-  --chart-2: #f0d090;
-  --chart-3: #a87421;
-  --chart-4: #7a5314;
-  --chart-5: #fae5b4;
-  --sidebar: #17171b;
-  --sidebar-foreground: #f4f4f5;
+  --chart-2: #a87421;
+  --chart-3: #7a5314;
+  --chart-4: #52525b;
+  --chart-5: #f0d090;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #18181b;
   --sidebar-primary: #d9a441;
   --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #1e1e24;
-  --sidebar-accent-foreground: #f4f4f5;
-  --sidebar-border: #2b2b31;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
   --sidebar-ring: #d9a441;
 }
 
@@ -100,20 +101,20 @@
   }
 }
 
-/* ---------- Scrollbar neutro ---------- */
+/* ---------- Scrollbar claro ---------- */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #17171b;
+  background: #f4f4f5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #3a3a42;
-  border: 2px solid #17171b;
+  background: #d4d4d8;
+  border: 2px solid #f4f4f5;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+  background: #a1a1aa;
 }
 
 @layer utilities {
