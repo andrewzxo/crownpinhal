@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
@@ -15,35 +15,80 @@ import type { SessionUser } from "@/lib/types";
 const inputCls =
   "h-11 bg-[#141418] border-[#2b2b31] text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#d9a441]/50 focus-visible:border-[#d9a441]/60 transition-all";
 
+/**
+ * Botão "Entrar com Google".
+ * Verifica antes se o login com Google está configurado no servidor:
+ * - Configurado → segue o fluxo OAuth normal.
+ * - Não configurado → mostra um aviso na hora, sem recarregar a página
+ *   (antes o botão recarregava e "não fazia nada" para quem usa o site).
+ */
 export function GoogleButton({ className = "" }: { className?: string }) {
+  const [configured, setConfigured] = useState<boolean | null>(null);
+  const [showHint, setShowHint] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/auth/google/status", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d: { configured: boolean }) => {
+        if (alive) setConfigured(Boolean(d.configured));
+      })
+      .catch(() => {
+        if (alive) setConfigured(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  function handleClick() {
+    if (configured) {
+      window.location.href = "/api/auth/google";
+      return;
+    }
+    // Google ainda sem credenciais no servidor: avisa sem sair da tela.
+    setShowHint(true);
+  }
+
   return (
-    <button
-      type="button"
-      onClick={() => {
-        window.location.href = "/api/auth/google";
-      }}
-      className={`w-full h-12 flex items-center justify-center gap-3 bg-white text-[#1f1f1f] hover:bg-zinc-100 transition-colors font-medium text-sm cursor-pointer ${className}`}
-    >
-      <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden>
-        <path
-          fill="#4285F4"
-          d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82Z"
-        />
-        <path
-          fill="#34A853"
-          d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24Z"
-        />
-        <path
-          fill="#FBBC05"
-          d="M5.27 14.29A7.2 7.2 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a12 12 0 0 0 0 10.76l3.98-3.09Z"
-        />
-        <path
-          fill="#EA4335"
-          d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42A11.98 11.98 0 0 0 12 0 11.99 11.99 0 0 0 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75Z"
-        />
-      </svg>
-      Entrar com Google
-    </button>
+    <div>
+      <button
+        type="button"
+        onClick={handleClick}
+        aria-describedby="google-login-hint"
+        className={`w-full h-12 flex items-center justify-center gap-3 bg-white text-[#1f1f1f] hover:bg-zinc-100 transition-colors font-medium text-sm cursor-pointer ${className}`}
+      >
+        <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden>
+          <path
+            fill="#4285F4"
+            d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82Z"
+          />
+          <path
+            fill="#34A853"
+            d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24Z"
+          />
+          <path
+            fill="#FBBC05"
+            d="M5.27 14.29A7.2 7.2 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a12 12 0 0 0 0 10.76l3.98-3.09Z"
+          />
+          <path
+            fill="#EA4335"
+            d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42A11.98 11.98 0 0 0 12 0 11.99 11.99 0 0 0 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75Z"
+          />
+        </svg>
+        Entrar com Google
+      </button>
+      {showHint && (
+        <p
+          id="google-login-hint"
+          role="status"
+          className="mt-3 text-center text-xs leading-relaxed text-[#d9a441] bg-[#d9a441]/10 border border-[#d9a441]/40 px-3 py-2"
+        >
+          Entrar com Google está temporariamente indisponível. Use e-mail e senha para
+          entrar ou crie sua conta — é rapidinho.
+        </p>
+      )}
+    </div>
   );
 }
 

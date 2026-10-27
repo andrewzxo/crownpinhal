@@ -47,7 +47,7 @@ export default function Home() {
         let msg = "";
         if (googleError === "config") {
           msg =
-            "Login com Google ainda não configurado. Adicione GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET no arquivo .env do servidor.";
+            "Entrar com Google está temporariamente indisponível. Use e-mail e senha para entrar ou criar sua conta.";
         } else if (googleError === "state") {
           msg = "Sessão de login com Google expirada. Tente novamente.";
         } else if (googleError) {

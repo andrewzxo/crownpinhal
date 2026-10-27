@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // Remove o balão flutuante "N" (DevTools) do canto da tela em desenvolvimento
+  devIndicators: false,
 };
 
 export default nextConfig;

@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import SectionNav from "./SectionNav";
 import Hero from "./Hero";
 import About from "./About";
+import HoursBand from "./HoursBand";
 import Modalities from "./Modalities";
 import Coletivas from "./Coletivas";
 import ScheduleSection from "./ScheduleSection";
@@ -24,6 +25,7 @@ export default function SiteView() {
       <main className="flex-1">
         <Hero />
         <About />
+        <HoursBand />
         <Modalities />
         <Coletivas />
         <ScheduleSection />

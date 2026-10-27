@@ -73,7 +73,7 @@ export default function About() {
           <Reveal delay={0.2} className="relative">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4">
-                <div className="relative overflow-hidden clip-blade group">
+                <div className="relative overflow-hidden clip-blade group border border-[#d9a441]/40 shadow-[0_0_45px_-14px_rgba(217,164,65,0.55)] hover:border-[#d9a441] hover:shadow-[0_0_60px_-10px_rgba(217,164,65,0.75)] transition-all duration-500">
                   <img
                     src={imgs[0]}
                     alt="Recepção da academia CROWN"
@@ -81,7 +81,7 @@ export default function About() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
                 </div>
-                <div className="relative overflow-hidden border border-[#2b2b31] group">
+                <div className="relative overflow-hidden border border-[#d9a441]/40 shadow-[0_0_45px_-14px_rgba(217,164,65,0.55)] group hover:border-[#d9a441] hover:shadow-[0_0_60px_-10px_rgba(217,164,65,0.75)] transition-all duration-500">
                   <img
                     src={imgs[1]}
                     alt="Área de treino da CROWN"
@@ -91,7 +91,7 @@ export default function About() {
                 </div>
               </div>
               <div className="pt-12 space-y-4">
-                <div className="relative overflow-hidden border border-[#2b2b31] group">
+                <div className="relative overflow-hidden border border-[#d9a441]/40 shadow-[0_0_45px_-14px_rgba(217,164,65,0.55)] group hover:border-[#d9a441] hover:shadow-[0_0_60px_-10px_rgba(217,164,65,0.75)] transition-all duration-500">
                   <img
                     src={imgs[2]}
                     alt="Sala de musculação da CROWN"

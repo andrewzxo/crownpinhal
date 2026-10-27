@@ -433,3 +433,25 @@ Stage Summary:
 - Período do plano agora é ESCOLHA (card e modal), não mais tabela estática.
 - Pedido do plano vai para o WhatsApp (19) 99150-4548 com nome, e-mail, plano, período, valor e observação — e continua registrando no banco com o período, visível ao ADMIN e ao OWNER na aba Pedidos.
 - Artefatos: prisma/schema.prisma (Subscription.optionLabel), src/lib/store.ts, src/lib/types.ts, Plans.tsx, SubscribeModal.tsx, OrdersShared.tsx, MySubscriptionsModal.tsx, /api/subscriptions, /api/subscriptions/mine, /api/owner/subscriptions.
+
+---
+Task ID: 22
+Agent: Z.ai Code (orchestrator)
+Task: (0) Tirar o balão "N" (DevTools) do canto da tela; (1) Corrigir o login "Entrar com Google" que ficava carregando pra sempre / não fazia nada; (2) Dar destaque em volta/atrás das fotos da academia; (3) Dar ênfase aos horários de abertura e fechamento (poucas academias abrem tanto).
+
+Work Log:
+- 22-0 Balão N: next.config.ts com devIndicators: false — indicador de DevTools do Next some do canto (requer restart do dev server, feito). Confirmado no snapshot: botão "Open Next.js Dev Tools" não existe mais.
+- 22-1 Google login — CAUSA RAIZ: GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET não existem no .env, então o botão navegava para /api/auth/google, o servidor devolvia 302 → /?googleError=config e a página RECARREGAVA inteira com um toast em linguagem de desenvolvedor (".env", "GOOGLE_CLIENT_ID") — para o usuário parecia "carregando pra sempre ou não faz nada".
+  - CORREÇÃO SEM CREDENCIAIS: novo endpoint GET /api/auth/google/status → {configured} (só booleano, nada de segredo); GoogleButton (AuthGate.tsx) agora checa o status no mount e, se não configurado, o clique mostra NA HORA um aviso dourado inline ("Entrar com Google está temporariamente indisponível. Use e-mail e senha para entrar ou crie sua conta — é rapidinho.") SEM recarregar a página; se configurado, segue o fluxo OAuth normal (janela → Google → callback).
+  - page.tsx: mensagem do retorno ?googleError=config reescrita em linguagem humana (sem .env).
+  - COMO ATIVAR DE VERDADE (produção): criar OAuth Client no console.cloud.google.com e definir GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET no .env — o código (authorize → token → userinfo → upsert User → LoginLog GOOGLE → sessão) já está pronto; redirect_uri = https://<dominio>/api/auth/google/callback.
+  - TESTE REAL: clique no botão → URL permanece /, sem reload, aviso aparece imediatamente (screenshot); /api/auth/google/status responde {"configured":false}.
+- 22-2 Destaque nas fotos: moldura dourada + brilho suave (border-[#d9a441]/40 + shadow dourada, hover mais forte + ring interno) nas 3 fotos da colagem do Sobre e em TODAS as fotos da Estrutura (Gallery) — o olhar do cliente vai direto para as fotos.
+- 22-3 Ênfase nos horários: novo componente HoursBand.tsx (seção própria entre "A Academia" e "Modalidades", id #funcionamento): fundo com brilho dourado radial, título "ABERTO TODOS OS DIAS", SELO EM TEMPO REAL "● ABERTO AGORA / FECHADO AGORA" (verde/cinza, calculado no cliente pelo dia+hora, atualiza a cada 60s, sem risco de hidratação), frase "Uma das poucas academias da região com essa duração — de madrugada até a noite, todos os dias da semana." e 3 cards dourados grandes: SEGUNDA A SEXTA 5H ÀS 22H / SÁBADO 8H ÀS 16H / DOMINGO 8H ÀS 14H (parseia settings.hoursText do banco, com fallback real).
+- VERIFICAÇÃO BROWSER (desktop 1280x800 + mobile 390x844): balão N sumiu; Google mostra aviso sem sair da tela; selo mostrou "ABERTO AGORA" (seg 13h20 — correto p/ 5h-22h); fotos da Estrutura e da colagem com moldura dourada visível; banda de horários perfeita nos 2 viewports (cards empilham no mobile); console e dev.log limpos; lint 0/0.
+
+Stage Summary:
+- Nada de "carregando pra sempre": o botão Google agora responde na hora, e o login real fica 100% funcional assim que as credenciais OAuth forem cadastradas no .env (código pronto, callback e log de acesso GOOGLE já implementados).
+- Fotos da academia com moldura e brilho dourados que chamam atenção.
+- Horários de funcionamento com seção dedicada de alto destaque, selo ABERTO/FECHADO em tempo real e os horários reais em tipografia grande — o diferencial "aberto de 5h às 22h" agora é impossível de não ver.
+- Artefatos: next.config.ts (devIndicators:false), src/app/api/auth/google/status/route.ts (novo), AuthGate.tsx (GoogleButton inteligente), page.tsx (mensagem humana), Gallery.tsx + About.tsx (molduras), HoursBand.tsx (novo), SiteView.tsx (banda inserida).

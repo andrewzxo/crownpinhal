@@ -25,11 +25,18 @@ export default function Gallery() {
           <div className="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
             {gallery.map((g, i) => (
               <Reveal key={g.id} delay={(i % 3) * 0.08} className="mb-4 break-inside-avoid">
-                <figure className="group relative overflow-hidden clip-blade bg-[#17171b] border border-[#2b2b31] cursor-pointer">
+                <figure
+                  className="group relative overflow-hidden clip-blade bg-[#17171b] cursor-pointer border border-[#d9a441]/40 shadow-[0_0_45px_-14px_rgba(217,164,65,0.55)] hover:border-[#d9a441] hover:shadow-[0_0_60px_-10px_rgba(217,164,65,0.75)] transition-all duration-500"
+                >
                   <img
                     src={g.url}
                     alt={g.title || "Foto da estrutura da academia CROWN"}
                     className="w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  {/* Brilho dourado interno sutil — moldura viva */}
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-[#d9a441]/25 group-hover:ring-[#d9a441]/50 transition-all duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   {g.title && (
