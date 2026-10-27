@@ -85,6 +85,10 @@ export async function GET(req: Request) {
     }
 
     await createSession(user.id);
+    // Histórico de acessos (salvo no banco de dados)
+    await db.loginLog
+      .create({ data: { userId: user.id, method: "GOOGLE" } })
+      .catch((e) => console.error("[auth/google:log]", e));
 
     return Response.redirect(`${origin}/?googleSuccess=1`, 302);
   } catch (e) {

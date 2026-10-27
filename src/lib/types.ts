@@ -94,3 +94,15 @@ export interface OwnerStatsDTO {
   totalModalities: number;
   totalPlans: number;
 }
+
+export interface LoginLogDTO {
+  id: string;
+  method: "EMAIL" | "GOOGLE" | "REGISTER";
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+  } | null;
+}

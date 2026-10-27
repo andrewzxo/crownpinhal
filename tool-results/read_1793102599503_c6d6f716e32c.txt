@@ -1,0 +1,1870 @@
+     1→"use client";
+     2→
+     3→import {
+     4→  useCallback,
+     5→  useEffect,
+     6→  useMemo,
+     7→  useRef,
+     8→  useState,
+     9→  type ChangeEvent,
+    10→} from "react";
+    11→import {
+    12→  BarChart3,
+    13→  Check,
+    14→  Clock,
+    15→  Crown,
+    16→  Dumbbell,
+    17→  ImagePlus,
+    18→  Images,
+    19→  Loader2,
+    20→  MapPin,
+    21→  Megaphone,
+    22→  Pencil,
+    23→  Plus,
+    24→  Settings,
+    25→  Sparkles,
+    26→  Star,
+    27→  Trash2,
+    28→  Upload,
+    29→} from "lucide-react";
+    30→import { toast } from "sonner";
+    31→
+    32→import {
+    33→  AlertDialog,
+    34→  AlertDialogAction,
+    35→  AlertDialogCancel,
+    36→  AlertDialogContent,
+    37→  AlertDialogDescription,
+    38→  AlertDialogFooter,
+    39→  AlertDialogHeader,
+    40→  AlertDialogTitle,
+    41→  AlertDialogTrigger,
+    42→} from "@/components/ui/alert-dialog";
+    43→import { Badge } from "@/components/ui/badge";
+    44→import { Button } from "@/components/ui/button";
+    45→import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+    46→import {
+    47→  Dialog,
+    48→  DialogContent,
+    49→  DialogDescription,
+    50→  DialogFooter,
+    51→  DialogHeader,
+    52→  DialogTitle,
+    53→} from "@/components/ui/dialog";
+    54→import { Input } from "@/components/ui/input";
+    55→import { Label } from "@/components/ui/label";
+    56→import {
+    57→  Select,
+    58→  SelectContent,
+    59→  SelectItem,
+    60→  SelectTrigger,
+    61→  SelectValue,
+    62→} from "@/components/ui/select";
+    63→import { Switch } from "@/components/ui/switch";
+    64→import { Textarea } from "@/components/ui/textarea";
+    65→import { api, uploadImage } from "@/lib/api";
+    66→import { useAppStore } from "@/lib/store";
+    67→import type {
+    68→  ContentResponse,
+    69→  GalleryDTO,
+    70→  ModalityDTO,
+    71→  PlanDTO,
+    72→  ScheduleDTO,
+    73→} from "@/lib/types";
+    74→import { cn } from "@/lib/utils";
+    75→import {
+    76→  AccessDeniedCard,
+    77→  ActiveBadge,
+    78→  DAY_NAMES,
+    79→  DAY_ORDER,
+    80→  EmptyState,
+    81→  FieldLabel,
+    82→  formatPriceBR,
+    83→  formatTime,
+    84→  goldButtonClass,
+    85→  ListSkeleton,
+    86→  outlineButtonClass,
+    87→  PanelHeader,
+    88→  PanelNav,
+    89→  scrollbarY,
+    90→  type PanelTab,
+    91→} from "./panel-shared";
+    92→
+    93→type TabId = "modalities" | "schedules" | "plans" | "gallery" | "settings";
+    94→
+    95→const TABS: PanelTab[] = [
+    96→  { id: "modalities", label: "Modalidades", icon: Dumbbell },
+    97→  { id: "schedules", label: "Horários", icon: Clock },
+    98→  { id: "plans", label: "Planos", icon: Crown },
+    99→  { id: "gallery", label: "Galeria", icon: Images },
+   100→  { id: "settings", label: "Configurações", icon: Settings },
+   101→];
+   102→
+   103→function errMessage(err: unknown, fallback: string): string {
+   104→  return err instanceof Error ? err.message : fallback;
+   105→}
+   106→
+   107→/* ==================================================================== */
+   108→/* TAB 1 — MODALIDADES                                                  */
+   109→/* ==================================================================== */
+   110→
+   111→interface ModalityForm {
+   112→  name: string;
+   113→  description: string;
+   114→  imageUrl: string;
+   115→  icon: string;
+   116→  order: number;
+   117→  active: boolean;
+   118→}
+   119→
+   120→function ModalitiesTab() {
+   121→  const refreshContent = useAppStore((s) => s.refreshContent);
+   122→  const content = useAppStore((s) => s.content);
+   123→
+   124→  const [items, setItems] = useState<ModalityDTO[]>(() => content?.modalities ?? []);
+   125→  const [loading, setLoading] = useState(true);
+   126→  const [dialogOpen, setDialogOpen] = useState(false);
+   127→  const [editing, setEditing] = useState<ModalityDTO | null>(null);
+   128→  const [saving, setSaving] = useState(false);
+   129→  const [uploading, setUploading] = useState(false);
+   130→  const [form, setForm] = useState<ModalityForm>({
+   131→    name: "",
+   132→    description: "",
+   133→    imageUrl: "",
+   134→    icon: "",
+   135→    order: 0,
+   136→    active: true,
+   137→  });
+   138→  const fileRef = useRef<HTMLInputElement>(null);
+   139→
+   140→  const load = useCallback(async () => {
+   141→    setLoading(true);
+   142→    try {
+   143→      const data = await api<{ modalities: ModalityDTO[] }>("/api/admin/modalities");
+   144→      setItems(data.modalities);
+   145→    } catch (err) {
+   146→      toast.error(errMessage(err, "Erro ao carregar modalidades."));
+   147→    } finally {
+   148→      setLoading(false);
+   149→    }
+   150→  }, []);
+   151→
+   152→  useEffect(() => {
+   153→    void load();
+   154→  }, [load]);
+   155→
+   156→  function openCreate() {
+   157→    setEditing(null);
+   158→    setForm({
+   159→      name: "",
+   160→      description: "",
+   161→      imageUrl: "",
+   162→      icon: "",
+   163→      order: items.length,
+   164→      active: true,
+   165→    });
+   166→    setDialogOpen(true);
+   167→  }
+   168→
+   169→  function openEdit(modality: ModalityDTO) {
+   170→    setEditing(modality);
+   171→    setForm({
+   172→      name: modality.name,
+   173→      description: modality.description,
+   174→      imageUrl: modality.imageUrl ?? "",
+   175→      icon: modality.icon ?? "",
+   176→      order: modality.order,
+   177→      active: modality.active,
+   178→    });
+   179→    setDialogOpen(true);
+   180→  }
+   181→
+   182→  async function handleUpload(file: File) {
+   183→    setUploading(true);
+   184→    try {
+   185→      const url = await uploadImage(file);
+   186→      setForm((f) => ({ ...f, imageUrl: url }));
+   187→      toast.success("Imagem enviada com sucesso.");
+   188→    } catch (err) {
+   189→      toast.error(errMessage(err, "Erro ao enviar imagem."));
+   190→    } finally {
+   191→      setUploading(false);
+   192→    }
+   193→  }
+   194→
+   195→  async function save() {
+   196→    if (!form.name.trim()) {
+   197→      toast.error("Informe o nome da modalidade.");
+   198→      return;
+   199→    }
+   200→    setSaving(true);
+   201→    try {
+   202→      const payload = {
+   203→        name: form.name.trim(),
+   204→        description: form.description.trim(),
+   205→        imageUrl: form.imageUrl.trim() || null,
+   206→        icon: form.icon.trim() || null,
+   207→        order: Number.isFinite(form.order) ? form.order : 0,
+   208→        active: form.active,
+   209→      };
+   210→      if (editing) {
+   211→        await api(`/api/admin/modalities/${editing.id}`, {
+   212→          method: "PUT",
+   213→          body: JSON.stringify(payload),
+   214→        });
+   215→        toast.success("Modalidade atualizada com sucesso.");
+   216→      } else {
+   217→        await api("/api/admin/modalities", {
+   218→          method: "POST",
+   219→          body: JSON.stringify(payload),
+   220→        });
+   221→        toast.success("Modalidade criada com sucesso.");
+   222→      }
+   223→      setDialogOpen(false);
+   224→      await Promise.all([load(), refreshContent()]);
+   225→    } catch (err) {
+   226→      toast.error(errMessage(err, "Erro ao salvar modalidade."));
+   227→    } finally {
+   228→      setSaving(false);
+   229→    }
+   230→  }
+   231→
+   232→  async function remove(id: string) {
+   233→    try {
+   234→      await api(`/api/admin/modalities/${id}`, { method: "DELETE" });
+   235→      toast.success("Modalidade excluída.");
+   236→      await Promise.all([load(), refreshContent()]);
+   237→    } catch (err) {
+   238→      toast.error(errMessage(err, "Erro ao excluir modalidade."));
+   239→    }
+   240→  }
+   241→
+   242→  return (
+   243→    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+   244→      <CardHeader className="flex flex-wrap items-center justify-between gap-3 px-4 [.border-b]:pb-0">
+   245→        <div>
+   246→          <CardTitle className="font-display text-lg uppercase tracking-wide">
+   247→            Modalidades
+   248→          </CardTitle>
+   249→          <CardDescription>Cadastre e organize as modalidades da academia.</CardDescription>
+   250→        </div>
+   251→        <Button onClick={openCreate} className={goldButtonClass} aria-label="Nova modalidade">
+   252→          <Plus className="size-4" />
+   253→          Nova Modalidade
+   254→        </Button>
+   255→      </CardHeader>
+   256→      <CardContent className="px-4">
+   257→        {loading ? (
+   258→          <ListSkeleton rows={4} />
+   259→        ) : items.length === 0 ? (
+   260→          <EmptyState
+   261→            icon={Dumbbell}
+   262→            title="Nenhuma modalidade cadastrada"
+   263→            description="Clique em “Nova Modalidade” para criar a primeira."
+   264→          />
+   265→        ) : (
+   266→          <ul className={cn("max-h-[60vh] space-y-2 pr-1", scrollbarY)}>
+   267→            {items.map((m) => (
+   268→              <li
+   269→                key={m.id}
+   270→                className="flex items-center gap-3 rounded-lg border border-[#2b2b31] bg-[#17171b] p-3"
+   271→              >
+   272→                {m.imageUrl ? (
+   273→                  <img
+   274→                    src={m.imageUrl}
+   275→                    alt={`Imagem da modalidade ${m.name}`}
+   276→                    className="size-16 shrink-0 rounded-md object-cover"
+   277→                  />
+   278→                ) : (
+   279→                  <div className="flex size-16 shrink-0 items-center justify-center rounded-md bg-[#1a1a20]">
+   280→                    <Dumbbell className="size-6 text-[#d9a441]/50" aria-hidden />
+   281→                  </div>
+   282→                )}
+   283→                <div className="min-w-0 flex-1">
+   284→                  <div className="flex flex-wrap items-center gap-2">
+   285→                    <span className="font-heading uppercase tracking-wide">{m.name}</span>
+   286→                    <ActiveBadge active={m.active} />
+   287→                    <span className="text-xs text-muted-foreground">Ordem {m.order}</span>
+   288→                    <span className="text-xs text-muted-foreground">
+   289→                      {m.schedules?.length ?? 0} horário(s)
+   290→                    </span>
+   291→                  </div>
+   292→                  <p className="truncate text-sm text-muted-foreground">{m.description}</p>
+   293→                </div>
+   294→                <div className="flex shrink-0 gap-1">
+   295→                  <Button
+   296→                    variant="ghost"
+   297→                    size="icon"
+   298→                    aria-label={`Editar modalidade ${m.name}`}
+   299→                    onClick={() => openEdit(m)}
+   300→                    className="text-muted-foreground hover:bg-[#d9a441]/10 hover:text-[#d9a441]"
+   301→                  >
+   302→                    <Pencil className="size-4" />
+   303→                  </Button>
+   304→                  <AlertDialog>
+   305→                    <AlertDialogTrigger asChild>
+   306→                      <Button
+   307→                        variant="ghost"
+   308→                        size="icon"
+   309→                        aria-label={`Excluir modalidade ${m.name}`}
+   310→                        className="text-red-400 hover:bg-red-500/10 hover:text-red-300"
+   311→                      >
+   312→                        <Trash2 className="size-4" />
+   313→                      </Button>
+   314→                    </AlertDialogTrigger>
+   315→                    <AlertDialogContent className="border-[#2b2b31] bg-[#1a1a20]">
+   316→                      <AlertDialogHeader>
+   317→                        <AlertDialogTitle className="font-display uppercase tracking-wide">
+   318→                          Excluir modalidade?
+   319→                        </AlertDialogTitle>
+   320→                        <AlertDialogDescription>
+   321→                          Tem certeza que deseja excluir “{m.name}”? Esta ação não pode ser
+   322→                          desfeita.
+   323→                        </AlertDialogDescription>
+   324→                      </AlertDialogHeader>
+   325→                      <AlertDialogFooter>
+   326→                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+   327→                        <AlertDialogAction
+   328→                          className="bg-red-600 text-white hover:bg-red-700"
+   329→                          onClick={() => void remove(m.id)}
+   330→                        >
+   331→                          Excluir
+   332→                        </AlertDialogAction>
+   333→                      </AlertDialogFooter>
+   334→                    </AlertDialogContent>
+   335→                  </AlertDialog>
+   336→                </div>
+   337→              </li>
+   338→            ))}
+   339→          </ul>
+   340→        )}
+   341→      </CardContent>
+   342→
+   343→      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+   344→        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#2b2b31] bg-[#1a1a20] sm:max-w-lg">
+   345→          <DialogHeader>
+   346→            <DialogTitle className="font-display uppercase tracking-wide">
+   347→              {editing ? "Editar Modalidade" : "Nova Modalidade"}
+   348→            </DialogTitle>
+   349→            <DialogDescription>
+   350→              {editing
+   351→                ? "Atualize as informações da modalidade."
+   352→                : "Cadastre uma nova modalidade para a academia."}
+   353→            </DialogDescription>
+   354→          </DialogHeader>
+   355→          <form
+   356→            onSubmit={(e) => {
+   357→              e.preventDefault();
+   358→              void save();
+   359→            }}
+   360→            className="space-y-4"
+   361→          >
+   362→            <div className="space-y-1.5">
+   363→              <FieldLabel htmlFor="modality-name">Nome</FieldLabel>
+   364→              <Input
+   365→                id="modality-name"
+   366→                value={form.name}
+   367→                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+   368→                placeholder="Ex.: Musculação"
+   369→                className="border-[#2b2b31] bg-[#17171b]"
+   370→              />
+   371→            </div>
+   372→            <div className="space-y-1.5">
+   373→              <FieldLabel htmlFor="modality-description">Descrição</FieldLabel>
+   374→              <Textarea
+   375→                id="modality-description"
+   376→                value={form.description}
+   377→                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+   378→                placeholder="Descrição exibida no site"
+   379→                rows={3}
+   380→                className="border-[#2b2b31] bg-[#17171b]"
+   381→              />
+   382→            </div>
+   383→            <div className="space-y-1.5">
+   384→              <FieldLabel>Imagem</FieldLabel>
+   385→              <div className="flex items-center gap-3">
+   386→                {form.imageUrl ? (
+   387→                  <img
+   388→                    src={form.imageUrl}
+   389→                    alt="Pré-visualização da imagem da modalidade"
+   390→                    className="size-16 rounded-md border border-[#2b2b31] object-cover"
+   391→                  />
+   392→                ) : (
+   393→                  <div className="flex size-16 items-center justify-center rounded-md border border-dashed border-[#2b2b31]">
+   394→                    <ImagePlus className="size-6 text-muted-foreground" aria-hidden />
+   395→                  </div>
+   396→                )}
+   397→                <input
+   398→                  ref={fileRef}
+   399→                  type="file"
+   400→                  accept="image/*"
+   401→                  className="hidden"
+   402→                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+   403→                    const file = e.target.files?.[0];
+   404→                    if (file) void handleUpload(file);
+   405→                    e.target.value = "";
+   406→                  }}
+   407→                />
+   408→                <Button
+   409→                  type="button"
+   410→                  variant="outline"
+   411→                  size="sm"
+   412→                  disabled={uploading}
+   413→                  onClick={() => fileRef.current?.click()}
+   414→                  className={outlineButtonClass}
+   415→                >
+   416→                  {uploading ? (
+   417→                    <Loader2 className="size-4 animate-spin" />
+   418→                  ) : (
+   419→                    <Upload className="size-4" />
+   420→                  )}
+   421→                  {uploading ? "Enviando..." : "Enviar imagem"}
+   422→                </Button>
+   423→                {form.imageUrl ? (
+   424→                  <Button
+   425→                    type="button"
+   426→                    variant="ghost"
+   427→                    size="sm"
+   428→                    onClick={() => setForm((f) => ({ ...f, imageUrl: "" }))}
+   429→                    className="text-muted-foreground"
+   430→                  >
+   431→                    Remover
+   432→                  </Button>
+   433→                ) : null}
+   434→              </div>
+   435→              <Input
+   436→                value={form.imageUrl}
+   437→                onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
+   438→                placeholder="ou cole uma URL de imagem"
+   439→                className="border-[#2b2b31] bg-[#17171b]"
+   440→              />
+   441→            </div>
+   442→            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+   443→              <div className="space-y-1.5">
+   444→                <FieldLabel htmlFor="modality-icon">Ícone (opcional)</FieldLabel>
+   445→                <Input
+   446→                  id="modality-icon"
+   447→                  value={form.icon}
+   448→                  onChange={(e) => setForm((f) => ({ ...f, icon: e.target.value }))}
+   449→                  placeholder="Ex.: dumbbell"
+   450→                  className="border-[#2b2b31] bg-[#17171b]"
+   451→                />
+   452→              </div>
+   453→              <div className="space-y-1.5">
+   454→                <FieldLabel htmlFor="modality-order">Ordem</FieldLabel>
+   455→                <Input
+   456→                  id="modality-order"
+   457→                  type="number"
+   458→                  value={form.order}
+   459→                  onChange={(e) =>
+   460→                    setForm((f) => ({ ...f, order: Number(e.target.value) || 0 }))
+   461→                  }
+   462→                  className="border-[#2b2b31] bg-[#17171b]"
+   463→                />
+   464→              </div>
+   465→            </div>
+   466→            <div className="flex items-center justify-between rounded-lg border border-[#2b2b31] bg-[#17171b] px-3 py-2.5">
+   467→              <Label htmlFor="modality-active" className="cursor-pointer text-sm">
+   468→                Modalidade ativa
+   469→              </Label>
+   470→              <Switch
+   471→                id="modality-active"
+   472→                checked={form.active}
+   473→                onCheckedChange={(checked) => setForm((f) => ({ ...f, active: checked }))}
+   474→              />
+   475→            </div>
+   476→            <DialogFooter>
+   477→              <Button
+   478→                type="button"
+   479→                variant="outline"
+   480→                onClick={() => setDialogOpen(false)}
+   481→                className={outlineButtonClass}
+   482→              >
+   483→                Cancelar
+   484→              </Button>
+   485→              <Button type="submit" disabled={saving} className={goldButtonClass}>
+   486→                {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+   487→                {editing ? "Salvar" : "Criar"}
+   488→              </Button>
+   489→            </DialogFooter>
+   490→          </form>
+   491→        </DialogContent>
+   492→      </Dialog>
+   493→    </Card>
+   494→  );
+   495→}
+   496→
+   497→/* ==================================================================== */
+   498→/* TAB 2 — HORÁRIOS                                                     */
+   499→/* ==================================================================== */
+   500→
+   501→interface ScheduleForm {
+   502→  dayOfWeek: number;
+   503→  startTime: string;
+   504→  endTime: string;
+   505→  instructor: string;
+   506→}
+   507→
+   508→function SchedulesTab() {
+   509→  const refreshContent = useAppStore((s) => s.refreshContent);
+   510→
+   511→  const [modalities, setModalities] = useState<ModalityDTO[]>([]);
+   512→  const [selectedId, setSelectedId] = useState<string>("");
+   513→  const [loading, setLoading] = useState(true);
+   514→  const [dialogOpen, setDialogOpen] = useState(false);
+   515→  const [editing, setEditing] = useState<ScheduleDTO | null>(null);
+   516→  const [saving, setSaving] = useState(false);
+   517→  const [form, setForm] = useState<ScheduleForm>({
+   518→    dayOfWeek: 1,
+   519→    startTime: "07:00",
+   520→    endTime: "08:00",
+   521→    instructor: "",
+   522→  });
+   523→
+   524→  const load = useCallback(async () => {
+   525→    setLoading(true);
+   526→    try {
+   527→      const data = await api<{ modalities: ModalityDTO[] }>("/api/admin/modalities");
+   528→      setModalities(data.modalities);
+   529→      setSelectedId((prev) => prev || data.modalities[0]?.id || "");
+   530→    } catch (err) {
+   531→      toast.error(errMessage(err, "Erro ao carregar modalidades."));
+   532→    } finally {
+   533→      setLoading(false);
+   534→    }
+   535→  }, []);
+   536→
+   537→  useEffect(() => {
+   538→    void load();
+   539→  }, [load]);
+   540→
+   541→  const selected = modalities.find((m) => m.id === selectedId) ?? null;
+   542→
+   543→  const grouped = useMemo(() => {
+   544→    const list = selected?.schedules ?? [];
+   545→    return DAY_ORDER.map((day) => ({
+   546→      day,
+   547→      schedules: list
+   548→        .filter((s) => s.dayOfWeek === day)
+   549→        .sort((a, b) => a.startTime.localeCompare(b.startTime)),
+   550→    })).filter((g) => g.schedules.length > 0);
+   551→  }, [selected]);
+   552→
+   553→  function openCreate() {
+   554→    setEditing(null);
+   555→    setForm({ dayOfWeek: 1, startTime: "07:00", endTime: "08:00", instructor: "" });
+   556→    setDialogOpen(true);
+   557→  }
+   558→
+   559→  function openEdit(schedule: ScheduleDTO) {
+   560→    setEditing(schedule);
+   561→    setForm({
+   562→      dayOfWeek: schedule.dayOfWeek,
+   563→      startTime: formatTime(schedule.startTime),
+   564→      endTime: formatTime(schedule.endTime),
+   565→      instructor: schedule.instructor ?? "",
+   566→    });
+   567→    setDialogOpen(true);
+   568→  }
+   569→
+   570→  async function save() {
+   571→    if (!selected) return;
+   572→    if (!form.startTime || !form.endTime) {
+   573→      toast.error("Informe os horários de início e fim.");
+   574→      return;
+   575→    }
+   576→    setSaving(true);
+   577→    try {
+   578→      const payload = {
+   579→        modalityId: selected.id,
+   580→        dayOfWeek: form.dayOfWeek,
+   581→        startTime: form.startTime,
+   582→        endTime: form.endTime,
+   583→        instructor: form.instructor.trim() || null,
+   584→      };
+   585→      if (editing) {
+   586→        await api(`/api/admin/schedules/${editing.id}`, {
+   587→          method: "PUT",
+   588→          body: JSON.stringify(payload),
+   589→        });
+   590→        toast.success("Horário atualizado com sucesso.");
+   591→      } else {
+   592→        await api("/api/admin/schedules", {
+   593→          method: "POST",
+   594→          body: JSON.stringify(payload),
+   595→        });
+   596→        toast.success("Horário criado com sucesso.");
+   597→      }
+   598→      setDialogOpen(false);
+   599→      await Promise.all([load(), refreshContent()]);
+   600→    } catch (err) {
+   601→      toast.error(errMessage(err, "Erro ao salvar horário."));
+   602→    } finally {
+   603→      setSaving(false);
+   604→    }
+   605→  }
+   606→
+   607→  async function remove(id: string) {
+   608→    try {
+   609→      await api(`/api/admin/schedules/${id}`, { method: "DELETE" });
+   610→      toast.success("Horário excluído.");
+   611→      await Promise.all([load(), refreshContent()]);
+   612→    } catch (err) {
+   613→      toast.error(errMessage(err, "Erro ao excluir horário."));
+   614→    }
+   615→  }
+   616→
+   617→  return (
+   618→    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+   619→      <CardHeader className="px-4 [.border-b]:pb-0">
+   620→        <CardTitle className="font-display text-lg uppercase tracking-wide">Horários</CardTitle>
+   621→        <CardDescription>Gerencie os horários de cada modalidade.</CardDescription>
+   622→      </CardHeader>
+   623→      <CardContent className="space-y-4 px-4">
+   624→        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+   625→          <div className="min-w-0 flex-1 space-y-1.5">
+   626→            <FieldLabel htmlFor="schedule-modality">Modalidade</FieldLabel>
+   627→            <Select
+   628→              value={selectedId}
+   629→              onValueChange={(v) => setSelectedId(v)}
+   630→              disabled={loading || modalities.length === 0}
+   631→            >
+   632→              <SelectTrigger
+   633→                id="schedule-modality"
+   634→                className="w-full border-[#2b2b31] bg-[#17171b]"
+   635→              >
+   636→                <SelectValue placeholder="Selecione uma modalidade" />
+   637→              </SelectTrigger>
+   638→              <SelectContent className="border-[#2b2b31] bg-[#1a1a20]">
+   639→                {modalities.map((m) => (
+   640→                  <SelectItem key={m.id} value={m.id}>
+   641→                    {m.name}
+   642→                  </SelectItem>
+   643→                ))}
+   644→              </SelectContent>
+   645→            </Select>
+   646→          </div>
+   647→          <Button
+   648→            onClick={openCreate}
+   649→            disabled={!selected}
+   650→            className={goldButtonClass}
+   651→            aria-label="Novo horário"
+   652→          >
+   653→            <Plus className="size-4" />
+   654→            Novo Horário
+   655→          </Button>
+   656→        </div>
+   657→
+   658→        {loading ? (
+   659→          <ListSkeleton rows={4} />
+   660→        ) : !selected ? (
+   661→          <EmptyState
+   662→            icon={Clock}
+   663→            title="Nenhuma modalidade disponível"
+   664→            description="Crie uma modalidade antes de cadastrar horários."
+   665→          />
+   666→        ) : grouped.length === 0 ? (
+   667→          <EmptyState
+   668→            icon={Clock}
+   669→            title="Nenhum horário cadastrado"
+   670→            description={`Adicione o primeiro horário de ${selected.name}.`}
+   671→          />
+   672→        ) : (
+   673→          <div className={cn("max-h-[60vh] space-y-5 pr-1", scrollbarY)}>
+   674→            {grouped.map((group) => (
+   675→              <div key={group.day}>
+   676→                <h4 className="font-heading mb-2 text-xs uppercase tracking-widest text-[#d9a441]">
+   677→                  {DAY_NAMES[group.day]}
+   678→                  <span className="ml-2 text-muted-foreground">({group.schedules.length})</span>
+   679→                </h4>
+   680→                <div className="space-y-2">
+   681→                  {group.schedules.map((s) => (
+   682→                    <div
+   683→                      key={s.id}
+   684→                      className="flex items-center justify-between gap-3 rounded-lg border border-[#2b2b31] bg-[#17171b] px-3 py-2.5"
+   685→                    >
+   686→                      <div className="min-w-0">
+   687→                        <p className="font-heading text-sm uppercase tracking-wider text-[#d9a441]">
+   688→                          {formatTime(s.startTime)} - {formatTime(s.endTime)}
+   689→                        </p>
+   690→                        <p className="truncate text-sm text-muted-foreground">
+   691→                          {s.instructor || "Sem instrutor"}
+   692→                        </p>
+   693→                      </div>
+   694→                      <div className="flex shrink-0 gap-1">
+   695→                        <Button
+   696→                          variant="ghost"
+   697→                          size="icon"
+   698→                          aria-label={`Editar horário de ${formatTime(s.startTime)} (${DAY_NAMES[s.dayOfWeek]})`}
+   699→                          onClick={() => openEdit(s)}
+   700→                          className="text-muted-foreground hover:bg-[#d9a441]/10 hover:text-[#d9a441]"
+   701→                        >
+   702→                          <Pencil className="size-4" />
+   703→                        </Button>
+   704→                        <AlertDialog>
+   705→                          <AlertDialogTrigger asChild>
+   706→                            <Button
+   707→                              variant="ghost"
+   708→                              size="icon"
+   709→                              aria-label={`Excluir horário de ${formatTime(s.startTime)} (${DAY_NAMES[s.dayOfWeek]})`}
+   710→                              className="text-red-400 hover:bg-red-500/10 hover:text-red-300"
+   711→                            >
+   712→                              <Trash2 className="size-4" />
+   713→                            </Button>
+   714→                          </AlertDialogTrigger>
+   715→                          <AlertDialogContent className="border-[#2b2b31] bg-[#1a1a20]">
+   716→                            <AlertDialogHeader>
+   717→                              <AlertDialogTitle className="font-display uppercase tracking-wide">
+   718→                                Excluir horário?
+   719→                              </AlertDialogTitle>
+   720→                              <AlertDialogDescription>
+   721→                                {DAY_NAMES[s.dayOfWeek]} às {formatTime(s.startTime)} —{" "}
+   722→                                {s.instructor || "sem instrutor"}.
+   723→                              </AlertDialogDescription>
+   724→                            </AlertDialogHeader>
+   725→                            <AlertDialogFooter>
+   726→                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+   727→                              <AlertDialogAction
+   728→                                className="bg-red-600 text-white hover:bg-red-700"
+   729→                                onClick={() => void remove(s.id)}
+   730→                              >
+   731→                                Excluir
+   732→                              </AlertDialogAction>
+   733→                            </AlertDialogFooter>
+   734→                          </AlertDialogContent>
+   735→                        </AlertDialog>
+   736→                      </div>
+   737→                    </div>
+   738→                  ))}
+   739→                </div>
+   740→              </div>
+   741→            ))}
+   742→          </div>
+   743→        )}
+   744→      </CardContent>
+   745→
+   746→      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+   747→        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#2b2b31] bg-[#1a1a20] sm:max-w-md">
+   748→          <DialogHeader>
+   749→            <DialogTitle className="font-display uppercase tracking-wide">
+   750→              {editing ? "Editar Horário" : "Novo Horário"}
+   751→            </DialogTitle>
+   752→            <DialogDescription>
+   753→              {selected ? `Modalidade: ${selected.name}` : "Selecione uma modalidade."}
+   754→            </DialogDescription>
+   755→          </DialogHeader>
+   756→          <form
+   757→            onSubmit={(e) => {
+   758→              e.preventDefault();
+   759→              void save();
+   760→            }}
+   761→            className="space-y-4"
+   762→          >
+   763→            <div className="space-y-1.5">
+   764→              <FieldLabel>Dia da semana</FieldLabel>
+   765→              <Select
+   766→                value={String(form.dayOfWeek)}
+   767→                onValueChange={(v) => setForm((f) => ({ ...f, dayOfWeek: Number(v) }))}
+   768→              >
+   769→                <SelectTrigger className="w-full border-[#2b2b31] bg-[#17171b]">
+   770→                  <SelectValue placeholder="Selecione o dia" />
+   771→                </SelectTrigger>
+   772→                <SelectContent className="border-[#2b2b31] bg-[#1a1a20]">
+   773→                  {DAY_ORDER.map((day) => (
+   774→                    <SelectItem key={day} value={String(day)}>
+   775→                      {DAY_NAMES[day]}
+   776→                    </SelectItem>
+   777→                  ))}
+   778→                </SelectContent>
+   779→              </Select>
+   780→            </div>
+   781→            <div className="grid grid-cols-2 gap-4">
+   782→              <div className="space-y-1.5">
+   783→                <FieldLabel htmlFor="schedule-start">Início</FieldLabel>
+   784→                <Input
+   785→                  id="schedule-start"
+   786→                  type="time"
+   787→                  value={form.startTime}
+   788→                  onChange={(e) => setForm((f) => ({ ...f, startTime: e.target.value }))}
+   789→                  className="border-[#2b2b31] bg-[#17171b]"
+   790→                />
+   791→              </div>
+   792→              <div className="space-y-1.5">
+   793→                <FieldLabel htmlFor="schedule-end">Fim</FieldLabel>
+   794→                <Input
+   795→                  id="schedule-end"
+   796→                  type="time"
+   797→                  value={form.endTime}
+   798→                  onChange={(e) => setForm((f) => ({ ...f, endTime: e.target.value }))}
+   799→                  className="border-[#2b2b31] bg-[#17171b]"
+   800→                />
+   801→              </div>
+   802→            </div>
+   803→            <div className="space-y-1.5">
+   804→              <FieldLabel htmlFor="schedule-instructor">Instrutor</FieldLabel>
+   805→              <Input
+   806→                id="schedule-instructor"
+   807→                value={form.instructor}
+   808→                onChange={(e) => setForm((f) => ({ ...f, instructor: e.target.value }))}
+   809→                placeholder="Nome do instrutor (opcional)"
+   810→                className="border-[#2b2b31] bg-[#17171b]"
+   811→              />
+   812→            </div>
+   813→            <DialogFooter>
+   814→              <Button
+   815→                type="button"
+   816→                variant="outline"
+   817→                onClick={() => setDialogOpen(false)}
+   818→                className={outlineButtonClass}
+   819→              >
+   820→                Cancelar
+   821→              </Button>
+   822→              <Button type="submit" disabled={saving} className={goldButtonClass}>
+   823→                {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+   824→                {editing ? "Salvar" : "Criar"}
+   825→              </Button>
+   826→            </DialogFooter>
+   827→          </form>
+   828→        </DialogContent>
+   829→      </Dialog>
+   830→    </Card>
+   831→  );
+   832→}
+   833→
+   834→/* ==================================================================== */
+   835→/* TAB 3 — PLANOS                                                       */
+   836→/* ==================================================================== */
+   837→
+   838→interface PlanForm {
+   839→  name: string;
+   840→  description: string;
+   841→  featuresText: string;
+   842→  priceText: string;
+   843→  period: string;
+   844→  badge: string;
+   845→  highlighted: boolean;
+   846→  order: number;
+   847→  active: boolean;
+   848→}
+   849→
+   850→function planToForm(plan: PlanDTO): PlanForm {
+   851→  return {
+   852→    name: plan.name,
+   853→    description: plan.description,
+   854→    featuresText: plan.features.join("\n"),
+   855→    priceText: plan.price != null ? String(plan.price) : "",
+   856→    period: plan.period ?? "",
+   857→    badge: plan.badge ?? "",
+   858→    highlighted: plan.highlighted,
+   859→    order: plan.order,
+   860→    active: plan.active,
+   861→  };
+   862→}
+   863→
+   864→function PlansTab() {
+   865→  const refreshContent = useAppStore((s) => s.refreshContent);
+   866→  const content = useAppStore((s) => s.content);
+   867→
+   868→  const [items, setItems] = useState<PlanDTO[]>(() => content?.plans ?? []);
+   869→  const [loading, setLoading] = useState(true);
+   870→  const [dialogOpen, setDialogOpen] = useState(false);
+   871→  const [editing, setEditing] = useState<PlanDTO | null>(null);
+   872→  const [saving, setSaving] = useState(false);
+   873→  const [form, setForm] = useState<PlanForm>({
+   874→    name: "",
+   875→    description: "",
+   876→    featuresText: "",
+   877→    priceText: "",
+   878→    period: "",
+   879→    badge: "",
+   880→    highlighted: false,
+   881→    order: 0,
+   882→    active: true,
+   883→  });
+   884→
+   885→  const load = useCallback(async () => {
+   886→    setLoading(true);
+   887→    try {
+   888→      const data = await api<{ plans: PlanDTO[] }>("/api/admin/plans");
+   889→      setItems(data.plans);
+   890→    } catch (err) {
+   891→      toast.error(errMessage(err, "Erro ao carregar planos."));
+   892→    } finally {
+   893→      setLoading(false);
+   894→    }
+   895→  }, []);
+   896→
+   897→  useEffect(() => {
+   898→    void load();
+   899→  }, [load]);
+   900→
+   901→  function openCreate() {
+   902→    setEditing(null);
+   903→    setForm({
+   904→      name: "",
+   905→      description: "",
+   906→      featuresText: "",
+   907→      priceText: "",
+   908→      period: "mês",
+   909→      badge: "",
+   910→      highlighted: false,
+   911→      order: items.length,
+   912→      active: true,
+   913→    });
+   914→    setDialogOpen(true);
+   915→  }
+   916→
+   917→  function openEdit(plan: PlanDTO) {
+   918→    setEditing(plan);
+   919→    setForm(planToForm(plan));
+   920→    setDialogOpen(true);
+   921→  }
+   922→
+   923→  async function save() {
+   924→    if (!form.name.trim()) {
+   925→      toast.error("Informe o nome do plano.");
+   926→      return;
+   927→    }
+   928→    setSaving(true);
+   929→    try {
+   930→      const payload = {
+   931→        name: form.name.trim(),
+   932→        description: form.description.trim(),
+   933→        features: form.featuresText
+   934→          .split("\n")
+   935→          .map((s) => s.trim())
+   936→          .filter(Boolean),
+   937→        price: form.priceText.trim() === "" ? null : Number(form.priceText),
+   938→        period: form.period.trim() || null,
+   939→        badge: form.badge.trim() || null,
+   940→        highlighted: form.highlighted,
+   941→        order: Number.isFinite(form.order) ? form.order : 0,
+   942→        active: form.active,
+   943→      };
+   944→      if (editing) {
+   945→        await api(`/api/admin/plans/${editing.id}`, {
+   946→          method: "PUT",
+   947→          body: JSON.stringify(payload),
+   948→        });
+   949→        toast.success("Plano atualizado com sucesso.");
+   950→      } else {
+   951→        await api("/api/admin/plans", { method: "POST", body: JSON.stringify(payload) });
+   952→        toast.success("Plano criado com sucesso.");
+   953→      }
+   954→      setDialogOpen(false);
+   955→      await Promise.all([load(), refreshContent()]);
+   956→    } catch (err) {
+   957→      toast.error(errMessage(err, "Erro ao salvar plano."));
+   958→    } finally {
+   959→      setSaving(false);
+   960→    }
+   961→  }
+   962→
+   963→  async function remove(id: string) {
+   964→    try {
+   965→      const res = await api<{ deactivated?: boolean }>(`/api/admin/plans/${id}`, {
+   966→        method: "DELETE",
+   967→      });
+   968→      if (res?.deactivated) {
+   969→        toast.info("O plano possui pedidos vinculados e foi desativado em vez de excluído.");
+   970→      } else {
+   971→        toast.success("Plano excluído.");
+   972→      }
+   973→      await Promise.all([load(), refreshContent()]);
+   974→    } catch (err) {
+   975→      toast.error(errMessage(err, "Erro ao excluir plano."));
+   976→    }
+   977→  }
+   978→
+   979→  return (
+   980→    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+   981→      <CardHeader className="flex flex-wrap items-center justify-between gap-3 px-4 [.border-b]:pb-0">
+   982→        <div>
+   983→          <CardTitle className="font-display text-lg uppercase tracking-wide">Planos</CardTitle>
+   984→          <CardDescription>Gerencie os planos oferecidos pela academia.</CardDescription>
+   985→        </div>
+   986→        <Button onClick={openCreate} className={goldButtonClass} aria-label="Novo plano">
+   987→          <Plus className="size-4" />
+   988→          Novo Plano
+   989→        </Button>
+   990→      </CardHeader>
+   991→      <CardContent className="px-4">
+   992→        {loading ? (
+   993→          <ListSkeleton rows={3} />
+   994→        ) : items.length === 0 ? (
+   995→          <EmptyState
+   996→            icon={Crown}
+   997→            title="Nenhum plano cadastrado"
+   998→            description="Clique em “Novo Plano” para criar o primeiro."
+   999→          />
+  1000→        ) : (
+  1001→          <div className={cn("max-h-[60vh] overflow-y-auto pr-1", scrollbarY)}>
+  1002→            <div className="grid gap-4 lg:grid-cols-2">
+  1003→              {items.map((p) => (
+  1004→                <div
+  1005→                  key={p.id}
+  1006→                  className={cn(
+  1007→                    "flex flex-col gap-3 rounded-lg border bg-[#17171b] p-4",
+  1008→                    p.highlighted ? "border-[#d9a441]/50" : "border-[#2b2b31]"
+  1009→                  )}
+  1010→                >
+  1011→                  <div className="flex items-start justify-between gap-2">
+  1012→                    <h3 className="font-display text-xl uppercase tracking-wide">{p.name}</h3>
+  1013→                    <div className="flex items-center gap-2">
+  1014→                      {p.badge ? (
+  1015→                        <Badge className="bg-gold-gradient text-black">{p.badge}</Badge>
+  1016→                      ) : null}
+  1017→                      {p.highlighted ? (
+  1018→                        <Star
+  1019→                          className="size-5 fill-[#d9a441] text-[#d9a441]"
+  1020→                          aria-label="Plano destaque"
+  1021→                        />
+  1022→                      ) : null}
+  1023→                    </div>
+  1024→                  </div>
+  1025→                  <p className="text-sm text-muted-foreground">{p.description}</p>
+  1026→                  {p.features.length > 0 ? (
+  1027→                    <ul className="space-y-1">
+  1028→                      {p.features.map((feature, i) => (
+  1029→                        <li key={i} className="flex items-start gap-2 text-sm">
+  1030→                          <Check
+  1031→                            className="mt-0.5 size-4 shrink-0 text-[#d9a441]"
+  1032→                            aria-hidden
+  1033→                          />
+  1034→                          <span>{feature}</span>
+  1035→                        </li>
+  1036→                      ))}
+  1037→                    </ul>
+  1038→                  ) : null}
+  1039→                  <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
+  1040→                    {p.price != null ? (
+  1041→                      <span className="font-heading text-lg text-[#d9a441]">
+  1042→                        {formatPriceBR(p.price)}
+  1043→                        <span className="text-sm text-muted-foreground">
+  1044→                          {" "}
+  1045→                          / {p.period ?? "período"}
+  1046→                        </span>
+  1047→                      </span>
+  1048→                    ) : (
+  1049→                      <span className="text-sm text-muted-foreground">Preço não definido</span>
+  1050→                    )}
+  1051→                  </div>
+  1052→                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#101013] pt-3">
+  1053→                    <div className="flex flex-wrap items-center gap-2">
+  1054→                      <ActiveBadge active={p.active} />
+  1055→                      <Badge
+  1056→                        variant="outline"
+  1057→                        className="border-[#2b2b31] text-muted-foreground"
+  1058→                      >
+  1059→                        Ordem {p.order}
+  1060→                      </Badge>
+  1061→                    </div>
+  1062→                    <div className="flex gap-1">
+  1063→                      <Button
+  1064→                        variant="ghost"
+  1065→                        size="icon"
+  1066→                        aria-label={`Editar plano ${p.name}`}
+  1067→                        onClick={() => openEdit(p)}
+  1068→                        className="text-muted-foreground hover:bg-[#d9a441]/10 hover:text-[#d9a441]"
+  1069→                      >
+  1070→                        <Pencil className="size-4" />
+  1071→                      </Button>
+  1072→                      <AlertDialog>
+  1073→                        <AlertDialogTrigger asChild>
+  1074→                          <Button
+  1075→                            variant="ghost"
+  1076→                            size="icon"
+  1077→                            aria-label={`Excluir plano ${p.name}`}
+  1078→                            className="text-red-400 hover:bg-red-500/10 hover:text-red-300"
+  1079→                          >
+  1080→                            <Trash2 className="size-4" />
+  1081→                          </Button>
+  1082→                        </AlertDialogTrigger>
+  1083→                        <AlertDialogContent className="border-[#2b2b31] bg-[#1a1a20]">
+  1084→                          <AlertDialogHeader>
+  1085→                            <AlertDialogTitle className="font-display uppercase tracking-wide">
+  1086→                              Excluir plano?
+  1087→                            </AlertDialogTitle>
+  1088→                            <AlertDialogDescription>
+  1089→                              Tem certeza que deseja excluir “{p.name}”? Se o plano possuir
+  1090→                              pedidos vinculados, ele será apenas desativado.
+  1091→                            </AlertDialogDescription>
+  1092→                          </AlertDialogHeader>
+  1093→                          <AlertDialogFooter>
+  1094→                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+  1095→                            <AlertDialogAction
+  1096→                              className="bg-red-600 text-white hover:bg-red-700"
+  1097→                              onClick={() => void remove(p.id)}
+  1098→                            >
+  1099→                              Excluir
+  1100→                            </AlertDialogAction>
+  1101→                          </AlertDialogFooter>
+  1102→                        </AlertDialogContent>
+  1103→                      </AlertDialog>
+  1104→                    </div>
+  1105→                  </div>
+  1106→                </div>
+  1107→              ))}
+  1108→            </div>
+  1109→          </div>
+  1110→        )}
+  1111→      </CardContent>
+  1112→
+  1113→      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+  1114→        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#2b2b31] bg-[#1a1a20] sm:max-w-lg">
+  1115→          <DialogHeader>
+  1116→            <DialogTitle className="font-display uppercase tracking-wide">
+  1117→              {editing ? "Editar Plano" : "Novo Plano"}
+  1118→            </DialogTitle>
+  1119→            <DialogDescription>
+  1120→              {editing ? "Atualize as informações do plano." : "Cadastre um novo plano."}
+  1121→            </DialogDescription>
+  1122→          </DialogHeader>
+  1123→          <form
+  1124→            onSubmit={(e) => {
+  1125→              e.preventDefault();
+  1126→              void save();
+  1127→            }}
+  1128→            className="space-y-4"
+  1129→          >
+  1130→            <div className="space-y-1.5">
+  1131→              <FieldLabel htmlFor="plan-name">Nome</FieldLabel>
+  1132→              <Input
+  1133→                id="plan-name"
+  1134→                value={form.name}
+  1135→                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+  1136→                placeholder="Ex.: Plano Black"
+  1137→                className="border-[#2b2b31] bg-[#17171b]"
+  1138→              />
+  1139→            </div>
+  1140→            <div className="space-y-1.5">
+  1141→              <FieldLabel htmlFor="plan-description">Descrição</FieldLabel>
+  1142→              <Textarea
+  1143→                id="plan-description"
+  1144→                value={form.description}
+  1145→                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+  1146→                rows={2}
+  1147→                className="border-[#2b2b31] bg-[#17171b]"
+  1148→              />
+  1149→            </div>
+  1150→            <div className="space-y-1.5">
+  1151→              <FieldLabel htmlFor="plan-features">Benefícios (um por linha)</FieldLabel>
+  1152→              <Textarea
+  1153→                id="plan-features"
+  1154→                value={form.featuresText}
+  1155→                onChange={(e) => setForm((f) => ({ ...f, featuresText: e.target.value }))}
+  1156→                rows={4}
+  1157→                placeholder={"Acesso livre à academia\nAulas coletivas"}
+  1158→                className="border-[#2b2b31] bg-[#17171b]"
+  1159→              />
+  1160→            </div>
+  1161→            <div className="grid grid-cols-2 gap-4">
+  1162→              <div className="space-y-1.5">
+  1163→                <FieldLabel htmlFor="plan-price">Preço (R$)</FieldLabel>
+  1164→                <Input
+  1165→                  id="plan-price"
+  1166→                  type="number"
+  1167→                  step="0.01"
+  1168→                  min="0"
+  1169→                  value={form.priceText}
+  1170→                  onChange={(e) => setForm((f) => ({ ...f, priceText: e.target.value }))}
+  1171→                  placeholder="vazio = sem preço"
+  1172→                  className="border-[#2b2b31] bg-[#17171b]"
+  1173→                />
+  1174→              </div>
+  1175→              <div className="space-y-1.5">
+  1176→                <FieldLabel htmlFor="plan-period">Período</FieldLabel>
+  1177→                <Input
+  1178→                  id="plan-period"
+  1179→                  value={form.period}
+  1180→                  onChange={(e) => setForm((f) => ({ ...f, period: e.target.value }))}
+  1181→                  placeholder="ex.: mês"
+  1182→                  className="border-[#2b2b31] bg-[#17171b]"
+  1183→                />
+  1184→              </div>
+  1185→            </div>
+  1186→            <div className="grid grid-cols-2 gap-4">
+  1187→              <div className="space-y-1.5">
+  1188→                <FieldLabel htmlFor="plan-badge">Badge</FieldLabel>
+  1189→                <Input
+  1190→                  id="plan-badge"
+  1191→                  value={form.badge}
+  1192→                  onChange={(e) => setForm((f) => ({ ...f, badge: e.target.value }))}
+  1193→                  placeholder="ex.: Mais popular"
+  1194→                  className="border-[#2b2b31] bg-[#17171b]"
+  1195→                />
+  1196→              </div>
+  1197→              <div className="space-y-1.5">
+  1198→                <FieldLabel htmlFor="plan-order">Ordem</FieldLabel>
+  1199→                <Input
+  1200→                  id="plan-order"
+  1201→                  type="number"
+  1202→                  value={form.order}
+  1203→                  onChange={(e) =>
+  1204→                    setForm((f) => ({ ...f, order: Number(e.target.value) || 0 }))
+  1205→                  }
+  1206→                  className="border-[#2b2b31] bg-[#17171b]"
+  1207→                />
+  1208→              </div>
+  1209→            </div>
+  1210→            <div className="flex items-center justify-between rounded-lg border border-[#2b2b31] bg-[#17171b] px-3 py-2.5">
+  1211→              <Label htmlFor="plan-highlighted" className="cursor-pointer text-sm">
+  1212→                Plano destaque
+  1213→              </Label>
+  1214→              <Switch
+  1215→                id="plan-highlighted"
+  1216→                checked={form.highlighted}
+  1217→                onCheckedChange={(checked) =>
+  1218→                  setForm((f) => ({ ...f, highlighted: checked }))
+  1219→                }
+  1220→              />
+  1221→            </div>
+  1222→            <div className="flex items-center justify-between rounded-lg border border-[#2b2b31] bg-[#17171b] px-3 py-2.5">
+  1223→              <Label htmlFor="plan-active" className="cursor-pointer text-sm">
+  1224→                Plano ativo
+  1225→              </Label>
+  1226→              <Switch
+  1227→                id="plan-active"
+  1228→                checked={form.active}
+  1229→                onCheckedChange={(checked) => setForm((f) => ({ ...f, active: checked }))}
+  1230→              />
+  1231→            </div>
+  1232→            <DialogFooter>
+  1233→              <Button
+  1234→                type="button"
+  1235→                variant="outline"
+  1236→                onClick={() => setDialogOpen(false)}
+  1237→                className={outlineButtonClass}
+  1238→              >
+  1239→                Cancelar
+  1240→              </Button>
+  1241→              <Button type="submit" disabled={saving} className={goldButtonClass}>
+  1242→                {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+  1243→                {editing ? "Salvar" : "Criar"}
+  1244→              </Button>
+  1245→            </DialogFooter>
+  1246→          </form>
+  1247→        </DialogContent>
+  1248→      </Dialog>
+  1249→    </Card>
+  1250→  );
+  1251→}
+  1252→
+  1253→/* ==================================================================== */
+  1254→/* TAB 4 — GALERIA                                                      */
+  1255→/* ==================================================================== */
+  1256→
+  1257→function GalleryTab() {
+  1258→  const refreshContent = useAppStore((s) => s.refreshContent);
+  1259→  const content = useAppStore((s) => s.content);
+  1260→
+  1261→  const [items, setItems] = useState<GalleryDTO[]>(() => content?.gallery ?? []);
+  1262→  const [loading, setLoading] = useState(true);
+  1263→  const [dialogOpen, setDialogOpen] = useState(false);
+  1264→  const [saving, setSaving] = useState(false);
+  1265→  const [uploading, setUploading] = useState(false);
+  1266→  const [togglingId, setTogglingId] = useState<string | null>(null);
+  1267→  const [form, setForm] = useState({ url: "", title: "", order: 0 });
+  1268→  const fileRef = useRef<HTMLInputElement>(null);
+  1269→
+  1270→  const load = useCallback(async () => {
+  1271→    setLoading(true);
+  1272→    try {
+  1273→      const data = await api<{ gallery: GalleryDTO[] }>("/api/admin/gallery");
+  1274→      setItems(data.gallery);
+  1275→    } catch (err) {
+  1276→      toast.error(errMessage(err, "Erro ao carregar galeria."));
+  1277→    } finally {
+  1278→      setLoading(false);
+  1279→    }
+  1280→  }, []);
+  1281→
+  1282→  useEffect(() => {
+  1283→    void load();
+  1284→  }, [load]);
+  1285→
+  1286→  function openCreate() {
+  1287→    setForm({ url: "", title: "", order: items.length });
+  1288→    setDialogOpen(true);
+  1289→  }
+  1290→
+  1291→  async function handleUpload(file: File) {
+  1292→    setUploading(true);
+  1293→    try {
+  1294→      const url = await uploadImage(file);
+  1295→      setForm((f) => ({ ...f, url }));
+  1296→      toast.success("Imagem enviada com sucesso.");
+  1297→    } catch (err) {
+  1298→      toast.error(errMessage(err, "Erro ao enviar imagem."));
+  1299→    } finally {
+  1300→      setUploading(false);
+  1301→    }
+  1302→  }
+  1303→
+  1304→  async function save() {
+  1305→    if (!form.url.trim()) {
+  1306→      toast.error("Envie uma imagem ou informe uma URL.");
+  1307→      return;
+  1308→    }
+  1309→    setSaving(true);
+  1310→    try {
+  1311→      await api("/api/admin/gallery", {
+  1312→        method: "POST",
+  1313→        body: JSON.stringify({
+  1314→          url: form.url.trim(),
+  1315→          title: form.title.trim() || null,
+  1316→          order: Number.isFinite(form.order) ? form.order : 0,
+  1317→        }),
+  1318→      });
+  1319→      toast.success("Imagem adicionada à galeria.");
+  1320→      setDialogOpen(false);
+  1321→      await Promise.all([load(), refreshContent()]);
+  1322→    } catch (err) {
+  1323→      toast.error(errMessage(err, "Erro ao adicionar imagem."));
+  1324→    } finally {
+  1325→      setSaving(false);
+  1326→    }
+  1327→  }
+  1328→
+  1329→  async function toggleActive(item: GalleryDTO, active: boolean) {
+  1330→    setTogglingId(item.id);
+  1331→    try {
+  1332→      await api(`/api/admin/gallery/${item.id}`, {
+  1333→        method: "PUT",
+  1334→        body: JSON.stringify({ active }),
+  1335→      });
+  1336→      setItems((list) => list.map((g) => (g.id === item.id ? { ...g, active } : g)));
+  1337→      toast.success(active ? "Imagem ativada." : "Imagem desativada.");
+  1338→      await refreshContent();
+  1339→    } catch (err) {
+  1340→      toast.error(errMessage(err, "Erro ao atualizar imagem."));
+  1341→    } finally {
+  1342→      setTogglingId(null);
+  1343→    }
+  1344→  }
+  1345→
+  1346→  async function remove(id: string) {
+  1347→    try {
+  1348→      await api(`/api/admin/gallery/${id}`, { method: "DELETE" });
+  1349→      toast.success("Imagem excluída.");
+  1350→      await Promise.all([load(), refreshContent()]);
+  1351→    } catch (err) {
+  1352→      toast.error(errMessage(err, "Erro ao excluir imagem."));
+  1353→    }
+  1354→  }
+  1355→
+  1356→  return (
+  1357→    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+  1358→      <CardHeader className="flex flex-wrap items-center justify-between gap-3 px-4 [.border-b]:pb-0">
+  1359→        <div>
+  1360→          <CardTitle className="font-display text-lg uppercase tracking-wide">Galeria</CardTitle>
+  1361→          <CardDescription>Imagens exibidas na seção de galeria do site.</CardDescription>
+  1362→        </div>
+  1363→        <Button onClick={openCreate} className={goldButtonClass} aria-label="Adicionar imagem">
+  1364→          <Plus className="size-4" />
+  1365→          Adicionar Imagem
+  1366→        </Button>
+  1367→      </CardHeader>
+  1368→      <CardContent className="px-4">
+  1369→        {loading ? (
+  1370→          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+  1371→            {Array.from({ length: 4 }).map((_, i) => (
+  1372→              <div
+  1373→                key={i}
+  1374→                className="h-40 w-full animate-pulse rounded-lg bg-[#1a1a20]"
+  1375→              />
+  1376→            ))}
+  1377→          </div>
+  1378→        ) : items.length === 0 ? (
+  1379→          <EmptyState
+  1380→            icon={Images}
+  1381→            title="Galeria vazia"
+  1382→            description="Adicione a primeira imagem da galeria."
+  1383→          />
+  1384→        ) : (
+  1385→          <div className={cn("max-h-[60vh] overflow-y-auto pr-1", scrollbarY)}>
+  1386→            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+  1387→              {items.map((g) => (
+  1388→                <div
+  1389→                  key={g.id}
+  1390→                  className="overflow-hidden rounded-lg border border-[#2b2b31] bg-[#17171b]"
+  1391→                >
+  1392→                  <div className="relative aspect-[4/3]">
+  1393→                    <img
+  1394→                      src={g.url}
+  1395→                      alt={g.title || "Imagem da galeria"}
+  1396→                      className="size-full object-cover"
+  1397→                    />
+  1398→                    {!g.active ? (
+  1399→                      <span className="font-heading absolute inset-0 flex items-center justify-center bg-black/60 text-xs uppercase tracking-widest text-muted-foreground">
+  1400→                        Inativa
+  1401→                      </span>
+  1402→                    ) : null}
+  1403→                  </div>
+  1404→                  <div className="space-y-2 p-3">
+  1405→                    <p className="truncate text-sm font-medium">{g.title || "Sem título"}</p>
+  1406→                    <p className="text-xs text-muted-foreground">Ordem {g.order}</p>
+  1407→                    <div className="flex items-center justify-between gap-2">
+  1408→                      <div className="flex items-center gap-2">
+  1409→                        <Switch
+  1410→                          checked={g.active}
+  1411→                          disabled={togglingId === g.id}
+  1412→                          onCheckedChange={(checked) => void toggleActive(g, checked)}
+  1413→                          aria-label={`${g.active ? "Desativar" : "Ativar"} imagem ${g.title || "sem título"}`}
+  1414→                        />
+  1415→                        <span className="text-xs text-muted-foreground">
+  1416→                          {g.active ? "Ativa" : "Inativa"}
+  1417→                        </span>
+  1418→                      </div>
+  1419→                      <AlertDialog>
+  1420→                        <AlertDialogTrigger asChild>
+  1421→                          <Button
+  1422→                            variant="ghost"
+  1423→                            size="icon"
+  1424→                            aria-label={`Excluir imagem ${g.title || "sem título"}`}
+  1425→                            className="size-8 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+  1426→                          >
+  1427→                            <Trash2 className="size-4" />
+  1428→                          </Button>
+  1429→                        </AlertDialogTrigger>
+  1430→                        <AlertDialogContent className="border-[#2b2b31] bg-[#1a1a20]">
+  1431→                          <AlertDialogHeader>
+  1432→                            <AlertDialogTitle className="font-display uppercase tracking-wide">
+  1433→                              Excluir imagem?
+  1434→                            </AlertDialogTitle>
+  1435→                            <AlertDialogDescription>
+  1436→                              A imagem “{g.title || "sem título"}” será removida da galeria.
+  1437→                            </AlertDialogDescription>
+  1438→                          </AlertDialogHeader>
+  1439→                          <AlertDialogFooter>
+  1440→                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+  1441→                            <AlertDialogAction
+  1442→                              className="bg-red-600 text-white hover:bg-red-700"
+  1443→                              onClick={() => void remove(g.id)}
+  1444→                            >
+  1445→                              Excluir
+  1446→                            </AlertDialogAction>
+  1447→                          </AlertDialogFooter>
+  1448→                        </AlertDialogContent>
+  1449→                      </AlertDialog>
+  1450→                    </div>
+  1451→                  </div>
+  1452→                </div>
+  1453→              ))}
+  1454→            </div>
+  1455→          </div>
+  1456→        )}
+  1457→      </CardContent>
+  1458→
+  1459→      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+  1460→        <DialogContent className="max-h-[85vh] overflow-y-auto border-[#2b2b31] bg-[#1a1a20] sm:max-w-md">
+  1461→          <DialogHeader>
+  1462→            <DialogTitle className="font-display uppercase tracking-wide">
+  1463→              Adicionar Imagem
+  1464→            </DialogTitle>
+  1465→            <DialogDescription>Envie um arquivo ou informe uma URL.</DialogDescription>
+  1466→          </DialogHeader>
+  1467→          <form
+  1468→            onSubmit={(e) => {
+  1469→              e.preventDefault();
+  1470→              void save();
+  1471→            }}
+  1472→            className="space-y-4"
+  1473→          >
+  1474→            <div className="space-y-1.5">
+  1475→              <FieldLabel>Upload</FieldLabel>
+  1476→              <div className="flex items-center gap-3">
+  1477→                {form.url ? (
+  1478→                  <img
+  1479→                    src={form.url}
+  1480→                    alt="Pré-visualização da imagem"
+  1481→                    className="h-16 w-24 rounded-md border border-[#2b2b31] object-cover"
+  1482→                  />
+  1483→                ) : (
+  1484→                  <div className="flex h-16 w-24 items-center justify-center rounded-md border border-dashed border-[#2b2b31]">
+  1485→                    <ImagePlus className="size-6 text-muted-foreground" aria-hidden />
+  1486→                  </div>
+  1487→                )}
+  1488→                <input
+  1489→                  ref={fileRef}
+  1490→                  type="file"
+  1491→                  accept="image/*"
+  1492→                  className="hidden"
+  1493→                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+  1494→                    const file = e.target.files?.[0];
+  1495→                    if (file) void handleUpload(file);
+  1496→                    e.target.value = "";
+  1497→                  }}
+  1498→                />
+  1499→                <Button
+  1500→                  type="button"
+  1501→                  variant="outline"
+  1502→                  size="sm"
+  1503→                  disabled={uploading}
+  1504→                  onClick={() => fileRef.current?.click()}
+  1505→                  className={outlineButtonClass}
+  1506→                >
+  1507→                  {uploading ? (
+  1508→                    <Loader2 className="size-4 animate-spin" />
+  1509→                  ) : (
+  1510→                    <Upload className="size-4" />
+  1511→                  )}
+  1512→                  {uploading ? "Enviando..." : "Enviar imagem"}
+  1513→                </Button>
+  1514→              </div>
+  1515→              <Input
+  1516→                value={form.url}
+  1517→                onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+  1518→                placeholder="ou cole uma URL de imagem"
+  1519→                className="border-[#2b2b31] bg-[#17171b]"
+  1520→              />
+  1521→            </div>
+  1522→            <div className="space-y-1.5">
+  1523→              <FieldLabel htmlFor="gallery-title">Título</FieldLabel>
+  1524→              <Input
+  1525→                id="gallery-title"
+  1526→                value={form.title}
+  1527→                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+  1528→                placeholder="Título da imagem (opcional)"
+  1529→                className="border-[#2b2b31] bg-[#17171b]"
+  1530→              />
+  1531→            </div>
+  1532→            <div className="space-y-1.5">
+  1533→              <FieldLabel htmlFor="gallery-order">Ordem</FieldLabel>
+  1534→              <Input
+  1535→                id="gallery-order"
+  1536→                type="number"
+  1537→                value={form.order}
+  1538→                onChange={(e) => setForm((f) => ({ ...f, order: Number(e.target.value) || 0 }))}
+  1539→                className="border-[#2b2b31] bg-[#17171b]"
+  1540→              />
+  1541→            </div>
+  1542→            <DialogFooter>
+  1543→              <Button
+  1544→                type="button"
+  1545→                variant="outline"
+  1546→                onClick={() => setDialogOpen(false)}
+  1547→                className={outlineButtonClass}
+  1548→              >
+  1549→                Cancelar
+  1550→              </Button>
+  1551→              <Button type="submit" disabled={saving} className={goldButtonClass}>
+  1552→                {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+  1553→                Adicionar
+  1554→              </Button>
+  1555→            </DialogFooter>
+  1556→          </form>
+  1557→        </DialogContent>
+  1558→      </Dialog>
+  1559→    </Card>
+  1560→  );
+  1561→}
+  1562→
+  1563→/* ==================================================================== */
+  1564→/* TAB 5 — CONFIGURAÇÕES                                                */
+  1565→/* ==================================================================== */
+  1566→
+  1567→interface SettingField {
+  1568→  key: string;
+  1569→  label: string;
+  1570→  type?: "text" | "textarea" | "image";
+  1571→  placeholder?: string;
+  1572→}
+  1573→
+  1574→interface SettingSection {
+  1575→  title: string;
+  1576→  icon: typeof Sparkles;
+  1577→  fields: SettingField[];
+  1578→}
+  1579→
+  1580→const SETTING_SECTIONS: SettingSection[] = [
+  1581→  {
+  1582→    title: "Hero",
+  1583→    icon: Sparkles,
+  1584→    fields: [
+  1585→      { key: "heroBadge", label: "Badge do Hero", placeholder: "ex.: ACADEMIA CROWN • PINHAL-SP" },
+  1586→      { key: "heroTitle", label: "Título do Hero" },
+  1587→      { key: "heroHighlight", label: "Palavra Destacada (ouro)" },
+  1588→      { key: "heroSubtitle", label: "Subtítulo", type: "textarea" },
+  1589→      { key: "heroImageUrl", label: "Imagem do Hero", type: "image" },
+  1590→    ],
+  1591→  },
+  1592→  {
+  1593→    title: "Sobre / CTA",
+  1594→    icon: Megaphone,
+  1595→    fields: [
+  1596→      { key: "aboutTitle", label: "Título do Sobre" },
+  1597→      { key: "aboutText", label: "Texto do Sobre", type: "textarea" },
+  1598→      { key: "ctaEyebrow", label: "Linha superior do CTA" },
+  1599→      { key: "ctaTitle", label: "Título do CTA" },
+  1600→      { key: "ctaText", label: "Texto do CTA", type: "textarea" },
+  1601→    ],
+  1602→  },
+  1603→  {
+  1604→    title: "Estatísticas",
+  1605→    icon: BarChart3,
+  1606→    fields: [
+  1607→      { key: "statsMembers", label: "Aulas por Semana" },
+  1608→      { key: "statsModalities", label: "Modalidades" },
+  1609→      { key: "statsTrainers", label: "Dias por Semana" },
+  1610→      { key: "statsYears", label: "Abertura (primeiro horário)" },
+  1611→    ],
+  1612→  },
+  1613→  {
+  1614→    title: "Contato",
+  1615→    icon: MapPin,
+  1616→    fields: [
+  1617→      { key: "address", label: "Endereço" },
+  1618→      { key: "phone", label: "Telefone" },
+  1619→      { key: "whatsapp", label: "WhatsApp" },
+  1620→      { key: "instagram", label: "Instagram" },
+  1621→      { key: "email", label: "E-mail" },
+  1622→      { key: "hoursText", label: "Horário de Funcionamento", type: "textarea" },
+  1623→    ],
+  1624→  },
+  1625→];
+  1626→
+  1627→function SettingsTab() {
+  1628→  const refreshContent = useAppStore((s) => s.refreshContent);
+  1629→  const content = useAppStore((s) => s.content);
+  1630→
+  1631→  const [values, setValues] = useState<Record<string, string>>({});
+  1632→  const [loading, setLoading] = useState(true);
+  1633→  const [saving, setSaving] = useState(false);
+  1634→  const [uploading, setUploading] = useState(false);
+  1635→  const fileRef = useRef<HTMLInputElement>(null);
+  1636→
+  1637→  useEffect(() => {
+  1638→    let cancelled = false;
+  1639→    async function load() {
+  1640→      try {
+  1641→        if (content?.settings) {
+  1642→          if (!cancelled) setValues(content.settings);
+  1643→        } else {
+  1644→          const data = await api<ContentResponse>("/api/content");
+  1645→          if (!cancelled) setValues(data.settings);
+  1646→        }
+  1647→      } catch (err) {
+  1648→        if (!cancelled) toast.error(errMessage(err, "Erro ao carregar configurações."));
+  1649→      } finally {
+  1650→        if (!cancelled) setLoading(false);
+  1651→      }
+  1652→    }
+  1653→    void load();
+  1654→    return () => {
+  1655→      cancelled = true;
+  1656→    };
+  1657→  }, [content]);
+  1658→
+  1659→  function setValue(key: string, value: string) {
+  1660→    setValues((v) => ({ ...v, [key]: value }));
+  1661→  }
+  1662→
+  1663→  async function handleUpload(file: File) {
+  1664→    setUploading(true);
+  1665→    try {
+  1666→      const url = await uploadImage(file);
+  1667→      setValue("heroImageUrl", url);
+  1668→      toast.success("Imagem enviada com sucesso.");
+  1669→    } catch (err) {
+  1670→      toast.error(errMessage(err, "Erro ao enviar imagem."));
+  1671→    } finally {
+  1672→      setUploading(false);
+  1673→    }
+  1674→  }
+  1675→
+  1676→  async function save() {
+  1677→    setSaving(true);
+  1678→    try {
+  1679→      await api("/api/admin/settings", {
+  1680→        method: "PUT",
+  1681→        body: JSON.stringify(values),
+  1682→      });
+  1683→      toast.success("Configurações salvas com sucesso.");
+  1684→      await refreshContent();
+  1685→    } catch (err) {
+  1686→      toast.error(errMessage(err, "Erro ao salvar configurações."));
+  1687→    } finally {
+  1688→      setSaving(false);
+  1689→    }
+  1690→  }
+  1691→
+  1692→  if (loading) {
+  1693→    return (
+  1694→      <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+  1695→        <CardHeader className="px-4 [.border-b]:pb-0">
+  1696→          <CardTitle className="font-display text-lg uppercase tracking-wide">
+  1697→            Configurações
+  1698→          </CardTitle>
+  1699→        </CardHeader>
+  1700→        <CardContent className="space-y-4 px-4">
+  1701→          <ListSkeleton rows={5} />
+  1702→        </CardContent>
+  1703→      </Card>
+  1704→    );
+  1705→  }
+  1706→
+  1707→  return (
+  1708→    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+  1709→      <CardHeader className="px-4 [.border-b]:pb-0">
+  1710→        <CardTitle className="font-display text-lg uppercase tracking-wide">
+  1711→          Configurações
+  1712→        </CardTitle>
+  1713→        <CardDescription>
+  1714→          Textos e imagens exibidos no site. Salve para aplicar as alterações.
+  1715→        </CardDescription>
+  1716→      </CardHeader>
+  1717→      <CardContent className="px-4">
+  1718→        <form
+  1719→          onSubmit={(e) => {
+  1720→            e.preventDefault();
+  1721→            void save();
+  1722→          }}
+  1723→          className="space-y-6"
+  1724→        >
+  1725→          {SETTING_SECTIONS.map((section) => {
+  1726→            const Icon = section.icon;
+  1727→            return (
+  1728→              <section
+  1729→                key={section.title}
+  1730→                className="rounded-lg border border-[#2b2b31] bg-[#17171b] p-4"
+  1731→                aria-label={`Seção ${section.title}`}
+  1732→              >
+  1733→                <h3 className="font-heading mb-4 flex items-center gap-2 text-sm uppercase tracking-widest text-[#d9a441]">
+  1734→                  <Icon className="size-4" aria-hidden />
+  1735→                  {section.title}
+  1736→                </h3>
+  1737→                <div className="grid gap-4 sm:grid-cols-2">
+  1738→                  {section.fields.map((field) => (
+  1739→                    <div
+  1740→                      key={field.key}
+  1741→                      className={cn("space-y-1.5", field.type === "textarea" && "sm:col-span-2")}
+  1742→                    >
+  1743→                      <FieldLabel htmlFor={`setting-${field.key}`}>{field.label}</FieldLabel>
+  1744→                      {field.type === "image" ? (
+  1745→                        <div className="space-y-2">
+  1746→                          <div className="flex items-center gap-3">
+  1747→                            {values[field.key] ? (
+  1748→                              <img
+  1749→                                src={values[field.key]}
+  1750→                                alt="Pré-visualização da imagem do hero"
+  1751→                                className="h-16 w-28 rounded-md border border-[#2b2b31] object-cover"
+  1752→                              />
+  1753→                            ) : (
+  1754→                              <div className="flex h-16 w-28 items-center justify-center rounded-md border border-dashed border-[#2b2b31]">
+  1755→                                <ImagePlus className="size-5 text-muted-foreground" aria-hidden />
+  1756→                              </div>
+  1757→                            )}
+  1758→                            <input
+  1759→                              ref={fileRef}
+  1760→                              type="file"
+  1761→                              accept="image/*"
+  1762→                              className="hidden"
+  1763→                              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+  1764→                                const file = e.target.files?.[0];
+  1765→                                if (file) void handleUpload(file);
+  1766→                                e.target.value = "";
+  1767→                              }}
+  1768→                            />
+  1769→                            <Button
+  1770→                              type="button"
+  1771→                              variant="outline"
+  1772→                              size="sm"
+  1773→                              disabled={uploading}
+  1774→                              onClick={() => fileRef.current?.click()}
+  1775→                              className={outlineButtonClass}
+  1776→                            >
+  1777→                              {uploading ? (
+  1778→                                <Loader2 className="size-4 animate-spin" />
+  1779→                              ) : (
+  1780→                                <Upload className="size-4" />
+  1781→                              )}
+  1782→                              {uploading ? "Enviando..." : "Enviar"}
+  1783→                            </Button>
+  1784→                          </div>
+  1785→                          <Input
+  1786→                            id={`setting-${field.key}`}
+  1787→                            value={values[field.key] ?? ""}
+  1788→                            onChange={(e) => setValue(field.key, e.target.value)}
+  1789→                            placeholder="URL da imagem"
+  1790→                            className="border-[#2b2b31] bg-[#1a1a20]"
+  1791→                          />
+  1792→                        </div>
+  1793→                      ) : field.type === "textarea" ? (
+  1794→                        <Textarea
+  1795→                          id={`setting-${field.key}`}
+  1796→                          value={values[field.key] ?? ""}
+  1797→                          onChange={(e) => setValue(field.key, e.target.value)}
+  1798→                          rows={3}
+  1799→                          className="border-[#2b2b31] bg-[#1a1a20]"
+  1800→                        />
+  1801→                      ) : (
+  1802→                        <Input
+  1803→                          id={`setting-${field.key}`}
+  1804→                          value={values[field.key] ?? ""}
+  1805→                          onChange={(e) => setValue(field.key, e.target.value)}
+  1806→                          placeholder={field.placeholder}
+  1807→                          className="border-[#2b2b31] bg-[#1a1a20]"
+  1808→                        />
+  1809→                      )}
+  1810→                    </div>
+  1811→                  ))}
+  1812→                </div>
+  1813→              </section>
+  1814→            );
+  1815→          })}
+  1816→          <Button
+  1817→            type="submit"
+  1818→            disabled={saving}
+  1819→            className={cn(goldButtonClass, "w-full")}
+  1820→            aria-label="Salvar configurações"
+  1821→          >
+  1822→            {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+  1823→            Salvar Configurações
+  1824→          </Button>
+  1825→        </form>
+  1826→      </CardContent>
+  1827→    </Card>
+  1828→  );
+  1829→}
+  1830→
+  1831→/* ==================================================================== */
+  1832→/* AdminPanel                                                           */
+  1833→/* ==================================================================== */
+  1834→
+  1835→export default function AdminPanel() {
+  1836→  const user = useAppStore((s) => s.user);
+  1837→  const [tab, setTab] = useState<TabId>("modalities");
+  1838→
+  1839→  if (!user || (user.role !== "ADMIN" && user.role !== "OWNER")) {
+  1840→    return <AccessDeniedCard />;
+  1841→  }
+  1842→
+  1843→  return (
+  1844→    <div className="flex min-h-screen flex-col bg-[#101013] text-foreground">
+  1845→      <PanelHeader
+  1846→        titleA="PAINEL"
+  1847→        titleB="ADMIN"
+  1848→        subtitle="Gerenciamento de conteúdo da CROWN"
+  1849→      />
+  1850→      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+  1851→        <div className="flex flex-col gap-6 md:flex-row">
+  1852→          <PanelNav
+  1853→            tabs={TABS}
+  1854→            active={tab}
+  1855→            onChange={(id) => setTab(id as TabId)}
+  1856→            ariaLabel="Seções do painel admin"
+  1857→          />
+  1858→          <div className="min-w-0 flex-1">
+  1859→            {tab === "modalities" ? <ModalitiesTab /> : null}
+  1860→            {tab === "schedules" ? <SchedulesTab /> : null}
+  1861→            {tab === "plans" ? <PlansTab /> : null}
+  1862→            {tab === "gallery" ? <GalleryTab /> : null}
+  1863→            {tab === "settings" ? <SettingsTab /> : null}
+  1864→          </div>
+  1865→        </div>
+  1866→      </main>
+  1867→    </div>
+  1868→  );
+  1869→}
+  1870→

@@ -1,38 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Activity,
-  Bike,
-  CalendarClock,
-  Dumbbell,
-  Flame,
-  Footprints,
-  Medal,
-  Music,
-  Sparkles,
-  Swords,
-  Trophy,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
 import WhatsAppCTA from "./WhatsAppCTA";
-
-const ICONS: Record<string, LucideIcon> = {
-  Dumbbell,
-  Flame,
-  Swords,
-  Bike,
-  Activity,
-  Music,
-  Zap,
-  Sparkles,
-  Trophy,
-  Footprints,
-  Medal,
-};
 
 export default function Modalities() {
   const modalities = useAppStore((s) => s.content?.modalities) ?? [];
@@ -77,20 +48,13 @@ export default function Modalities() {
 
                 {/* Conteúdo */}
                 <div className="absolute inset-x-0 bottom-0 p-3.5 sm:p-5">
-                  <div className="w-9 h-10 sm:w-10 sm:h-11 bg-zinc-900 border border-white/20 flex items-center justify-center mb-2 sm:mb-3">
-                    {(() => {
-                      const Icon = (m.icon && ICONS[m.icon]) || Dumbbell;
-                      return <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#d9a441]" />;
-                    })()}
-                  </div>
                   <h3 className="font-display uppercase text-lg sm:text-2xl text-white">
                     {m.name}
                   </h3>
                   <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-zinc-300 line-clamp-2">
                     {m.description}
                   </p>
-                  <p className="mt-2 sm:mt-3 flex items-center gap-1.5 text-[10px] sm:text-xs font-heading uppercase tracking-wider text-zinc-300">
-                    <CalendarClock className="w-3.5 h-3.5" />
+                  <p className="mt-2 sm:mt-3 text-[10px] sm:text-xs font-heading uppercase tracking-wider text-zinc-300">
                     {m.schedules.length > 0
                       ? `${m.schedules.length} horários disponíveis`
                       : "Consulte a recepção"}

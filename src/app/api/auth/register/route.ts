@@ -42,6 +42,10 @@ export async function POST(req: Request) {
     });
 
     await createSession(user.id);
+    // Histórico de acessos (salvo no banco de dados)
+    await db.loginLog
+      .create({ data: { userId: user.id, method: "REGISTER" } })
+      .catch((e) => console.error("[register:log]", e));
     return Response.json({ user: toSessionUser(user) }, { status: 201 });
   } catch (e) {
     console.error("[register]", e);

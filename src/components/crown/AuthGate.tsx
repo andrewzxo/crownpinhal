@@ -3,18 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import {
-  Crown,
-  Eye,
-  EyeOff,
-  Loader2,
-  Lock,
-  LogIn,
-  Mail,
-  Phone,
-  User,
-  UserPlus,
-} from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -123,14 +112,12 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
           value="login"
           className="font-heading uppercase tracking-wider text-sm text-zinc-400 data-[state=active]:bg-[#d9a441] data-[state=active]:text-black data-[state=active]:font-semibold"
         >
-          <LogIn className="w-4 h-4 mr-2" />
           Entrar
         </TabsTrigger>
         <TabsTrigger
           value="register"
           className="font-heading uppercase tracking-wider text-sm text-zinc-400 data-[state=active]:bg-[#d9a441] data-[state=active]:text-black data-[state=active]:font-semibold"
         >
-          <UserPlus className="w-4 h-4 mr-2" />
           Criar conta
         </TabsTrigger>
       </TabsList>
@@ -143,13 +130,12 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
               E-mail
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <Input
                 id="login-email"
                 type="email"
                 required
                 placeholder="seu@email.com"
-                className={`${inputCls} pl-10`}
+                className={inputCls}
                 value={login.email}
                 onChange={(e) => setLogin({ ...login, email: e.target.value })}
               />
@@ -160,13 +146,12 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
               Senha
             </Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <Input
                 id="login-password"
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder="Sua senha"
-                className={`${inputCls} pl-10 pr-10`}
+                className={`${inputCls} pr-10`}
                 value={login.password}
                 onChange={(e) => setLogin({ ...login, password: e.target.value })}
               />
@@ -185,7 +170,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
             disabled={loading !== null}
             className="w-full h-12 rounded-none bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base transition-all hover:scale-[1.01]"
           >
-            {loading === "login" ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
+            {loading === "login" ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
             Entrar agora
           </Button>
         </form>
@@ -199,12 +184,11 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
               Nome completo
             </Label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <Input
                 id="reg-name"
                 required
                 placeholder="Seu nome"
-                className={`${inputCls} pl-10`}
+                className={inputCls}
                 value={register.name}
                 onChange={(e) => setRegister({ ...register, name: e.target.value })}
               />
@@ -216,13 +200,12 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
                 E-mail
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="reg-email"
                   type="email"
                   required
                   placeholder="seu@email.com"
-                  className={`${inputCls} pl-10`}
+                  className={inputCls}
                   value={register.email}
                   onChange={(e) => setRegister({ ...register, email: e.target.value })}
                 />
@@ -233,12 +216,11 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
                 WhatsApp <span className="text-zinc-400 normal-case">(opcional)</span>
               </Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="reg-phone"
                   type="tel"
                   placeholder="(19) 99999-9999"
-                  className={`${inputCls} pl-10`}
+                  className={inputCls}
                   value={register.phone}
                   onChange={(e) => setRegister({ ...register, phone: e.target.value })}
                 />
@@ -251,14 +233,13 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
                 Senha
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="reg-password"
                   type={showPassword ? "text" : "password"}
                   required
                   minLength={6}
                   placeholder="Mín. 6 caracteres"
-                  className={`${inputCls} pl-10`}
+                  className={inputCls}
                   value={register.password}
                   onChange={(e) => setRegister({ ...register, password: e.target.value })}
                 />
@@ -269,14 +250,13 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
                 Confirmar senha
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
                   id="reg-confirm"
                   type={showPassword ? "text" : "password"}
                   required
                   minLength={6}
                   placeholder="Repita a senha"
-                  className={`${inputCls} pl-10`}
+                  className={inputCls}
                   value={register.confirm}
                   onChange={(e) => setRegister({ ...register, confirm: e.target.value })}
                 />
@@ -288,7 +268,7 @@ export function AuthForm({ onSuccess }: { onSuccess?: () => void }) {
             disabled={loading !== null}
             className="w-full h-12 rounded-none bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base transition-all hover:scale-[1.01]"
           >
-            {loading === "register" ? <Loader2 className="w-5 h-5 animate-spin" /> : <Crown className="w-5 h-5" />}
+            {loading === "register" ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
             Criar minha conta
           </Button>
         </form>
@@ -380,7 +360,6 @@ export default function AuthGate() {
               className="w-full h-12 mt-4 -skew-x-[10deg] rounded-none bg-transparent border-[#3a3a42] hover:bg-white/10 hover:text-white hover:border-[#52525b] font-heading uppercase tracking-wider transition-all"
             >
               <span className="flex items-center justify-center gap-2 skew-x-[10deg]">
-                <Eye className="w-5 h-5" />
                 Entrar como visitante
               </span>
             </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, Instagram } from "lucide-react";
+import { Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/lib/store";
 import Reveal from "./Reveal";
@@ -52,7 +52,6 @@ export default function CtaSection() {
               className="h-14 px-10 bg-transparent border-white/20 hover:bg-white/10 hover:text-white hover:border-white/40 font-heading uppercase tracking-wider font-semibold text-base transition-all"
             >
               <a href={beaconsUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4 mr-2" />
                 Hub da CROWN
               </a>
             </Button>

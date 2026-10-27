@@ -376,3 +376,39 @@ Stage Summary:
 - Instagram com identidade própria (paleta oficial) e Maps com CTA de fachada — seção Redes navegável pelo SectionNav
 - WhatsApp contextual em toda a página: cada assunto leva mensagem pronta diferente para o (19) 99150-4548
 - Nenhum dado inventado; mensagens seguem dados reais (Wellhub, TotalPass, visita, 7 dias grátis já existentes)
+
+---
+Task ID: 20
+Agent: Z.ai Code (orchestrator)
+Task: (1) Admin também acessa os Pedidos para tomar decisões; (2) Banco de dados para guardar as informações de login; (3) Remover/reduzir os ícones e emojis espalhados pelo site (print dos cards de estatísticas).
+
+Work Log:
+- 20-a Pedidos para ADMIN:
+  - /api/owner/subscriptions (GET) e /api/owner/subscriptions/[id] (PUT/DELETE): requireRole(["OWNER"]) → ["OWNER","ADMIN"] (usuários/senhas continuam exclusivos do OWNER).
+  - Extraído OrdersTab + SubscriptionStatusBadge para novo arquivo compartilhado src/components/crown/admin/OrdersShared.tsx; OwnerDashboard agora importa de lá (sem duplicação).
+  - AdminPanel: nova aba "PEDIDOS" (ícone ShoppingBag) entre Planos e Galeria, renderizando <OrdersTab /> — ADMIN e OWNER podem ativar/marcar pendente/cancelar/excluir pedidos.
+- 20-b Banco de dados de login:
+  - Prisma: novo model LoginLog (userId, method EMAIL|GOOGLE|REGISTER, createdAt) + relação user.loginLogs; bun run db:push ok.
+  - Gravação de cada login em /api/auth/login (EMAIL), /api/auth/register (REGISTER) e /api/auth/google/callback (GOOGLE), com .catch para nunca bloquear o login.
+  - Nova API OWNER-only GET /api/owner/login-logs (últimos 100) + LoginLogDTO em src/lib/types.ts.
+  - OwnerDashboard: nova 4ª aba "ACESSOS" com tabela Histórico de Acessos (data/hora, usuário, e-mail, papel, como entrou). Credenciais (User) e sessões (Session) já viviam no SQLite; agora há também o histórico de acessos auditável.
+- 20-c Redução de ícones/emojis (site público):
+  - About.tsx: removidos os 4 ícones dos cards de estatísticas (print do usuário) + relógio do card de horários (virou label "HORÁRIOS" dourado).
+  - Modalities.tsx: removidos o mapa ICONS, a caixa de ícone por card e CalendarClock (cards só com foto+texto).
+  - Plans.tsx: removidos Crown ("Quero esse plano"), Hourglass e Info.
+  - Empresas.tsx: removidos Building2/CreditCard/Users (título com barra dourada) e Check dos bullets (virou traço dourado fino).
+  - Comunidade.tsx: removidos CalendarCheck/Target/Umbrella (barra dourada no topo do card) e ArrowUpRight do ingresso.
+  - ScheduleSection.tsx: removidos CalendarDays, Clock e User.
+  - SocialSection/CtaSection: mantidos só ícones de marca (Instagram, MapPin); removidos os ArrowUpRight/ExternalLink.
+  - Footer.tsx: removidos MapPin, Phone, Clock, ExternalLink, Ticket, MessageCircle, ArrowUpRight; WhatsApp virou ícone oficial da marca (WhatsAppIcon); mantido Instagram.
+  - Navbar/AccountMenu/AuthGate/AuthModal/SubscribeModal/MySubscriptionsModal: removidos LogIn, Crown, Mail, Lock, User, Phone, UserPlus, Eye de visitante, ícones de status e PackageOpen; mantidos apenas funcionais (Menu, X, LogOut, Eye/EyeOff de senha, Loader2, Google SVG, WhatsApp/Instagram/MapPin de marca).
+  - Painéis admin/dono mantiveram ícones funcionais (ferramentas de gestão).
+- Correções durante o dev: restart do dev server para carregar o Prisma Client novo (login 500 por db.loginLog undefined); re-add MoreVertical no OwnerDashboard; useEffect do AccessTab reescrito no padrão .then/.catch (regra react-hooks/set-state-in-effect).
+- Verificação com agent-browser (1280x800 e 390x844): login ADMIN → Painel Admin → aba PEDIDOS carrega; cliente criou pedido CROWN GOLD (Pendente); ADMIN viu o pedido e ATIVOU (decisão); Owner Dashboard mostra Visão Geral com 1 Ativa/0 Pendentes; aba ACESSOS lista os 3 logins (Dono/ADMIN/Cliente — E-mail e senha); estatísticas/modalidades/empresas sem ícones no desktop e mobile; console sem erros.
+- Limpeza: pedido de teste excluído do banco; bun run lint 0 erros/0 avisos.
+
+Stage Summary:
+- ADMIN agora tem poder de decisão sobre os pedidos (ver/ativar/pendenciar/cancelar/excluir) tanto no Painel Admin (nova aba Pedidos) quanto via API; gestão de usuários/senhas segue exclusiva do OWNER.
+- Todas as informações de login vivem no banco SQLite: User (credenciais), Session (sessões) e o novo LoginLog (histórico de acessos), com visualização "Acessos" no Dashboard do Dono.
+- Site público praticamente sem ícones decorativos — apenas tipografia, traços dourados finos e ícones de marca/funcionais (WhatsApp, Instagram, Maps, menu, olho de senha, spinners).
+- Artefatos: src/components/crown/admin/OrdersShared.tsx (novo), src/app/api/owner/login-logs/route.ts (novo), prisma/schema.prisma (model LoginLog), 16 componentes/rotas editados.

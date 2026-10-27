@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { BadgeCheck, Clock, Crown, PackageOpen, XCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -15,9 +14,9 @@ import { api } from "@/lib/api";
 import type { SubscriptionDTO } from "@/lib/types";
 
 const STATUS = {
-  PENDING: { label: "Pendente", cls: "bg-[#d9a441]/15 text-[#d9a441] border-[#d9a441]/40", icon: Clock },
-  ACTIVE: { label: "Ativa", cls: "bg-emerald-500/15 text-emerald-400 border-emerald-500/40", icon: BadgeCheck },
-  CANCELLED: { label: "Cancelada", cls: "bg-red-500/15 text-red-400 border-red-500/40", icon: XCircle },
+  PENDING: { label: "Pendente", cls: "bg-[#d9a441]/15 text-[#d9a441] border-[#d9a441]/40" },
+  ACTIVE: { label: "Ativa", cls: "bg-emerald-500/15 text-emerald-400 border-emerald-500/40" },
+  CANCELLED: { label: "Cancelada", cls: "bg-red-500/15 text-red-400 border-red-500/40" },
 } as const;
 
 const fmtDate = new Intl.DateTimeFormat("pt-BR", {
@@ -69,8 +68,7 @@ function SubsList() {
   if (subs.length === 0) {
     return (
       <div className="py-10 text-center">
-        <PackageOpen className="w-12 h-12 mx-auto text-[#d9a441]/40" />
-        <p className="mt-4 text-zinc-400">
+        <p className="text-zinc-400">
           Você ainda não fez nenhum pedido de plano.
         </p>
         <p className="text-sm text-zinc-500">Escolha um plano para assinar.</p>
@@ -82,7 +80,6 @@ function SubsList() {
     <div className="space-y-3 max-h-[55vh] overflow-y-auto pr-1">
       {subs.map((s) => {
         const st = STATUS[s.status];
-        const Icon = st.icon;
         return (
           <div
             key={s.id}
@@ -100,9 +97,8 @@ function SubsList() {
               )}
             </div>
             <span
-              className={`shrink-0 inline-flex items-center gap-1.5 border px-3 py-1 text-xs font-heading uppercase tracking-wider ${st.cls}`}
+              className={`shrink-0 inline-flex items-center border px-3 py-1 text-xs font-heading uppercase tracking-wider ${st.cls}`}
             >
-              <Icon className="w-3.5 h-3.5" />
               {st.label}
             </span>
           </div>
@@ -123,8 +119,7 @@ export default function MySubscriptionsModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-[#141418] border-[#2b2b31] text-zinc-100 max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl uppercase tracking-wide text-white flex items-center gap-2">
-            <Crown className="w-5 h-5 text-[#d9a441]" />
+          <DialogTitle className="font-display text-xl uppercase tracking-wide text-white">
             Meus <span className="text-gold-gradient">pedidos</span>
           </DialogTitle>
           <DialogDescription className="text-zinc-400">

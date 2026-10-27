@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Crown, LayoutDashboard, LogOut, Settings, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,7 +59,7 @@ export default function AccountMenu() {
               <span className="font-medium truncate">{user.name}</span>
               <span className="text-xs text-zinc-400 truncate">{user.email}</span>
               <span className="mt-1 inline-flex items-center gap-1 text-[10px] font-heading uppercase tracking-wider text-[#d9a441]">
-                <Crown className="w-3 h-3" /> {roleLabel}
+                {roleLabel}
               </span>
             </div>
           </DropdownMenuLabel>
@@ -68,14 +68,14 @@ export default function AccountMenu() {
             onClick={() => setShowSubs(true)}
             className="cursor-pointer focus:bg-[#d9a441]/10 focus:text-[#d9a441]"
           >
-            <User className="w-4 h-4 mr-2" /> Meus pedidos
+            Meus pedidos
           </DropdownMenuItem>
           {(user.role === "ADMIN" || user.role === "OWNER") && (
             <DropdownMenuItem
               onClick={() => setView("admin")}
               className="cursor-pointer focus:bg-[#d9a441]/10 focus:text-[#d9a441]"
             >
-              <Settings className="w-4 h-4 mr-2" /> Painel Admin
+              Painel Admin
             </DropdownMenuItem>
           )}
           {user.role === "OWNER" && (
@@ -83,7 +83,7 @@ export default function AccountMenu() {
               onClick={() => setView("owner")}
               className="cursor-pointer focus:bg-[#d9a441]/10 focus:text-[#d9a441]"
             >
-              <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard do Dono
+              Dashboard do Dono
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator className="bg-[#2b2b31]" />

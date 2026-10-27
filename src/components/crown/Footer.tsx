@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowUpRight, Clock, ExternalLink, Instagram, MapPin, MessageCircle, Phone, Ticket } from "lucide-react";
+import { Instagram } from "lucide-react";
 import { useAppStore } from "@/lib/store";
+import { WhatsAppIcon } from "./CtaSection";
 
 export default function Footer() {
   const settings = useAppStore((s) => s.content?.settings);
@@ -81,28 +82,21 @@ export default function Footer() {
               Contato
             </h3>
             <ul className="space-y-3.5 text-sm text-zinc-400">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 mt-0.5 text-zinc-500 shrink-0" />
-                <span>
-                  <span className="block text-zinc-200">{s.address || "Av. Washington Luís, 45 — Espírito Santo do Pinhal-SP"}</span>
-                  <span className="block mt-0.5 text-xs text-zinc-500">
-                    {s.addressNote || "A ~700m da Praça Nestor de Almeida Vergueiro • CEP 13990-000"}
-                  </span>
-                  <a
-                    href={mapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-1.5 inline-flex items-center gap-1 text-xs font-heading uppercase tracking-wider text-zinc-300 hover:text-white transition-colors"
-                  >
-                    Ver no Google Maps
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
+              <li>
+                <span className="block text-zinc-200">{s.address || "Av. Washington Luís, 45 — Espírito Santo do Pinhal-SP"}</span>
+                <span className="block mt-0.5 text-xs text-zinc-500">
+                  {s.addressNote || "A ~700m da Praça Nestor de Almeida Vergueiro • CEP 13990-000"}
                 </span>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1.5 inline-flex items-center gap-1 text-xs font-heading uppercase tracking-wider text-zinc-300 hover:text-white transition-colors"
+                >
+                  Ver no Google Maps
+                </a>
               </li>
-              <li className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-zinc-500 shrink-0" />
-                {s.phone || "(19) 99150-4548"}
-              </li>
+              <li>{s.phone || "(19) 99150-4548"}</li>
               {s.whatsapp && (
                 <li>
                   <a
@@ -111,7 +105,7 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 mt-1 border border-[#25D366]/50 text-[#25D366] px-4 py-2 text-sm font-heading uppercase tracking-wider font-semibold hover:bg-[#25D366]/10 transition-colors"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <WhatsAppIcon className="w-4 h-4" />
                     WhatsApp
                   </a>
                 </li>
@@ -124,8 +118,7 @@ export default function Footer() {
             <h3 className="font-heading uppercase tracking-[0.25em] text-sm text-zinc-200 mb-5">
               Funcionamento
             </h3>
-            <p className="text-sm text-zinc-400 flex items-start gap-2.5 leading-relaxed">
-              <Clock className="w-4 h-4 mt-0.5 text-zinc-500 shrink-0" />
+            <p className="text-sm text-zinc-400 leading-relaxed">
               {s.hoursText || "Musculação: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h"}
             </p>
             <div className="mt-6 flex flex-col gap-2">
@@ -135,7 +128,6 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
               >
-                <ExternalLink className="w-4 h-4 text-zinc-500 shrink-0" />
                 Hub de agendamento
               </a>
               <a
@@ -144,7 +136,6 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
               >
-                <Ticket className="w-4 h-4 text-zinc-500 shrink-0" />
                 Ingressos e eventos
               </a>
             </div>

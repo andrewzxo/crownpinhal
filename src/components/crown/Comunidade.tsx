@@ -1,12 +1,10 @@
 "use client";
 
-import { ArrowUpRight, CalendarCheck, Target, Umbrella, type LucideIcon } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
 import WhatsAppCTA from "./WhatsAppCTA";
 
 type EventCard = {
-  icon: LucideIcon;
   title: string;
   text: string;
 };
@@ -18,17 +16,14 @@ export default function Comunidade() {
 
   const cards: EventCard[] = [
     {
-      icon: CalendarCheck,
       title: "DESAFIO 12 CHECK-INS",
       text: "Quem treina 12 vezes no mês entra na disputa de prêmios — como fones JBL. Aqui, constância é recompensada.",
     },
     {
-      icon: Target,
       title: "PROJETO VERÃO CROWN",
       text: "90 dias pra mudar: a campanha oficial da casa, com treino e nutrição combinados do início ao fim.",
     },
     {
-      icon: Umbrella,
       title: "ARENA BEACH BAR",
       text: "Porções e bebidas servidas no próprio local, depois do treino ou da partida. O jogo acaba, a conversa continua.",
     },
@@ -77,7 +72,6 @@ export default function Comunidade() {
                   className="mt-8 inline-flex clip-arrow-r bg-[#d9a441] hover:brightness-110 text-black px-8 h-12 items-center font-heading uppercase tracking-wider font-bold text-sm transition-all hover:scale-[1.03]"
                 >
                   Garantir ingresso
-                  <ArrowUpRight className="w-4 h-4 ml-2" />
                 </a>
               </div>
 
@@ -100,9 +94,7 @@ export default function Comunidade() {
           {cards.map((card, i) => (
             <Reveal key={card.title} delay={0.1 + i * 0.1}>
               <article className="h-full clip-blade border border-[#2b2b31] bg-[#212129] p-4 sm:p-7 flex flex-col hover:border-[#3a3a42] transition-all duration-300">
-                <span className="w-11 h-12 bg-[#101013] border border-[#2b2b31] flex items-center justify-center shrink-0">
-                  <card.icon className="w-5 h-5 text-[#d9a441]" />
-                </span>
+                <span className="h-1 w-10 bg-[#d9a441] shrink-0" aria-hidden />
                 <h4 className="mt-3.5 sm:mt-5 font-display uppercase text-base sm:text-xl tracking-wide text-zinc-100">
                   {card.title}
                 </h4>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { BadgeCheck, Crown, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -91,9 +91,6 @@ export default function SubscribeModal() {
         {plan ? (
           done ? (
             <div className="py-6 text-center">
-              <div className="mx-auto w-16 h-16 bg-[#222228] border border-[#3a3a42] flex items-center justify-center mb-4">
-                <BadgeCheck className="w-8 h-8 text-[#d9a441]" />
-              </div>
               <DialogHeader>
                 <DialogTitle className="text-center font-display text-2xl uppercase text-white">
                   Pedido <span className="text-[#d9a441]">enviado!</span>
@@ -109,7 +106,6 @@ export default function SubscribeModal() {
                 onClick={closeSubscribe}
                 className="mt-6 w-full h-11 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold"
               >
-                <Crown className="w-4 h-4 mr-2" />
                 Entendi
               </Button>
             </div>
@@ -158,7 +154,7 @@ export default function SubscribeModal() {
                     <ul className="space-y-1.5">
                       {plan.features.map((f) => (
                         <li key={f} className="text-sm text-zinc-400 flex items-start gap-2">
-                          <Crown className="w-3.5 h-3.5 mt-0.5 text-[#d9a441] shrink-0" />
+                          <span className="mt-[9px] h-px w-3 shrink-0 bg-[#d9a441]" aria-hidden />
                           {f}
                         </li>
                       ))}
@@ -193,11 +189,7 @@ export default function SubscribeModal() {
                   disabled={loading}
                   className="w-full h-12 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-base"
                 >
-                  {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Crown className="w-5 h-5" />
-                  )}
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
                   Confirmar assinatura
                 </Button>
               </div>

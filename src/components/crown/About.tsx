@@ -2,17 +2,16 @@
 
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
-import { CalendarCheck, Clock, Dumbbell, Sunrise } from "lucide-react";
 
 export default function About() {
   const settings = useAppStore((s) => s.content?.settings);
   const gallery = useAppStore((s) => s.content?.gallery) ?? [];
 
   const stats = [
-    { icon: Dumbbell, value: settings?.statsModalities || "12", label: "Modalidades" },
-    { icon: CalendarCheck, value: settings?.statsMembers || "47", label: "Aulas por semana" },
-    { icon: Clock, value: settings?.statsTrainers || "7", label: "Dias por semana" },
-    { icon: Sunrise, value: settings?.statsYears || "5h", label: "Abertura" },
+    { value: settings?.statsModalities || "12", label: "Modalidades" },
+    { value: settings?.statsMembers || "47", label: "Aulas por semana" },
+    { value: settings?.statsTrainers || "7", label: "Dias por semana" },
+    { value: settings?.statsYears || "5h", label: "Abertura" },
   ];
 
   const imgs = [
@@ -58,9 +57,6 @@ export default function About() {
               {stats.map((st, i) => (
                 <Reveal key={st.label} delay={0.1 + i * 0.08} className="bg-[#17171b]">
                   <div className="group p-5 hover:bg-[#1b1b20] transition-colors duration-300 h-full">
-                    <span className="w-11 h-11 mb-3 flex items-center justify-center bg-[#101013] border border-[#2b2b31]">
-                      <st.icon className="w-5 h-5 text-[#d9a441]" />
-                    </span>
                     <p className="font-display text-3xl sm:text-4xl text-foreground">
                       {st.value}
                     </p>
@@ -104,7 +100,9 @@ export default function About() {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
                 </div>
                 <div className="clip-peak bg-[#141418] border border-[#2b2b31] px-4 py-5 flex flex-col items-center justify-center text-center h-40 sm:h-48">
-                  <Clock className="w-8 h-8 mb-2 shrink-0 text-[#d9a441]" />
+                  <p className="font-heading uppercase tracking-[0.25em] text-[10px] text-[#d9a441] mb-2">
+                    Horários
+                  </p>
                   <p className="font-display uppercase text-base sm:text-lg leading-snug text-white">
                     {hoursLines.map((line, i) => (
                       <span key={line}>

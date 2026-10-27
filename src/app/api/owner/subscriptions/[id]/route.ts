@@ -4,8 +4,8 @@ import { requireRole, unauthorized } from "@/lib/auth";
 type Ctx = { params: Promise<{ id: string }> };
 
 export async function PUT(req: Request, ctx: Ctx) {
-  const owner = await requireRole(["OWNER"]);
-  if (!owner) return unauthorized();
+  const user = await requireRole(["OWNER", "ADMIN"]);
+  if (!user) return unauthorized();
 
   try {
     const { id } = await ctx.params;
@@ -25,8 +25,8 @@ export async function PUT(req: Request, ctx: Ctx) {
 }
 
 export async function DELETE(_req: Request, ctx: Ctx) {
-  const owner = await requireRole(["OWNER"]);
-  if (!owner) return unauthorized();
+  const user = await requireRole(["OWNER", "ADMIN"]);
+  if (!user) return unauthorized();
 
   try {
     const { id } = await ctx.params;

@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Clock, User } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
@@ -80,8 +79,7 @@ export default function ScheduleSection() {
 
             {entries.map((d) => (
               <TabsContent key={d.value} value={String(d.value)} className="mt-6">
-                <p className="font-display uppercase text-xl text-zinc-100 mb-4 flex items-center gap-2">
-                  <CalendarDays className="w-5 h-5 text-[#d9a441]" />
+                <p className="font-display uppercase text-xl text-zinc-100 mb-4">
                   {d.full}
                 </p>
 
@@ -103,8 +101,7 @@ export default function ScheduleSection() {
                           <span className="bg-[#101013] border border-[#2b2b31] text-white font-display text-sm sm:text-lg tracking-wide px-3 py-1 sm:px-3.5 inline-block">
                             {c.startTime}
                           </span>
-                          <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground font-heading uppercase tracking-wider">
-                            <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          <span className="text-[10px] sm:text-xs text-muted-foreground font-heading uppercase tracking-wider">
                             até {c.endTime}
                           </span>
                         </div>
@@ -112,8 +109,7 @@ export default function ScheduleSection() {
                           {c.modalityName}
                         </p>
                         {c.instructor && (
-                          <p className="mt-1 text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
-                            <User className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-400" />
+                          <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
                             {c.instructor}
                           </p>
                         )}

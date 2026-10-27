@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Crown, LogIn, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -89,7 +89,6 @@ export default function Navbar() {
               onClick={() => openAuthModal(undefined, "login")}
               className="hidden sm:inline-flex h-10 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold text-sm"
             >
-              <LogIn className="w-4 h-4 mr-2" />
               Entrar
             </Button>
           )}
@@ -135,7 +134,6 @@ export default function Navbar() {
                     }}
                     className="mt-4 h-11 bg-gold-gradient hover:brightness-110 text-black font-heading uppercase tracking-wider font-semibold"
                   >
-                    <Crown className="w-4 h-4 mr-2" />
                     Entrar
                   </Button>
                 )}

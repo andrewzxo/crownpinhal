@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Instagram, MapPin } from "lucide-react";
+import { Instagram, MapPin } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
 
@@ -60,11 +60,6 @@ export default function SocialSection() {
                 >
                   Seguir @{instagram}
                 </span>
-                <ArrowUpRight
-                  className="w-4 h-4 shrink-0"
-                  style={{ color: "#d6249f" }}
-                  aria-hidden
-                />
               </a>
             </div>
           </Reveal>

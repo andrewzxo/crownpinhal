@@ -19,6 +19,7 @@ model User {
   updatedAt     DateTime       @updatedAt
   sessions      Session[]
   subscriptions Subscription[]
+  loginLogs     LoginLog[]
 }
 
 model Session {
@@ -89,4 +90,14 @@ model Subscription {
 model Setting {
   key   String @id
   value String
+}
+
+/// Registro de cada login realizado no site (e-mail, Google ou cadastro).
+/// Guarda o histórico de acessos exibido no Dashboard do Dono.
+model LoginLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  method    String   // EMAIL | GOOGLE | REGISTER
+  createdAt DateTime @default(now())
 }

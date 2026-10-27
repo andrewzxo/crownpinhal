@@ -1,12 +1,10 @@
 "use client";
 
-import { Building2, Check, CreditCard, Users, type LucideIcon } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
 import WhatsAppCTA from "./WhatsAppCTA";
 
 type CorporateCard = {
-  icon: LucideIcon;
   name: string;
   tagline?: string;
   highlighted?: boolean;
@@ -16,7 +14,6 @@ type CorporateCard = {
 export default function Empresas() {
   const cards: CorporateCard[] = [
     {
-      icon: Building2,
       name: "WELLHUB",
       tagline: "antigo Gympass",
       highlighted: true,
@@ -27,7 +24,6 @@ export default function Empresas() {
       ],
     },
     {
-      icon: CreditCard,
       name: "TOTALPASS",
       bullets: [
         "TotalPass aceito na CROWN Pinhal",
@@ -36,7 +32,6 @@ export default function Empresas() {
       ],
     },
     {
-      icon: Users,
       name: "PLANO EMPRESA",
       bullets: [
         "Condições especiais para equipes conveniadas",
@@ -67,9 +62,10 @@ export default function Empresas() {
                 }`}
               >
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <span className="w-11 h-12 bg-[#101013] border border-[#2b2b31] flex items-center justify-center shrink-0">
-                    <card.icon className="w-5 h-5 text-[#d9a441]" />
-                  </span>
+                  <span
+                    className="h-10 w-1 bg-[#d9a441] shrink-0"
+                    aria-hidden
+                  />
                   <div>
                     <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide text-zinc-100">
                       {card.name}
@@ -85,7 +81,7 @@ export default function Empresas() {
                 <ul className="mt-5 sm:mt-7 space-y-3 sm:space-y-4 flex-1">
                   {card.bullets.map((b) => (
                     <li key={b} className="flex items-start gap-3 text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                      <Check className="mt-0.5 w-4 h-4 shrink-0 text-[#d9a441]" />
+                      <span className="mt-[7px] h-px w-4 shrink-0 bg-[#d9a441]" aria-hidden />
                       {b}
                     </li>
                   ))}

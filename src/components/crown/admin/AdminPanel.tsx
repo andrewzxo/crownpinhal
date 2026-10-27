@@ -22,6 +22,7 @@ import {
   Pencil,
   Plus,
   Settings,
+  ShoppingBag,
   Sparkles,
   Star,
   Trash2,
@@ -72,6 +73,7 @@ import type {
   ScheduleDTO,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import OrdersTab from "./OrdersShared";
 import {
   AccessDeniedCard,
   ActiveBadge,
@@ -90,12 +92,13 @@ import {
   type PanelTab,
 } from "./panel-shared";
 
-type TabId = "modalities" | "schedules" | "plans" | "gallery" | "settings";
+type TabId = "modalities" | "schedules" | "plans" | "pedidos" | "gallery" | "settings";
 
 const TABS: PanelTab[] = [
   { id: "modalities", label: "Modalidades", icon: Dumbbell },
   { id: "schedules", label: "Horários", icon: Clock },
   { id: "plans", label: "Planos", icon: Crown },
+  { id: "pedidos", label: "Pedidos", icon: ShoppingBag },
   { id: "gallery", label: "Galeria", icon: Images },
   { id: "settings", label: "Configurações", icon: Settings },
 ];
@@ -1859,6 +1862,7 @@ export default function AdminPanel() {
             {tab === "modalities" ? <ModalitiesTab /> : null}
             {tab === "schedules" ? <SchedulesTab /> : null}
             {tab === "plans" ? <PlansTab /> : null}
+            {tab === "pedidos" ? <OrdersTab /> : null}
             {tab === "gallery" ? <GalleryTab /> : null}
             {tab === "settings" ? <SettingsTab /> : null}
           </div>

@@ -3,8 +3,8 @@ import { requireRole, unauthorized } from "@/lib/auth";
 import type { SubscriptionDTO } from "@/lib/types";
 
 export async function GET() {
-  const owner = await requireRole(["OWNER"]);
-  if (!owner) return unauthorized();
+  const user = await requireRole(["OWNER", "ADMIN"]);
+  if (!user) return unauthorized();
 
   try {
     const subs = await db.subscription.findMany({

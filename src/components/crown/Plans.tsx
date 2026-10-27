@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Crown, Hourglass, Info } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import type { PlanDTO } from "@/lib/types";
 import Reveal, { SectionTitle } from "./Reveal";
@@ -176,24 +175,20 @@ export default function Plans() {
                       )}
                     </p>
                   ) : (
-                    <div className="flex items-center gap-2.5">
-                      <Hourglass className="w-5 h-5 text-zinc-500 shrink-0" />
-                      <p className="font-heading uppercase tracking-wider text-xs text-zinc-500">
-                        Consulte na recepção
-                      </p>
-                    </div>
+                    <p className="font-heading uppercase tracking-wider text-xs text-zinc-500">
+                      Consulte na recepção
+                    </p>
                   )}
                 </div>
 
                 <button
                   onClick={() => handleSubscribe(p.id)}
-                  className={`mt-auto w-full h-10 sm:h-12 font-heading uppercase tracking-wider font-bold text-[11px] sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  className={`mt-auto w-full h-10 sm:h-12 font-heading uppercase tracking-wider font-bold text-[11px] sm:text-sm transition-all cursor-pointer flex items-center justify-center ${
                     p.highlighted
                       ? "bg-[#d9a441] hover:brightness-110 text-black"
                       : "bg-[#1b1b20] border border-[#2b2b31] text-zinc-100 hover:border-[#d9a441]/60 hover:text-[#d9a441]"
                   }`}
                 >
-                  <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   Quero esse plano
                 </button>
               </motion.article>
@@ -208,8 +203,7 @@ export default function Plans() {
         )}
 
         <Reveal delay={0.2}>
-          <p className="mt-8 text-center text-xs sm:text-sm text-muted-foreground flex items-center justify-center gap-2">
-            <Info className="w-4 h-4 text-[#d9a441] shrink-0" />
+          <p className="mt-8 text-center text-xs sm:text-sm text-muted-foreground">
             Ao assinar, o dono da academia recebe seu pedido e entra em contato para finalizar.
           </p>
         </Reveal>

@@ -20,6 +20,10 @@ export async function POST(req: Request) {
     }
 
     await createSession(user.id);
+    // Histórico de acessos (salvo no banco de dados)
+    await db.loginLog
+      .create({ data: { userId: user.id, method: "EMAIL" } })
+      .catch((e) => console.error("[login:log]", e));
     return Response.json({ user: toSessionUser(user) });
   } catch (e) {
     console.error("[login]", e);

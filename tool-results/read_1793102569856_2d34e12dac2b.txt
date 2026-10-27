@@ -1,0 +1,965 @@
+     1→"use client";
+     2→
+     3→import { useCallback, useEffect, useState } from "react";
+     4→import {
+     5→  BadgeCheck,
+     6→  Ban,
+     7→  CheckCircle2,
+     8→  Clock,
+     9→  Crown,
+    10→  Dumbbell,
+    11→  Eye,
+    12→  EyeOff,
+    13→  KeyRound,
+    14→  LayoutDashboard,
+    15→  Loader2,
+    16→  MoreVertical,
+    17→  Search,
+    18→  ShoppingBag,
+    19→  Trash2,
+    20→  UserCheck,
+    21→  UserCog,
+    22→  Users,
+    23→} from "lucide-react";
+    24→import { toast } from "sonner";
+    25→
+    26→import {
+    27→  AlertDialog,
+    28→  AlertDialogAction,
+    29→  AlertDialogCancel,
+    30→  AlertDialogContent,
+    31→  AlertDialogDescription,
+    32→  AlertDialogFooter,
+    33→  AlertDialogHeader,
+    34→  AlertDialogTitle,
+    35→} from "@/components/ui/alert-dialog";
+    36→import { Badge } from "@/components/ui/badge";
+    37→import { Button } from "@/components/ui/button";
+    38→import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+    39→import {
+    40→  Dialog,
+    41→  DialogContent,
+    42→  DialogDescription,
+    43→  DialogFooter,
+    44→  DialogHeader,
+    45→  DialogTitle,
+    46→} from "@/components/ui/dialog";
+    47→import {
+    48→  DropdownMenu,
+    49→  DropdownMenuContent,
+    50→  DropdownMenuItem,
+    51→  DropdownMenuSeparator,
+    52→  DropdownMenuTrigger,
+    53→} from "@/components/ui/dropdown-menu";
+    54→import { Input } from "@/components/ui/input";
+    55→import { Label } from "@/components/ui/label";
+    56→import {
+    57→  Select,
+    58→  SelectContent,
+    59→  SelectItem,
+    60→  SelectTrigger,
+    61→  SelectValue,
+    62→} from "@/components/ui/select";
+    63→import { Skeleton } from "@/components/ui/skeleton";
+    64→import {
+    65→  Table,
+    66→  TableBody,
+    67→  TableCell,
+    68→  TableHead,
+    69→  TableHeader,
+    70→  TableRow,
+    71→} from "@/components/ui/table";
+    72→import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+    73→import { api } from "@/lib/api";
+    74→import { useAppStore } from "@/lib/store";
+    75→import type {
+    76→  OwnerStatsDTO,
+    77→  OwnerUserDTO,
+    78→  Role,
+    79→  SubscriptionDTO,
+    80→} from "@/lib/types";
+    81→import { cn } from "@/lib/utils";
+    82→import {
+    83→  AccessDeniedCard,
+    84→  EmptyState,
+    85→  formatDateTimeBR,
+    86→  formatNumberBR,
+    87→  goldButtonClass,
+    88→  outlineButtonClass,
+    89→  PanelHeader,
+    90→  TableSkeleton,
+    91→} from "./panel-shared";
+    92→
+    93→type OwnerTab = "overview" | "orders" | "users";
+    94→
+    95→function errMessage(err: unknown, fallback: string): string {
+    96→  return err instanceof Error ? err.message : fallback;
+    97→}
+    98→
+    99→/* ------------------------------------------------------------------ */
+   100→/* Badges                                                              */
+   101→/* ------------------------------------------------------------------ */
+   102→
+   103→function SubscriptionStatusBadge({ status }: { status: SubscriptionDTO["status"] }) {
+   104→  if (status === "ACTIVE") {
+   105→    return (
+   106→      <Badge className="border border-emerald-500/40 bg-emerald-500/10 text-emerald-400">
+   107→        Ativa
+   108→      </Badge>
+   109→    );
+   110→  }
+   111→  if (status === "CANCELLED") {
+   112→    return <Badge variant="destructive">Cancelada</Badge>;
+   113→  }
+   114→  return (
+   115→    <Badge className="border border-[#d9a441]/40 bg-[#d9a441]/10 text-[#d9a441]">Pendente</Badge>
+   116→  );
+   117→}
+   118→
+   119→function RoleBadge({ role }: { role: Role }) {
+   120→  if (role === "OWNER") {
+   121→    return (
+   122→      <Badge className="border border-[#d9a441]/40 bg-[#d9a441]/10 text-[#d9a441]">OWNER</Badge>
+   123→    );
+   124→  }
+   125→  if (role === "ADMIN") {
+   126→    return (
+   127→      <Badge variant="outline" className="border-[#3a3a42] text-zinc-400">
+   128→        ADMIN
+   129→      </Badge>
+   130→    );
+   131→  }
+   132→  return <Badge variant="secondary" className="text-muted-foreground">CLIENT</Badge>;
+   133→}
+   134→
+   135→/* ==================================================================== */
+   136→/* TAB 1 — VISÃO GERAL                                                  */
+   137→/* ==================================================================== */
+   138→
+   139→interface KpiItem {
+   140→  key: keyof OwnerStatsDTO;
+   141→  label: string;
+   142→  icon: typeof Users;
+   143→  gold?: boolean;
+   144→}
+   145→
+   146→const KPIS: KpiItem[] = [
+   147→  { key: "totalUsers", label: "Total de Usuários", icon: Users },
+   148→  { key: "totalClients", label: "Clientes", icon: UserCheck },
+   149→  { key: "pendingSubscriptions", label: "Pedidos Pendentes", icon: Clock, gold: true },
+   150→  { key: "activeSubscriptions", label: "Assinaturas Ativas", icon: BadgeCheck },
+   151→  { key: "totalModalities", label: "Modalidades", icon: Dumbbell },
+   152→  { key: "totalPlans", label: "Planos", icon: Crown },
+   153→];
+   154→
+   155→interface OverviewTabProps {
+   156→  stats: OwnerStatsDTO | null;
+   157→  statsLoading: boolean;
+   158→}
+   159→
+   160→function OverviewTab({ stats, statsLoading }: OverviewTabProps) {
+   161→  const [recent, setRecent] = useState<SubscriptionDTO[] | null>(null);
+   162→
+   163→  useEffect(() => {
+   164→    let cancelled = false;
+   165→    void api<{ subscriptions: SubscriptionDTO[] }>("/api/owner/subscriptions")
+   166→      .then((data) => {
+   167→        if (cancelled) return;
+   168→        const sorted = [...data.subscriptions].sort(
+   169→          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+   170→        );
+   171→        setRecent(sorted.slice(0, 5));
+   172→      })
+   173→      .catch((err) => {
+   174→        if (cancelled) return;
+   175→        toast.error(errMessage(err, "Erro ao carregar últimos pedidos."));
+   176→        setRecent([]);
+   177→      });
+   178→    return () => {
+   179→      cancelled = true;
+   180→    };
+   181→  }, []);
+   182→
+   183→  return (
+   184→    <div className="space-y-6">
+   185→      {/* KPIs */}
+   186→      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6">
+   187→        {KPIS.map((kpi) => {
+   188→          const Icon = kpi.icon;
+   189→          const value = stats ? stats[kpi.key] : null;
+   190→          const isGold = Boolean(kpi.gold);
+   191→          const highlighted = isGold && (stats?.pendingSubscriptions ?? 0) > 0;
+   192→          return (
+   193→            <Card
+   194→              key={kpi.key}
+   195→              className={cn(
+   196→                "gap-2 border-[#2b2b31] bg-card py-4",
+   197→                highlighted && "border-[#d9a441]/50"
+   198→              )}
+   199→            >
+   200→              <CardContent className="px-4">
+   201→                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+   202→                  <Icon
+   203→                    className={cn("size-4 shrink-0", isGold && "text-[#d9a441]")}
+   204→                    aria-hidden
+   205→                  />
+   206→                  <span className="truncate">{kpi.label}</span>
+   207→                </p>
+   208→                {statsLoading || value == null ? (
+   209→                  <Skeleton className="mt-2 h-9 w-16 bg-[#1a1a20]" />
+   210→                ) : (
+   211→                  <p
+   212→                    className={cn(
+   213→                      "font-display mt-1 text-4xl leading-none",
+   214→                      isGold && "text-[#d9a441]"
+   215→                    )}
+   216→                  >
+   217→                    {formatNumberBR(value)}
+   218→                  </p>
+   219→                )}
+   220→              </CardContent>
+   221→            </Card>
+   222→          );
+   223→        })}
+   224→      </div>
+   225→
+   226→      {/* Últimos pedidos */}
+   227→      <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+   228→        <CardHeader className="px-4 [.border-b]:pb-0">
+   229→          <CardTitle className="font-display text-lg uppercase tracking-wide">
+   230→            Últimos Pedidos
+   231→          </CardTitle>
+   232→          <CardDescription>Os 5 pedidos de assinatura mais recentes.</CardDescription>
+   233→        </CardHeader>
+   234→        <CardContent className="px-4">
+   235→          {recent === null ? (
+   236→            <TableSkeleton rows={5} height="h-14" />
+   237→          ) : recent.length === 0 ? (
+   238→            <EmptyState
+   239→              icon={ShoppingBag}
+   240→              title="Nenhum pedido ainda"
+   241→              description="Os pedidos de assinatura aparecerão aqui."
+   242→            />
+   243→          ) : (
+   244→            <ul className="divide-y divide-[#101013]">
+   245→              {recent.map((s) => (
+   246→                <li
+   247→                  key={s.id}
+   248→                  className="flex flex-wrap items-center justify-between gap-2 py-3"
+   249→                >
+   250→                  <div className="min-w-0">
+   251→                    <p className="truncate text-sm font-medium">
+   252→                      {s.user?.name ?? "Cliente"}
+   253→                    </p>
+   254→                    <p className="truncate text-xs text-muted-foreground">
+   255→                      {s.plan.name} • {formatDateTimeBR(s.createdAt)}
+   256→                    </p>
+   257→                  </div>
+   258→                  <SubscriptionStatusBadge status={s.status} />
+   259→                </li>
+   260→              ))}
+   261→            </ul>
+   262→          )}
+   263→        </CardContent>
+   264→      </Card>
+   265→    </div>
+   266→  );
+   267→}
+   268→
+   269→/* ==================================================================== */
+   270→/* TAB 2 — PEDIDOS                                                      */
+   271→/* ==================================================================== */
+   272→
+   273→function statusActionLabel(status: SubscriptionDTO["status"]): string {
+   274→  if (status === "ACTIVE") return "Pedido ativado.";
+   275→  if (status === "PENDING") return "Pedido marcado como pendente.";
+   276→  return "Pedido cancelado.";
+   277→}
+   278→
+   279→function OrdersTab({ onChanged }: { onChanged: () => void }) {
+   280→  const [items, setItems] = useState<SubscriptionDTO[] | null>(null);
+   281→  const [busyId, setBusyId] = useState<string | null>(null);
+   282→  const [confirmDelete, setConfirmDelete] = useState<SubscriptionDTO | null>(null);
+   283→  const [deleting, setDeleting] = useState(false);
+   284→
+   285→  const load = useCallback(async () => {
+   286→    try {
+   287→      const data = await api<{ subscriptions: SubscriptionDTO[] }>("/api/owner/subscriptions");
+   288→      const sorted = [...data.subscriptions].sort(
+   289→        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+   290→      );
+   291→      setItems(sorted);
+   292→    } catch (err) {
+   293→      toast.error(errMessage(err, "Erro ao carregar pedidos."));
+   294→      setItems([]);
+   295→    }
+   296→  }, []);
+   297→
+   298→  useEffect(() => {
+   299→    void load();
+   300→  }, [load]);
+   301→
+   302→  async function setStatus(id: string, status: SubscriptionDTO["status"]) {
+   303→    setBusyId(id);
+   304→    try {
+   305→      await api(`/api/owner/subscriptions/${id}`, {
+   306→        method: "PUT",
+   307→        body: JSON.stringify({ status }),
+   308→      });
+   309→      toast.success(statusActionLabel(status));
+   310→      await Promise.all([load(), onChanged()]);
+   311→    } catch (err) {
+   312→      toast.error(errMessage(err, "Erro ao atualizar pedido."));
+   313→    } finally {
+   314→      setBusyId(null);
+   315→    }
+   316→  }
+   317→
+   318→  async function remove(id: string) {
+   319→    setDeleting(true);
+   320→    try {
+   321→      await api(`/api/owner/subscriptions/${id}`, { method: "DELETE" });
+   322→      toast.success("Pedido excluído.");
+   323→      await Promise.all([load(), onChanged()]);
+   324→    } catch (err) {
+   325→      toast.error(errMessage(err, "Erro ao excluir pedido."));
+   326→    } finally {
+   327→      setDeleting(false);
+   328→    }
+   329→  }
+   330→
+   331→  return (
+   332→    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+   333→      <CardHeader className="px-4 [.border-b]:pb-0">
+   334→        <CardTitle className="font-display text-lg uppercase tracking-wide">Pedidos</CardTitle>
+   335→        <CardDescription>
+   336→          Todos os pedidos de assinatura recebidos pela academia.
+   337→        </CardDescription>
+   338→      </CardHeader>
+   339→      <CardContent className="px-4">
+   340→        {items === null ? (
+   341→          <TableSkeleton rows={6} height="h-14" />
+   342→        ) : items.length === 0 ? (
+   343→          <EmptyState
+   344→            icon={ShoppingBag}
+   345→            title="Nenhum pedido encontrado"
+   346→            description="Quando um cliente assinar um plano, o pedido aparecerá aqui."
+   347→          />
+   348→        ) : (
+   349→          <div className="max-h-[60vh] overflow-auto rounded-md border border-[#2b2b31] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#2b2b31]">
+   350→            <Table>
+   351→              <TableHeader>
+   352→                <TableRow className="border-[#2b2b31] hover:bg-transparent">
+   353→                  <TableHead className="text-[#d9a441]">Data</TableHead>
+   354→                  <TableHead className="text-[#d9a441]">Cliente</TableHead>
+   355→                  <TableHead className="text-[#d9a441]">Plano</TableHead>
+   356→                  <TableHead className="text-[#d9a441]">Status</TableHead>
+   357→                  <TableHead className="text-[#d9a441]">Observações</TableHead>
+   358→                  <TableHead className="text-right text-[#d9a441]">Ações</TableHead>
+   359→                </TableRow>
+   360→              </TableHeader>
+   361→              <TableBody>
+   362→                {items.map((s) => (
+   363→                  <TableRow key={s.id} className="border-[#2b2b31]">
+   364→                    <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
+   365→                      {formatDateTimeBR(s.createdAt)}
+   366→                    </TableCell>
+   367→                    <TableCell>
+   368→                      <p className="whitespace-nowrap text-sm font-medium">
+   369→                        {s.user?.name ?? "—"}
+   370→                      </p>
+   371→                      <p className="text-xs text-muted-foreground">{s.user?.email}</p>
+   372→                      {s.user?.phone ? (
+   373→                        <p className="text-xs text-muted-foreground">{s.user.phone}</p>
+   374→                      ) : null}
+   375→                    </TableCell>
+   376→                    <TableCell className="whitespace-nowrap text-sm">
+   377→                      {s.plan.name}
+   378→                    </TableCell>
+   379→                    <TableCell>
+   380→                      <SubscriptionStatusBadge status={s.status} />
+   381→                    </TableCell>
+   382→                    <TableCell className="max-w-[220px] truncate text-sm text-muted-foreground">
+   383→                      {s.notes || "—"}
+   384→                    </TableCell>
+   385→                    <TableCell className="text-right">
+   386→                      <DropdownMenu>
+   387→                        <DropdownMenuTrigger asChild>
+   388→                          <Button
+   389→                            variant="ghost"
+   390→                            size="icon"
+   391→                            aria-label={`Ações do pedido de ${s.user?.name ?? "cliente"}`}
+   392→                            disabled={busyId === s.id}
+   393→                            className="text-muted-foreground hover:bg-[#d9a441]/10 hover:text-[#d9a441]"
+   394→                          >
+   395→                            {busyId === s.id ? (
+   396→                              <Loader2 className="size-4 animate-spin" />
+   397→                            ) : (
+   398→                              <MoreVertical className="size-4" />
+   399→                            )}
+   400→                          </Button>
+   401→                        </DropdownMenuTrigger>
+   402→                        <DropdownMenuContent
+   403→                          align="end"
+   404→                          className="border-[#2b2b31] bg-[#1a1a20]"
+   405→                        >
+   406→                          <DropdownMenuItem
+   407→                            onClick={() => void setStatus(s.id, "ACTIVE")}
+   408→                            className="gap-2"
+   409→                          >
+   410→                            <CheckCircle2 className="size-4 text-emerald-400" aria-hidden />
+   411→                            Ativar
+   412→                          </DropdownMenuItem>
+   413→                          <DropdownMenuItem
+   414→                            onClick={() => void setStatus(s.id, "PENDING")}
+   415→                            className="gap-2"
+   416→                          >
+   417→                            <Clock className="size-4 text-[#d9a441]" aria-hidden />
+   418→                            Marcar Pendente
+   419→                          </DropdownMenuItem>
+   420→                          <DropdownMenuItem
+   421→                            onClick={() => void setStatus(s.id, "CANCELLED")}
+   422→                            className="gap-2"
+   423→                          >
+   424→                            <Ban className="size-4 text-red-400" aria-hidden />
+   425→                            Cancelar
+   426→                          </DropdownMenuItem>
+   427→                          <DropdownMenuSeparator className="bg-[#2b2b31]" />
+   428→                          <DropdownMenuItem
+   429→                            onClick={() => setConfirmDelete(s)}
+   430→                            className="gap-2 text-red-400 focus:text-red-300"
+   431→                          >
+   432→                            <Trash2 className="size-4" aria-hidden />
+   433→                            Excluir
+   434→                          </DropdownMenuItem>
+   435→                        </DropdownMenuContent>
+   436→                      </DropdownMenu>
+   437→                    </TableCell>
+   438→                  </TableRow>
+   439→                ))}
+   440→              </TableBody>
+   441→            </Table>
+   442→          </div>
+   443→        )}
+   444→      </CardContent>
+   445→
+   446→      <AlertDialog
+   447→        open={confirmDelete !== null}
+   448→        onOpenChange={(open) => {
+   449→          if (!open) setConfirmDelete(null);
+   450→        }}
+   451→      >
+   452→        <AlertDialogContent className="border-[#2b2b31] bg-[#1a1a20]">
+   453→          <AlertDialogHeader>
+   454→            <AlertDialogTitle className="font-display uppercase tracking-wide">
+   455→              Excluir pedido?
+   456→            </AlertDialogTitle>
+   457→            <AlertDialogDescription>
+   458→              O pedido de {confirmDelete?.user?.name ?? "cliente"} no plano{" "}
+   459→              {confirmDelete?.plan.name ?? "—"} será removido permanentemente.
+   460→            </AlertDialogDescription>
+   461→          </AlertDialogHeader>
+   462→          <AlertDialogFooter>
+   463→            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+   464→            <AlertDialogAction
+   465→              className="bg-red-600 text-white hover:bg-red-700"
+   466→              disabled={deleting}
+   467→              onClick={() => {
+   468→                const target = confirmDelete;
+   469→                setConfirmDelete(null);
+   470→                if (target) void remove(target.id);
+   471→              }}
+   472→            >
+   473→              {deleting ? <Loader2 className="size-4 animate-spin" /> : null}
+   474→              Excluir
+   475→            </AlertDialogAction>
+   476→          </AlertDialogFooter>
+   477→        </AlertDialogContent>
+   478→      </AlertDialog>
+   479→    </Card>
+   480→  );
+   481→}
+   482→
+   483→/* ==================================================================== */
+   484→/* TAB 3 — USUÁRIOS                                                     */
+   485→/* ==================================================================== */
+   486→
+   487→function UsersTab() {
+   488→  const [users, setUsers] = useState<OwnerUserDTO[] | null>(null);
+   489→  const [query, setQuery] = useState("");
+   490→  const [showPasswords, setShowPasswords] = useState(true);
+   491→
+   492→  // Redefinir senha
+   493→  const [resetTarget, setResetTarget] = useState<OwnerUserDTO | null>(null);
+   494→  const [newPassword, setNewPassword] = useState("");
+   495→  const [resetting, setResetting] = useState(false);
+   496→
+   497→  // Alterar papel
+   498→  const [roleTarget, setRoleTarget] = useState<OwnerUserDTO | null>(null);
+   499→  const [newRole, setNewRole] = useState<Role>("CLIENT");
+   500→  const [changingRole, setChangingRole] = useState(false);
+   501→
+   502→  // Excluir
+   503→  const [confirmDelete, setConfirmDelete] = useState<OwnerUserDTO | null>(null);
+   504→  const [deleting, setDeleting] = useState(false);
+   505→
+   506→  const load = useCallback(async () => {
+   507→    try {
+   508→      const data = await api<{ users: OwnerUserDTO[] }>("/api/owner/users");
+   509→      setUsers(data.users);
+   510→    } catch (err) {
+   511→      toast.error(errMessage(err, "Erro ao carregar usuários."));
+   512→      setUsers([]);
+   513→    }
+   514→  }, []);
+   515→
+   516→  useEffect(() => {
+   517→    void load();
+   518→  }, [load]);
+   519→
+   520→  const filtered = (users ?? []).filter((u) => {
+   521→    const q = query.trim().toLowerCase();
+   522→    if (!q) return true;
+   523→    return (
+   524→      u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+   525→    );
+   526→  });
+   527→
+   528→  function openReset(user: OwnerUserDTO) {
+   529→    setResetTarget(user);
+   530→    setNewPassword("");
+   531→  }
+   532→
+   533→  async function submitReset() {
+   534→    if (!resetTarget) return;
+   535→    if (newPassword.trim().length < 4) {
+   536→      toast.error("A nova senha deve ter pelo menos 4 caracteres.");
+   537→      return;
+   538→    }
+   539→    setResetting(true);
+   540→    try {
+   541→      await api(`/api/owner/users/${resetTarget.id}`, {
+   542→        method: "PUT",
+   543→        body: JSON.stringify({ newPassword: newPassword.trim() }),
+   544→      });
+   545→      toast.success(`Senha de ${resetTarget.name} redefinida com sucesso.`);
+   546→      setResetTarget(null);
+   547→      await load();
+   548→    } catch (err) {
+   549→      toast.error(errMessage(err, "Erro ao redefinir senha."));
+   550→    } finally {
+   551→      setResetting(false);
+   552→    }
+   553→  }
+   554→
+   555→  function openRole(user: OwnerUserDTO) {
+   556→    setRoleTarget(user);
+   557→    setNewRole(user.role);
+   558→  }
+   559→
+   560→  async function submitRole() {
+   561→    if (!roleTarget) return;
+   562→    setChangingRole(true);
+   563→    try {
+   564→      await api(`/api/owner/users/${roleTarget.id}`, {
+   565→        method: "PUT",
+   566→        body: JSON.stringify({ role: newRole }),
+   567→      });
+   568→      toast.success(`Papel de ${roleTarget.name} alterado para ${newRole}.`);
+   569→      setRoleTarget(null);
+   570→      await load();
+   571→    } catch (err) {
+   572→      toast.error(errMessage(err, "Erro ao alterar papel."));
+   573→    } finally {
+   574→      setChangingRole(false);
+   575→    }
+   576→  }
+   577→
+   578→  async function removeUser(id: string) {
+   579→    setDeleting(true);
+   580→    try {
+   581→      await api(`/api/owner/users/${id}`, { method: "DELETE" });
+   582→      toast.success("Usuário excluído.");
+   583→      setConfirmDelete(null);
+   584→      await load();
+   585→    } catch (err) {
+   586→      toast.error(errMessage(err, "Erro ao excluir usuário."));
+   587→    } finally {
+   588→      setDeleting(false);
+   589→    }
+   590→  }
+   591→
+   592→  return (
+   593→    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
+   594→      <CardHeader className="px-4 [.border-b]:pb-0">
+   595→        <CardTitle className="font-display text-lg uppercase tracking-wide">Usuários</CardTitle>
+   596→        <CardDescription>
+   597→          Contas cadastradas, credenciais de acesso e permissões.
+   598→        </CardDescription>
+   599→      </CardHeader>
+   600→      <CardContent className="space-y-4 px-4">
+   601→        <div className="flex items-center gap-2">
+   602→          <div className="relative flex-1">
+   603→            <Search
+   604→              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+   605→              aria-hidden
+   606→            />
+   607→            <Input
+   608→              value={query}
+   609→              onChange={(e) => setQuery(e.target.value)}
+   610→              placeholder="Buscar por nome ou e-mail..."
+   611→              aria-label="Buscar usuários por nome ou e-mail"
+   612→              className="border-[#2b2b31] bg-[#17171b] pl-9"
+   613→            />
+   614→          </div>
+   615→          <Button
+   616→            variant="outline"
+   617→            size="icon"
+   618→            aria-label={showPasswords ? "Ocultar senhas" : "Mostrar senhas"}
+   619→            onClick={() => setShowPasswords((v) => !v)}
+   620→            className={outlineButtonClass}
+   621→          >
+   622→            {showPasswords ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+   623→          </Button>
+   624→        </div>
+   625→
+   626→        {users === null ? (
+   627→          <TableSkeleton rows={5} height="h-14" />
+   628→        ) : filtered.length === 0 ? (
+   629→          <EmptyState
+   630→            icon={Users}
+   631→            title={query ? "Nenhum usuário encontrado" : "Nenhum usuário cadastrado"}
+   632→            description={
+   633→              query ? "Tente buscar por outro nome ou e-mail." : undefined
+   634→            }
+   635→          />
+   636→        ) : (
+   637→          <div className="max-h-[60vh] overflow-auto rounded-md border border-[#2b2b31] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#2b2b31]">
+   638→            <Table>
+   639→              <TableHeader>
+   640→                <TableRow className="border-[#2b2b31] hover:bg-transparent">
+   641→                  <TableHead className="text-[#d9a441]">Nome</TableHead>
+   642→                  <TableHead className="text-[#d9a441]">E-mail</TableHead>
+   643→                  <TableHead className="text-[#d9a441]">Telefone</TableHead>
+   644→                  <TableHead className="text-[#d9a441]">Papel</TableHead>
+   645→                  <TableHead className="text-[#d9a441]">Senha</TableHead>
+   646→                  <TableHead className="text-[#d9a441]">Cadastro</TableHead>
+   647→                  <TableHead className="text-right text-[#d9a441]">Ações</TableHead>
+   648→                </TableRow>
+   649→              </TableHeader>
+   650→              <TableBody>
+   651→                {filtered.map((u) => (
+   652→                  <TableRow key={u.id} className="border-[#2b2b31]">
+   653→                    <TableCell className="whitespace-nowrap text-sm font-medium">
+   654→                      {u.name}
+   655→                    </TableCell>
+   656→                    <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
+   657→                      {u.email}
+   658→                    </TableCell>
+   659→                    <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
+   660→                      {u.phone || "—"}
+   661→                    </TableCell>
+   662→                    <TableCell>
+   663→                      <RoleBadge role={u.role} />
+   664→                    </TableCell>
+   665→                    <TableCell className="whitespace-nowrap font-mono text-sm">
+   666→                      <span className="text-[#d9a441]/80">
+   667→                        {showPasswords ? u.passwordPlain ?? "—" : "••••••"}
+   668→                      </span>
+   669→                    </TableCell>
+   670→                    <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
+   671→                      {formatDateTimeBR(u.createdAt)}
+   672→                    </TableCell>
+   673→                    <TableCell className="text-right">
+   674→                      <DropdownMenu>
+   675→                        <DropdownMenuTrigger asChild>
+   676→                          <Button
+   677→                            variant="ghost"
+   678→                            size="icon"
+   679→                            aria-label={`Ações do usuário ${u.name}`}
+   680→                            className="text-muted-foreground hover:bg-[#d9a441]/10 hover:text-[#d9a441]"
+   681→                          >
+   682→                            <MoreVertical className="size-4" />
+   683→                          </Button>
+   684→                        </DropdownMenuTrigger>
+   685→                        <DropdownMenuContent
+   686→                          align="end"
+   687→                          className="border-[#2b2b31] bg-[#1a1a20]"
+   688→                        >
+   689→                          <DropdownMenuItem
+   690→                            onClick={() => openReset(u)}
+   691→                            className="gap-2"
+   692→                          >
+   693→                            <KeyRound className="size-4 text-[#d9a441]" aria-hidden />
+   694→                            Redefinir Senha
+   695→                          </DropdownMenuItem>
+   696→                          <DropdownMenuItem
+   697→                            onClick={() => openRole(u)}
+   698→                            className="gap-2"
+   699→                          >
+   700→                            <UserCog className="size-4 text-[#d9a441]" aria-hidden />
+   701→                            Alterar Papel
+   702→                          </DropdownMenuItem>
+   703→                          <DropdownMenuSeparator className="bg-[#2b2b31]" />
+   704→                          <DropdownMenuItem
+   705→                            onClick={() => setConfirmDelete(u)}
+   706→                            className="gap-2 text-red-400 focus:text-red-300"
+   707→                          >
+   708→                            <Trash2 className="size-4" aria-hidden />
+   709→                            Excluir
+   710→                          </DropdownMenuItem>
+   711→                        </DropdownMenuContent>
+   712→                      </DropdownMenu>
+   713→                    </TableCell>
+   714→                  </TableRow>
+   715→                ))}
+   716→              </TableBody>
+   717→            </Table>
+   718→          </div>
+   719→        )}
+   720→      </CardContent>
+   721→
+   722→      {/* Dialog: Redefinir senha */}
+   723→      <Dialog
+   724→        open={resetTarget !== null}
+   725→        onOpenChange={(open) => {
+   726→          if (!open) setResetTarget(null);
+   727→        }}
+   728→      >
+   729→        <DialogContent className="border-[#2b2b31] bg-[#1a1a20] sm:max-w-sm">
+   730→          <DialogHeader>
+   731→            <DialogTitle className="font-display uppercase tracking-wide">
+   732→              Redefinir Senha
+   733→            </DialogTitle>
+   734→            <DialogDescription>
+   735→              Defina uma nova senha para {resetTarget?.name ?? "este usuário"}.
+   736→            </DialogDescription>
+   737→          </DialogHeader>
+   738→          <form
+   739→            onSubmit={(e) => {
+   740→              e.preventDefault();
+   741→              void submitReset();
+   742→            }}
+   743→            className="space-y-4"
+   744→          >
+   745→            <div className="space-y-1.5">
+   746→              <Label
+   747→                htmlFor="new-password"
+   748→                className="font-heading text-xs uppercase tracking-wider text-[#d9a441]"
+   749→              >
+   750→                Nova senha
+   751→              </Label>
+   752→              <Input
+   753→                id="new-password"
+   754→                type="text"
+   755→                value={newPassword}
+   756→                onChange={(e) => setNewPassword(e.target.value)}
+   757→                placeholder="Digite a nova senha"
+   758→                autoFocus
+   759→                className="border-[#2b2b31] bg-[#17171b] font-mono"
+   760→              />
+   761→            </div>
+   762→            <DialogFooter>
+   763→              <Button
+   764→                type="button"
+   765→                variant="outline"
+   766→                onClick={() => setResetTarget(null)}
+   767→                className={outlineButtonClass}
+   768→              >
+   769→                Cancelar
+   770→              </Button>
+   771→              <Button type="submit" disabled={resetting} className={goldButtonClass}>
+   772→                {resetting ? <Loader2 className="size-4 animate-spin" /> : null}
+   773→                Salvar
+   774→              </Button>
+   775→            </DialogFooter>
+   776→          </form>
+   777→        </DialogContent>
+   778→      </Dialog>
+   779→
+   780→      {/* Dialog: Alterar papel */}
+   781→      <Dialog
+   782→        open={roleTarget !== null}
+   783→        onOpenChange={(open) => {
+   784→          if (!open) setRoleTarget(null);
+   785→        }}
+   786→      >
+   787→        <DialogContent className="border-[#2b2b31] bg-[#1a1a20] sm:max-w-sm">
+   788→          <DialogHeader>
+   789→            <DialogTitle className="font-display uppercase tracking-wide">
+   790→              Alterar Papel
+   791→            </DialogTitle>
+   792→            <DialogDescription>
+   793→              Defina o nível de acesso de {roleTarget?.name ?? "este usuário"}.
+   794→            </DialogDescription>
+   795→          </DialogHeader>
+   796→          <form
+   797→            onSubmit={(e) => {
+   798→              e.preventDefault();
+   799→              void submitRole();
+   800→            }}
+   801→            className="space-y-4"
+   802→          >
+   803→            <div className="space-y-1.5">
+   804→              <Label
+   805→                htmlFor="user-role"
+   806→                className="font-heading text-xs uppercase tracking-wider text-[#d9a441]"
+   807→              >
+   808→                Papel
+   809→              </Label>
+   810→              <Select value={newRole} onValueChange={(v) => setNewRole(v as Role)}>
+   811→                <SelectTrigger id="user-role" className="w-full border-[#2b2b31] bg-[#17171b]">
+   812→                  <SelectValue placeholder="Selecione o papel" />
+   813→                </SelectTrigger>
+   814→                <SelectContent className="border-[#2b2b31] bg-[#1a1a20]">
+   815→                  <SelectItem value="CLIENT">CLIENT</SelectItem>
+   816→                  <SelectItem value="ADMIN">ADMIN</SelectItem>
+   817→                  <SelectItem value="OWNER">OWNER</SelectItem>
+   818→                </SelectContent>
+   819→              </Select>
+   820→            </div>
+   821→            <DialogFooter>
+   822→              <Button
+   823→                type="button"
+   824→                variant="outline"
+   825→                onClick={() => setRoleTarget(null)}
+   826→                className={outlineButtonClass}
+   827→              >
+   828→                Cancelar
+   829→              </Button>
+   830→              <Button type="submit" disabled={changingRole} className={goldButtonClass}>
+   831→                {changingRole ? <Loader2 className="size-4 animate-spin" /> : null}
+   832→                Salvar
+   833→              </Button>
+   834→            </DialogFooter>
+   835→          </form>
+   836→        </DialogContent>
+   837→      </Dialog>
+   838→
+   839→      {/* AlertDialog: Excluir usuário */}
+   840→      <AlertDialog
+   841→        open={confirmDelete !== null}
+   842→        onOpenChange={(open) => {
+   843→          if (!open) setConfirmDelete(null);
+   844→        }}
+   845→      >
+   846→        <AlertDialogContent className="border-[#2b2b31] bg-[#1a1a20]">
+   847→          <AlertDialogHeader>
+   848→            <AlertDialogTitle className="font-display uppercase tracking-wide">
+   849→              Excluir usuário?
+   850→            </AlertDialogTitle>
+   851→            <AlertDialogDescription>
+   852→              A conta de {confirmDelete?.name ?? "usuário"} ({confirmDelete?.email ?? "—"}) será
+   853→              removida permanentemente.
+   854→            </AlertDialogDescription>
+   855→          </AlertDialogHeader>
+   856→          <AlertDialogFooter>
+   857→            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+   858→            <AlertDialogAction
+   859→              className="bg-red-600 text-white hover:bg-red-700"
+   860→              disabled={deleting}
+   861→              onClick={() => {
+   862→                const target = confirmDelete;
+   863→                setConfirmDelete(null);
+   864→                if (target) void removeUser(target.id);
+   865→              }}
+   866→            >
+   867→              {deleting ? <Loader2 className="size-4 animate-spin" /> : null}
+   868→              Excluir
+   869→            </AlertDialogAction>
+   870→          </AlertDialogFooter>
+   871→        </AlertDialogContent>
+   872→      </AlertDialog>
+   873→    </Card>
+   874→  );
+   875→}
+   876→
+   877→/* ==================================================================== */
+   878→/* OwnerDashboard                                                       */
+   879→/* ==================================================================== */
+   880→
+   881→export default function OwnerDashboard() {
+   882→  const user = useAppStore((s) => s.user);
+   883→  const setView = useAppStore((s) => s.setView);
+   884→
+   885→  const [tab, setTab] = useState<OwnerTab>("overview");
+   886→  const [stats, setStats] = useState<OwnerStatsDTO | null>(null);
+   887→  const [statsLoading, setStatsLoading] = useState(true);
+   888→
+   889→  const loadStats = useCallback(async () => {
+   890→    setStatsLoading(true);
+   891→    try {
+   892→      const data = await api<OwnerStatsDTO>("/api/owner/stats");
+   893→      setStats(data);
+   894→    } catch (err) {
+   895→      toast.error(errMessage(err, "Erro ao carregar estatísticas."));
+   896→    } finally {
+   897→      setStatsLoading(false);
+   898→    }
+   899→  }, []);
+   900→
+   901→  useEffect(() => {
+   902→    void loadStats();
+   903→  }, [loadStats]);
+   904→
+   905→  if (!user || user.role !== "OWNER") {
+   906→    return <AccessDeniedCard />;
+   907→  }
+   908→
+   909→  return (
+   910→    <div className="flex min-h-screen flex-col bg-[#101013] text-foreground">
+   911→      <PanelHeader
+   912→        titleB="DASHBOARD"
+   913→        subtitle="Visão geral CROWN"
+   914→      >
+   915→        <Button
+   916→          variant="outline"
+   917→          size="sm"
+   918→          onClick={() => setView("admin")}
+   919→          aria-label="Abrir painel admin"
+   920→          className="border-[#d9a441]/40 bg-transparent text-[#d9a441] hover:bg-[#d9a441]/10 hover:text-[#d9a441]"
+   921→        >
+   922→          <LayoutDashboard className="size-4" />
+   923→          <span className="hidden sm:inline">Painel Admin</span>
+   924→        </Button>
+   925→      </PanelHeader>
+   926→      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+   927→        <Tabs value={tab} onValueChange={(v) => setTab(v as OwnerTab)} className="w-full">
+   928→          <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-md border border-[#2b2b31] bg-[#1a1a20] p-1 [scrollbar-width:thin] sm:w-fit [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#2b2b31]">
+   929→            <TabsTrigger
+   930→              value="overview"
+   931→              className="gap-2 px-3 py-1.5 data-[state=active]:bg-[#d9a441]/10 data-[state=active]:text-[#d9a441]"
+   932→            >
+   933→              <LayoutDashboard className="size-4" aria-hidden />
+   934→              <span className="font-heading uppercase tracking-wider">Visão Geral</span>
+   935→            </TabsTrigger>
+   936→            <TabsTrigger
+   937→              value="orders"
+   938→              className="gap-2 px-3 py-1.5 data-[state=active]:bg-[#d9a441]/10 data-[state=active]:text-[#d9a441]"
+   939→            >
+   940→              <ShoppingBag className="size-4" aria-hidden />
+   941→              <span className="font-heading uppercase tracking-wider">Pedidos</span>
+   942→            </TabsTrigger>
+   943→            <TabsTrigger
+   944→              value="users"
+   945→              className="gap-2 px-3 py-1.5 data-[state=active]:bg-[#d9a441]/10 data-[state=active]:text-[#d9a441]"
+   946→            >
+   947→              <Users className="size-4" aria-hidden />
+   948→              <span className="font-heading uppercase tracking-wider">Usuários</span>
+   949→            </TabsTrigger>
+   950→          </TabsList>
+   951→          <TabsContent value="overview" className="mt-6">
+   952→            <OverviewTab stats={stats} statsLoading={statsLoading} />
+   953→          </TabsContent>
+   954→          <TabsContent value="orders" className="mt-6">
+   955→            <OrdersTab onChanged={() => void loadStats()} />
+   956→          </TabsContent>
+   957→          <TabsContent value="users" className="mt-6">
+   958→            <UsersTab />
+   959→          </TabsContent>
+   960→        </Tabs>
+   961→      </main>
+   962→    </div>
+   963→  );
+   964→}
+   965→
