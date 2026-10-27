@@ -101,7 +101,7 @@ async function main() {
     {
       name: 'Musculação',
       description:
-        'Musculação completa com área de força e cardio, professores na casa e acesso livre durante todo o funcionamento: Seg a Sex 5h às 22h • Sáb 8h às 16h • Dom 8h às 14h.',
+        'Musculação completa com área de força e cardio, professores na casa e acesso livre durante todo o funcionamento da academia.',
       imageUrl: '/img/real-interior.png',
       icon: 'Dumbbell',
       order: 1,
@@ -488,7 +488,7 @@ async function main() {
     ctaEyebrow: 'CROWN PINHAL-SP',
     ctaTitle: 'COMEÇA COM 7 DIAS GRÁTIS',
     ctaText:
-      'Novos alunos testam toda a estrutura das 5h às 16h. Agende sua aula experimental pelo WhatsApp ou pelo hub da CROWN — é rápido.',
+      'Novos alunos testam toda a estrutura com uma aula experimental. Agende pelo WhatsApp ou pelo hub da CROWN — é rápido.',
     // CONTATO E LOCALIZAÇÃO — registros oficiais
     address: 'Av. Washington Luís, 45 — Espírito Santo do Pinhal-SP',
     addressNote: 'A ~700m da Praça Nestor de Almeida Vergueiro • CEP 13990-000',

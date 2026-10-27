@@ -119,8 +119,15 @@ export default function Footer() {
               Funcionamento
             </h3>
             <p className="text-sm text-zinc-400 leading-relaxed">
-              {s.hoursText || "Musculação: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h"}
+              Aberto todos os dias da semana.
             </p>
+            <button
+              onClick={() => go("funcionamento")}
+              className="mt-2 inline-flex items-center gap-1.5 text-xs font-heading uppercase tracking-wider text-[#d9a441] hover:text-[#e7b95e] transition-colors cursor-pointer"
+            >
+              Ver horários completos
+              <span aria-hidden>↓</span>
+            </button>
             <div className="mt-6 flex flex-col gap-2">
               <a
                 href={beaconsUrl}

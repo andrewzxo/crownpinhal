@@ -455,3 +455,22 @@ Stage Summary:
 - Fotos da academia com moldura e brilho dourados que chamam atenção.
 - Horários de funcionamento com seção dedicada de alto destaque, selo ABERTO/FECHADO em tempo real e os horários reais em tipografia grande — o diferencial "aberto de 5h às 22h" agora é impossível de não ver.
 - Artefatos: next.config.ts (devIndicators:false), src/app/api/auth/google/status/route.ts (novo), AuthGate.tsx (GoogleButton inteligente), page.tsx (mensagem humana), Gallery.tsx + About.tsx (molduras), HoursBand.tsx (novo), SiteView.tsx (banda inserida).
+
+---
+Task ID: 22-r (redundância horário)
+Agent: Z.ai Code (main)
+Task: Corrigir redundância — horário de funcionamento repetido no site
+
+Work Log:
+- Mapeadas TODAS as ocorrências de hoursText/grade via grep + varredura DOM (TreeWalker): 4 pontos
+- About.tsx: card "Horários" do collage removido → novo card "Vibe CROWN" (Treino, quadras de areia e Arena Beach Bar), mantendo estilo clip-peak
+- Footer.tsx: coluna Funcionamento agora mostra "Aberto todos os dias da semana." + botão dourado "Ver horários completos ↓" (âncora #funcionamento)
+- CtaSection.tsx: fallback do ctaText sem "das 5h às 16h"; ctaText atualizado no DB e no seed.ts
+- Modality "Musculação" (DB + seed.ts): descrição sem a grade completa, agora "acesso livre durante todo o funcionamento da academia."
+- HoursBand mantido como ÚNICA fonte do horário (ênfase da Task 22③ preservada)
+
+Stage Summary:
+- Grade Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h aparece 1x no site (HoursBand, com selo ABERTO AGORA em tempo real)
+- Feature de plano "acesso livre durante todo o funcionamento" mantida (benefício comercial, não repete horários)
+- Verificado desktop 1280x800 + mobile 390x844 (About, HoursBand, Footer, Modalidades); botão do footer scrolla para #funcionamento (top=112)
+- Console sem erros; lint 0/0; seed.ts e DB sincronizados

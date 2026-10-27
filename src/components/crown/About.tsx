@@ -24,15 +24,6 @@ export default function About() {
   const titleParts = aboutTitle.split(". ");
   const lastPart = titleParts.pop() || aboutTitle;
   const prePart = titleParts.length ? titleParts.join(". ") + "." : "";
-  const hoursLines = (
-    settings?.hoursText || "MUSCULAÇÃO: Seg a Sex 5h-22h • Sáb 8h-16h • Dom 8h-14h"
-  )
-    .replace("MUSCULAÇÃO:", "")
-    .trim()
-    .split("•")
-    .map((h) => h.trim())
-    .filter(Boolean);
-
   return (
     <section id="sobre" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -101,15 +92,14 @@ export default function About() {
                 </div>
                 <div className="clip-peak bg-[#141418] border border-[#2b2b31] px-4 py-5 flex flex-col items-center justify-center text-center h-40 sm:h-48">
                   <p className="font-heading uppercase tracking-[0.25em] text-[10px] text-[#d9a441] mb-2">
-                    Horários
+                    Vibe CROWN
                   </p>
                   <p className="font-display uppercase text-base sm:text-lg leading-snug text-white">
-                    {hoursLines.map((line, i) => (
-                      <span key={line}>
-                        {i > 0 && <br />}
-                        {line}
-                      </span>
-                    ))}
+                    Treino, quadras
+                    <br />
+                    de areia e
+                    <br />
+                    Arena Beach Bar
                   </p>
                 </div>
               </div>

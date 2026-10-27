@@ -31,7 +31,7 @@ export default function CtaSection() {
           </h2>
           <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto">
             {settings?.ctaText ||
-              "Novos alunos testam toda a estrutura das 5h às 16h. Agende sua aula experimental pelo WhatsApp ou pelo hub da CROWN — é rápido."}
+              "Novos alunos testam toda a estrutura com uma aula experimental. Agende pelo WhatsApp ou pelo hub da CROWN — é rápido."}
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
