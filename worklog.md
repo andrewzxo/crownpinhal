@@ -354,3 +354,25 @@ Stage Summary:
 - Zero linhas douradas em zigue-zague no site; motivo visual de coroa agora existe apenas na própria logo da marca
 - Todos os títulos display (Anton) com leading 1.1 — nenhuma letra cobre outra em desktop nem mobile
 - CrownShapes.tsx removido do projeto; nenhuma regressão visual ou de console
+
+---
+Task ID: 19
+Agent: orchestrator (Z.ai Code)
+Task: (1) Consertar upload de imagens que "sempre dá erro" e aceitar fotos grandes; (2) seção "Acompanhe postagens diretamente do nosso Instagram" com a paleta do Instagram; (3) botão Google Maps "veja nossa fachada no maps"; (4) botões de WhatsApp com mensagem pronta por assunto ("tire suas dúvidas sobre o assunto com a CROWN")
+
+Work Log:
+- CAUSA RAIZ DO UPLOAD: o frontend (AdminPanel, 3 pontos) chamava POST /api/admin/upload, mas a rota NÃO EXISTIA (dev.log mostrava 404) — por isso "sempre dá erro"
+- NOVA ROTA src/app/api/admin/upload/route.ts: auth requireRole(ADMIN/OWNER), valida mime (JPG/PNG/WEBP/GIF/AVIF), LIMITE DE 10 MB (fotos modernas passam de 5 MB), salva em public/img/uploads/<timestamp>-<rand>.<ext> com mkdir recursive, retorna {url}; erros em pt-BR (413 com instrução de comprimir)
+- Pré-checagem de 10 MB também no cliente (lib/api.ts uploadImage) para feedback instantâneo
+- TESTES REAIS DO UPLOAD: curl 6MB → 201 + URL servida (GET 200); curl 11MB → 413 com mensagem; browser UI completa (login admin → Painel → Nova modalidade → arquivo de 6MB via input real) → toast "Imagem enviada com sucesso." + URL auto-preenchida; visitante no browser → 401 (auth protegida)
+- NOVO WhatsAppCTA.tsx: botão verde WhatsApp com mensagem pronta contextual; padrão "Tire suas dúvidas sobre {assunto} com a CROWN"; mensagem wa.me preenchida com o assunto clicado
+- 7 SEÇÕES com botão contextual: Modalidades (modalidades e os treinos), Coletivas (aulas coletivas), Horários (os horários), Empresas (planos corporativos — substituiu o link antigo em prosa; msg Wellhub/TotalPass), Planos (planos e valores), Estrutura/Galeria (a estrutura — msg de agendar visita), Eventos (os eventos)
+- NOVO SocialSection.tsx (id="redes", entre Eventos e CTA): card Instagram com GRADIENTE OFICIAL (radial #fdf497→#fd5949→#d6249f→#285AEB), cantos arredondados (design diferente do resto do site), título "ACOMPANHE POSTAGENS DIRETAMENTE DO NOSSO INSTAGRAM", botão branco "SEGUIR @crownpinhal" com texto em gradiente IG → instagram.com/crownpinhal; card Maps escuro com pin vermelho #EA4335, "VEJA NOSSA FACHADA NO MAPS", endereço real, botão "ABRIR NO GOOGLE MAPS" → mapsUrl do banco
+- SiteView: SocialSection inserida após Comunidade; SectionNav ganhou chip "REDES" entre Eventos e Contato
+- VERIFICAÇÃO BROWSER (desktop 1280x800 + mobile 390x844): todos os 9 links externos conferidos (IG, Maps, 7 wa.me com mensagens corretas); cards IG/Maps renderizando nos 2 viewports; botão WhatsApp legível no mobile; painel admin testado com upload real; console sem erros; lint 0/0; arquivos de teste removidos (uploads dir vazio)
+
+Stage Summary:
+- Upload de imagens FUNCIONANDO pela primeira vez (rota criada) e aceita até 10 MB
+- Instagram com identidade própria (paleta oficial) e Maps com CTA de fachada — seção Redes navegável pelo SectionNav
+- WhatsApp contextual em toda a página: cada assunto leva mensagem pronta diferente para o (19) 99150-4548
+- Nenhum dado inventado; mensagens seguem dados reais (Wellhub, TotalPass, visita, 7 dias grátis já existentes)

@@ -6,6 +6,7 @@ import { Crown, Hourglass, Info } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import type { PlanDTO } from "@/lib/types";
 import Reveal, { SectionTitle } from "./Reveal";
+import WhatsAppCTA from "./WhatsAppCTA";
 
 type CategoryKey = "todos" | "planos" | "club" | "dia";
 
@@ -235,6 +236,12 @@ export default function Plans() {
                 </div>
               ))}
             </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.3}>
+          <div className="mt-10 flex justify-center">
+            <WhatsAppCTA subject="os planos e valores" />
           </div>
         </Reveal>
       </div>

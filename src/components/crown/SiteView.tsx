@@ -11,6 +11,7 @@ import Empresas from "./Empresas";
 import Plans from "./Plans";
 import Gallery from "./Gallery";
 import Comunidade from "./Comunidade";
+import SocialSection from "./SocialSection";
 import CtaSection from "./CtaSection";
 import Footer from "./Footer";
 import WhatsAppFloat from "./WhatsAppFloat";
@@ -30,6 +31,7 @@ export default function SiteView() {
         <Plans />
         <Gallery />
         <Comunidade />
+        <SocialSection />
         <CtaSection />
       </main>
       <Footer />

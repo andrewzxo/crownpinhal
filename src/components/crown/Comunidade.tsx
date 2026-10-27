@@ -3,6 +3,7 @@
 import { ArrowUpRight, CalendarCheck, Target, Umbrella, type LucideIcon } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
+import WhatsAppCTA from "./WhatsAppCTA";
 
 type EventCard = {
   icon: LucideIcon;
@@ -112,6 +113,12 @@ export default function Comunidade() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={0.25}>
+          <div className="mt-10 flex justify-center">
+            <WhatsAppCTA subject="os eventos" />
+          </div>
+        </Reveal>
       </div>
     </section>
   );

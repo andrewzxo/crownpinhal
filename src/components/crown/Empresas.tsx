@@ -3,6 +3,7 @@
 import { Building2, Check, CreditCard, Users, type LucideIcon } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
+import WhatsAppCTA from "./WhatsAppCTA";
 
 type CorporateCard = {
   icon: LucideIcon;
@@ -12,14 +13,7 @@ type CorporateCard = {
   bullets: string[];
 };
 
-function waLink(phone: string, message: string) {
-  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-}
-
 export default function Empresas() {
-  const settings = useAppStore((s) => s.content?.settings);
-  const whatsapp = settings?.whatsapp || "5519991504548";
-
   const cards: CorporateCard[] = [
     {
       icon: Building2,
@@ -102,18 +96,12 @@ export default function Empresas() {
         </div>
 
         <Reveal delay={0.35}>
-          <p className="mt-12 text-sm text-muted-foreground text-center max-w-2xl mx-auto">
-            Funcionário de empresa conveniada?{' '}
-            <a
-              href={waLink(whatsapp, "Olá! Trabalho em uma empresa e quero saber mais sobre o Wellhub e o TotalPass na CROWN.")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#d9a441] underline underline-offset-4 hover:brightness-125 transition-all"
-            >
-              Fale com a recepção no WhatsApp
-            </a>
-            {' '}e leve a CROWN para a sua empresa.
-          </p>
+          <div className="mt-12 flex justify-center">
+            <WhatsAppCTA
+              subject="os planos corporativos"
+              message="Olá! Trabalho em uma empresa e quero saber mais sobre o Wellhub e o TotalPass na CROWN."
+            />
+          </div>
         </Reveal>
       </div>
     </section>

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
+import WhatsAppCTA from "./WhatsAppCTA";
 
 const COLETIVAS = ["CROWN DANCE", "BIKE", "JUMP", "PILATES"];
 
@@ -120,6 +121,12 @@ export default function Coletivas() {
             </motion.div>
           ))}
         </div>
+
+        <Reveal delay={0.2}>
+          <div className="mt-10 flex justify-center">
+            <WhatsAppCTA subject="as aulas coletivas" />
+          </div>
+        </Reveal>
       </div>
     </section>
   );

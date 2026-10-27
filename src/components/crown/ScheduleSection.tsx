@@ -6,6 +6,7 @@ import { CalendarDays, Clock, User } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
+import WhatsAppCTA from "./WhatsAppCTA";
 
 const DAYS = [
   { value: 1, label: "Seg", full: "Segunda-feira" },
@@ -123,6 +124,12 @@ export default function ScheduleSection() {
               </TabsContent>
             ))}
           </Tabs>
+        </Reveal>
+
+        <Reveal delay={0.2}>
+          <div className="mt-10 flex justify-center">
+            <WhatsAppCTA subject="os horários" />
+          </div>
         </Reveal>
         </div>
       </section>

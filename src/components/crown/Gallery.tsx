@@ -2,6 +2,7 @@
 
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
+import WhatsAppCTA from "./WhatsAppCTA";
 
 export default function Gallery() {
   const gallery = useAppStore((s) => s.content?.gallery) ?? [];
@@ -41,6 +42,15 @@ export default function Gallery() {
             ))}
           </div>
         )}
+
+        <Reveal delay={0.15}>
+          <div className="mt-12 flex justify-center">
+            <WhatsAppCTA
+              subject="a estrutura"
+              message="Olá! Vim pelo site e quero agendar uma visita para conhecer a estrutura da CROWN."
+            />
+          </div>
+        </Reveal>
       </div>
     </section>
   );

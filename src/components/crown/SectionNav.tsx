@@ -18,6 +18,7 @@ const AREAS = [
   { href: "planos", label: "Planos" },
   { href: "galeria", label: "Estrutura" },
   { href: "eventos", label: "Eventos" },
+  { href: "redes", label: "Redes" },
   { href: "contato", label: "Contato" },
 ];
 

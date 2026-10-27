@@ -20,6 +20,12 @@ export interface UploadResult {
 }
 
 export async function uploadImage(file: File): Promise<string> {
+  // Pré-checa no cliente: evita enviar 10 MB pra cima e falhar
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error(
+      "Imagem muito grande. O limite é 10 MB — comprima a foto e tente novamente."
+    );
+  }
   const form = new FormData();
   form.append("file", file);
   const res = await fetch("/api/admin/upload", { method: "POST", body: form });

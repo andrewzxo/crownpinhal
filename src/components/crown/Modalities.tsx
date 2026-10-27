@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import Reveal, { SectionTitle } from "./Reveal";
+import WhatsAppCTA from "./WhatsAppCTA";
 
 const ICONS: Record<string, LucideIcon> = {
   Dumbbell,
@@ -99,6 +100,12 @@ export default function Modalities() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={0.15}>
+          <div className="mt-10 flex justify-center">
+            <WhatsAppCTA subject="as modalidades e os treinos" />
+          </div>
+        </Reveal>
       </div>
     </section>
   );
