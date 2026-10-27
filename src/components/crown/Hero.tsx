@@ -53,7 +53,7 @@ export default function Hero() {
           </div>
 
           {/* Título */}
-          <h1 className="font-display uppercase leading-[0.95] whitespace-pre-line text-[clamp(3rem,9vw,7rem)]">
+          <h1 className="font-display uppercase leading-[1.1] whitespace-pre-line text-[clamp(2.6rem,8vw,6.2rem)]">
             {pre && <span className="text-white">{pre}</span>}
             <span className="text-gold-gradient">{heroHighlight}</span>
             {post && <span className="text-white">{post}</span>}

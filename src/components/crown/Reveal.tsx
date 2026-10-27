@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
-import { CrownGlyph } from "./CrownShapes";
 
 export default function Reveal({
   children,
@@ -55,16 +54,11 @@ export function SectionTitle({
         {eyebrow}
         <span className="w-8 h-px bg-zinc-600" />
       </p>
-      <h2 className="mt-4 font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[0.95]">
+      <h2 className="mt-4 font-display uppercase text-4xl sm:text-5xl lg:text-6xl leading-[1.1]">
         {pre}
         {highlight && <span className="text-[#d9a441]">{highlight}</span>}
         {post}
       </h2>
-      <CrownGlyph
-        className={`mt-5 w-16 h-4 text-[#d9a441] ${
-          align === "center" ? "mx-auto" : ""
-        }`}
-      />
       {subtitle && (
         <p className={`mt-4 text-muted-foreground max-w-2xl ${align === "center" ? "mx-auto" : ""}`}>
           {subtitle}

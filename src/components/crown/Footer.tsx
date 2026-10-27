@@ -2,7 +2,6 @@
 
 import { ArrowUpRight, Clock, ExternalLink, Instagram, MapPin, MessageCircle, Phone, Ticket } from "lucide-react";
 import { useAppStore } from "@/lib/store";
-import { CrownEdge } from "./CrownShapes";
 
 export default function Footer() {
   const settings = useAppStore((s) => s.content?.settings);
@@ -29,10 +28,6 @@ export default function Footer() {
 
   return (
     <>
-      {/* Picos de coroa coroando o rodapé (fundo = cor do CTA acima) */}
-      <div className="bg-[#101013]">
-        <CrownEdge fill="#0c0c0e" height={22} />
-      </div>
       <footer id="contato" className="relative mt-auto bg-[#0c0c0e] scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">

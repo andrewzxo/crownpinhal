@@ -336,3 +336,21 @@ Stage Summary:
 - Paleta final: base grafite escuro (#101013) em todo o site, dourado #d9a441 restrito a destaques, e cinza menos escuro (#1a1a21) apenas em 3 seções secundárias (Horários, Empresas, Eventos) — sem branco, exatamente como o cliente pediu
 - Hierarquia visual: áreas de marca e conteúdo principal escuras, áreas secundárias sutilmente mais claras para dar ritmo à leitura
 - Nenhum conteúdo alterado: só cores; todas as edições do admin continuam persistindo (seed não-destrutivo)
+
+---
+Task ID: 18
+Agent: orchestrator (Z.ai Code)
+Task: Corrigir sobreposição do título "CONECTANDO PESSOAS ATRAVÉS DO FITNESS" e remover as linhas douradas em zigue-zague espalhadas pelo site (pedido: "de um espaçamento no texto de um jeito que uma letra não cubra a outra, e remove essas linhas douradas que vc espalhou pelo site, estão feias")
+
+Work Log:
+- CAUSA RAIZ DO OVERLAP: fonte display Anton tem caixa alta quase preenchendo a em-box; leading-[0.95] (< 1.0) fazia linhas se sobreporem — o acento do "É" de "ATRAVÉS" era coberto pela linha de cima
+- LINE-HEIGHT 0.95 → 1.1 nos 4 títulos que usavam o mesmo padrão: Hero h1 (com clamp reduzido 3rem/9vw/7rem → 2.6rem/8vw/6.2rem para compensar a altura extra de 4 linhas), SectionTitle h2 (Reveal.tsx), Comunidade h3 (Crown Games), CtaSection h2 ("COMEÇA COM 7 DIAS GRÁTIS" — Ç/Á agora visíveis)
+- ZIGUE-ZAGUES REMOVIDOS (motivo "picos de coroa" reprovado pelo cliente): CrownGlyph do SectionTitle (aparecia sob TODOS os títulos de seção), CrownGlyph do AuthGate à esquerda (sob "12 modalidades."), CrownGlyph do card de acesso do AuthGate (acima de "ACESSO CROWN"), CrownEdge do divisor acima do Footer
+- src/components/crown/CrownShapes.tsx DELETADO (ficou sem nenhuma referência; grep confirmou zero usos restantes)
+- Espaço dos elementos vizinhos reequilibrado (mt-4→mt-6 no parágrafo do AuthGate onde o glifo foi removido)
+- VERIFICAÇÃO BROWSER (desktop 1280x800 + mobile 390x844): hero com "ATRAVÉS" 100% legível (line-height computado 1.10x em ambos os viewports), AuthGate limpo, títulos de Sobre/Modalidades/Planos sem glifo e legíveis, CTA com Ç/Á visíveis, transição CTA→Footer reta e limpa (sem divisor), planos mobile legíveis, console sem erros, dev.log limpo, lint 0/0
+
+Stage Summary:
+- Zero linhas douradas em zigue-zague no site; motivo visual de coroa agora existe apenas na própria logo da marca
+- Todos os títulos display (Anton) com leading 1.1 — nenhuma letra cobre outra em desktop nem mobile
+- CrownShapes.tsx removido do projeto; nenhuma regressão visual ou de console

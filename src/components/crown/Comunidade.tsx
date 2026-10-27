@@ -52,7 +52,7 @@ export default function Comunidade() {
                 <p className="font-heading uppercase tracking-[0.35em] text-xs text-zinc-400">
                   Competição regional
                 </p>
-                <h3 className="mt-4 font-display uppercase text-3xl sm:text-5xl leading-[0.95] text-white">
+                <h3 className="mt-4 font-display uppercase text-3xl sm:text-5xl leading-[1.1] text-white">
                   CROWN GAMES <span className="text-[#d9a441]">— EDIÇÃO PINHAL</span>
                 </h3>
                 <p className="mt-5 text-zinc-400 leading-relaxed max-w-md">

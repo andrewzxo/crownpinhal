@@ -22,7 +22,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { SessionUser } from "@/lib/types";
-import { CrownGlyph } from "./CrownShapes";
 
 const inputCls =
   "h-11 bg-[#141418] border-[#2b2b31] text-zinc-100 placeholder:text-zinc-500 focus-visible:ring-[#d9a441]/50 focus-visible:border-[#d9a441]/60 transition-all";
@@ -343,8 +342,7 @@ export default function AuthGate() {
             <br />
             7 <span className="text-[#d9a441]">dias por semana.</span>
           </h1>
-          <CrownGlyph className="mt-5 w-16 h-4 text-[#d9a441]" />
-          <p className="mt-4 text-zinc-400 leading-relaxed">
+          <p className="mt-6 text-zinc-400 leading-relaxed">
             Entre para acompanhar seus treinos, conhecer as modalidades e garantir seu plano.
           </p>
         </motion.div>
@@ -366,7 +364,6 @@ export default function AuthGate() {
 
           <div className="clip-blade border border-[#2b2b31] bg-[#17171b]/95 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
             <div className="text-center mb-6">
-              <CrownGlyph className="mx-auto w-14 h-4 text-[#d9a441] mb-4" />
               <p className="font-heading uppercase tracking-[0.3em] text-xs text-zinc-400">
                 Acesso CROWN
               </p>

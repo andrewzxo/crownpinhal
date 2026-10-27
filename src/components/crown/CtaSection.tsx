@@ -25,7 +25,7 @@ export default function CtaSection() {
           <p className="font-heading uppercase tracking-[0.3em] text-xs text-zinc-400 mb-6">
             {settings?.ctaEyebrow || "Aula experimental"}
           </p>
-          <h2 className="font-display uppercase text-5xl sm:text-7xl lg:text-8xl leading-[0.95]">
+          <h2 className="font-display uppercase text-5xl sm:text-7xl lg:text-8xl leading-[1.1]">
             {ctaPre && <span className="text-white">{ctaPre} </span>}
             <span className="text-[#d9a441]">{ctaLast}</span>
           </h2>
