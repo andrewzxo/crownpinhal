@@ -66,7 +66,7 @@ export default function Plans() {
   }
 
   return (
-    <section id="planos" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28 bg-zinc-100">
+    <section id="planos" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <SectionTitle
           eyebrow="Planos CROWN"
@@ -93,7 +93,7 @@ export default function Plans() {
                   className={`shrink-0 px-4 sm:px-5 py-2 font-heading uppercase tracking-wider text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
                     isActive
                       ? "bg-[#d9a441] text-black font-bold"
-                      : "bg-white border border-zinc-300 text-zinc-600 hover:text-zinc-900 hover:border-zinc-400"
+                      : "bg-[#17171b] border border-[#2b2b31] text-zinc-300 hover:text-white hover:border-[#3a3a42]"
                   }`}
                 >
                   {c.label}
@@ -116,7 +116,7 @@ export default function Plans() {
                 className={`relative h-full flex flex-col p-4 sm:p-6 transition-all duration-300 ${
                   p.highlighted
                     ? "border border-[#d9a441]/70 bg-zinc-900 text-white"
-                    : "border border-zinc-200 bg-white shadow-sm hover:border-zinc-300"
+                    : "border border-[#2b2b31] bg-[#17171b] hover:border-[#3a3a42]"
                 }`}
               >
                 {/* Badge no fluxo do card — nunca cortado */}
@@ -125,7 +125,7 @@ export default function Plans() {
                     className={`self-start mb-3 px-2.5 py-1 font-heading uppercase tracking-widest text-[10px] sm:text-xs font-bold ${
                       p.highlighted
                         ? "bg-[#d9a441] text-black"
-                        : "bg-zinc-100 border border-zinc-200 text-zinc-600"
+                        : "bg-[#1b1b20] border border-[#2b2b31] text-zinc-400"
                     }`}
                   >
                     {p.badge}
@@ -133,7 +133,7 @@ export default function Plans() {
                 )}
 
                 <h3 className={`font-display uppercase text-lg sm:text-2xl tracking-wide leading-tight ${
-                  p.highlighted ? "text-white" : "text-zinc-900"
+                  p.highlighted ? "text-white" : "text-zinc-100"
                 }`}>
                   {p.name}
                 </h3>
@@ -154,7 +154,7 @@ export default function Plans() {
                           {opt.label}
                         </span>
                         <span className={`font-display text-lg sm:text-xl whitespace-nowrap ${
-                          p.highlighted ? "text-[#d9a441]" : "text-[#a87421]"
+                          p.highlighted ? "text-[#d9a441]" : "text-[#d9a441]"
                         }`}>
                           {brl(opt.price)}
                         </span>
@@ -162,7 +162,7 @@ export default function Plans() {
                     ))
                   ) : p.price !== null ? (
                     <p className={`font-display text-2xl sm:text-4xl ${
-                      p.highlighted ? "text-[#d9a441]" : "text-[#a87421]"
+                      p.highlighted ? "text-[#d9a441]" : "text-[#d9a441]"
                     }`}>
                       {brl(p.price)}
                       {p.period && (
@@ -189,7 +189,7 @@ export default function Plans() {
                   className={`mt-auto w-full h-10 sm:h-12 font-heading uppercase tracking-wider font-bold text-[11px] sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2 ${
                     p.highlighted
                       ? "bg-[#d9a441] hover:brightness-110 text-black"
-                      : "bg-zinc-900 text-white hover:bg-zinc-800"
+                      : "bg-[#1b1b20] border border-[#2b2b31] text-zinc-100 hover:border-[#d9a441]/60 hover:text-[#d9a441]"
                   }`}
                 >
                   <Crown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -201,34 +201,34 @@ export default function Plans() {
         </div>
 
         {visible.length === 0 && (
-          <div className="mt-12 border border-dashed border-zinc-300 p-12 text-center text-muted-foreground">
+          <div className="mt-12 border border-dashed border-[#3a3a42] p-12 text-center text-muted-foreground">
             Nenhum plano nesta categoria no momento.
           </div>
         )}
 
         <Reveal delay={0.2}>
           <p className="mt-8 text-center text-xs sm:text-sm text-muted-foreground flex items-center justify-center gap-2">
-            <Info className="w-4 h-4 text-[#a87421] shrink-0" />
+            <Info className="w-4 h-4 text-[#d9a441] shrink-0" />
             Ao assinar, o dono da academia recebe seu pedido e entra em contato para finalizar.
           </p>
         </Reveal>
 
         {/* Descontos oficiais + estacionamento grátis */}
         <Reveal delay={0.25}>
-          <div className="mt-12 border border-zinc-200 bg-white shadow-sm">
-            <div className="bg-zinc-900 border-b border-zinc-900 px-6 py-4 flex items-center justify-center">
+          <div className="mt-12 border border-[#2b2b31] bg-[#17171b]">
+            <div className="bg-[#141418] border-b border-[#2b2b31] px-6 py-4 flex items-center justify-center">
               <h3 className="font-display uppercase text-xl sm:text-2xl tracking-wide text-white">
                 Descontos e <span className="text-[#d9a441]">vantagens</span>
               </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-zinc-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#2b2b31]">
               {convenios.map((c) => (
-                <div key={c.name} className="bg-white px-5 py-6 text-center hover:bg-zinc-50 transition-colors">
-                  <p className="font-heading uppercase tracking-wider text-xs sm:text-sm font-semibold text-zinc-900">
+                <div key={c.name} className="bg-[#17171b] px-5 py-6 text-center hover:bg-[#1b1b20] transition-colors">
+                  <p className="font-heading uppercase tracking-wider text-xs sm:text-sm font-semibold text-zinc-100">
                     {c.name}
                   </p>
                   {c.detail && (
-                    <p className="mt-1.5 font-heading uppercase tracking-wider text-xs text-[#a87421] font-semibold">
+                    <p className="mt-1.5 font-heading uppercase tracking-wider text-xs text-[#d9a441] font-semibold">
                       {c.detail}
                     </p>
                   )}

@@ -34,7 +34,7 @@ export default function Comunidade() {
   ];
 
   return (
-    <section id="eventos" className="relative py-24 sm:py-32 scroll-mt-28 bg-zinc-100">
+    <section id="eventos" className="relative py-24 sm:py-32 scroll-mt-28 bg-[#1a1a21] border-y border-[#23232a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="Comunidade & eventos"
@@ -45,7 +45,7 @@ export default function Comunidade() {
 
         {/* Card destaque — CROWN GAMES */}
         <Reveal delay={0.15}>
-          <div className="mt-16 relative clip-blade border border-[#d9a441]/60 bg-zinc-900">
+          <div className="mt-16 relative clip-blade border border-[#d9a441]/60 bg-[#101013]">
             <div className="clip-blade grid lg:grid-cols-2 overflow-hidden">
               {/* Texto */}
               <div className="relative p-6 sm:p-12">
@@ -87,8 +87,8 @@ export default function Comunidade() {
                   alt="Atletas treinando na CROWN para o Crown Games"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-zinc-900 via-zinc-900/30 to-transparent hidden lg:block" />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent lg:hidden" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#101013] via-[#101013]/30 to-transparent hidden lg:block" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101013] via-transparent to-transparent lg:hidden" />
               </div>
             </div>
           </div>
@@ -98,11 +98,11 @@ export default function Comunidade() {
         <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
           {cards.map((card, i) => (
             <Reveal key={card.title} delay={0.1 + i * 0.1}>
-              <article className="h-full clip-blade border border-zinc-200 bg-white shadow-sm p-4 sm:p-7 flex flex-col hover:border-zinc-300 transition-all duration-300">
-                <span className="w-11 h-12 bg-zinc-900 border border-zinc-900 flex items-center justify-center shrink-0">
+              <article className="h-full clip-blade border border-[#2b2b31] bg-[#212129] p-4 sm:p-7 flex flex-col hover:border-[#3a3a42] transition-all duration-300">
+                <span className="w-11 h-12 bg-[#101013] border border-[#2b2b31] flex items-center justify-center shrink-0">
                   <card.icon className="w-5 h-5 text-[#d9a441]" />
                 </span>
-                <h4 className="mt-3.5 sm:mt-5 font-display uppercase text-base sm:text-xl tracking-wide text-zinc-900">
+                <h4 className="mt-3.5 sm:mt-5 font-display uppercase text-base sm:text-xl tracking-wide text-zinc-100">
                   {card.title}
                 </h4>
                 <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed flex-1">

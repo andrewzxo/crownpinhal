@@ -35,7 +35,7 @@ export default function About() {
     .filter(Boolean);
 
   return (
-    <section id="sobre" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28 bg-white">
+    <section id="sobre" className="relative py-24 sm:py-32 overflow-hidden scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Texto */}
@@ -54,11 +54,11 @@ export default function About() {
             </Reveal>
 
             {/* Stats */}
-            <div className="mt-10 grid grid-cols-2 gap-px bg-zinc-200 border border-zinc-200">
+            <div className="mt-10 grid grid-cols-2 gap-px bg-[#2b2b31] border border-[#2b2b31]">
               {stats.map((st, i) => (
-                <Reveal key={st.label} delay={0.1 + i * 0.08} className="bg-white">
-                  <div className="group p-5 hover:bg-zinc-50 transition-colors duration-300 h-full">
-                    <span className="w-11 h-11 mb-3 flex items-center justify-center bg-zinc-900 border border-zinc-900">
+                <Reveal key={st.label} delay={0.1 + i * 0.08} className="bg-[#17171b]">
+                  <div className="group p-5 hover:bg-[#1b1b20] transition-colors duration-300 h-full">
+                    <span className="w-11 h-11 mb-3 flex items-center justify-center bg-[#101013] border border-[#2b2b31]">
                       <st.icon className="w-5 h-5 text-[#d9a441]" />
                     </span>
                     <p className="font-display text-3xl sm:text-4xl text-foreground">
@@ -85,7 +85,7 @@ export default function About() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
                 </div>
-                <div className="relative overflow-hidden border border-zinc-200 group">
+                <div className="relative overflow-hidden border border-[#2b2b31] group">
                   <img
                     src={imgs[1]}
                     alt="Área de treino da CROWN"
@@ -95,7 +95,7 @@ export default function About() {
                 </div>
               </div>
               <div className="pt-12 space-y-4">
-                <div className="relative overflow-hidden border border-zinc-200 group">
+                <div className="relative overflow-hidden border border-[#2b2b31] group">
                   <img
                     src={imgs[2]}
                     alt="Sala de musculação da CROWN"
@@ -103,7 +103,7 @@ export default function About() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
                 </div>
-                <div className="clip-peak bg-zinc-900 border border-zinc-900 px-4 py-5 flex flex-col items-center justify-center text-center h-40 sm:h-48">
+                <div className="clip-peak bg-[#141418] border border-[#2b2b31] px-4 py-5 flex flex-col items-center justify-center text-center h-40 sm:h-48">
                   <Clock className="w-8 h-8 mb-2 shrink-0 text-[#d9a441]" />
                   <p className="font-display uppercase text-base sm:text-lg leading-snug text-white">
                     {hoursLines.map((line, i) => (

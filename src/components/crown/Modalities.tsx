@@ -38,7 +38,7 @@ export default function Modalities() {
   const setContentFallback = !modalities.length;
 
   return (
-    <section id="modalidades" className="relative py-24 sm:py-32 scroll-mt-28 bg-zinc-100">
+    <section id="modalidades" className="relative py-24 sm:py-32 scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionTitle
           eyebrow="O que treinar"
@@ -57,7 +57,7 @@ export default function Modalities() {
               <motion.article
                 whileHover={{ y: -6 }}
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className="group relative h-60 sm:h-80 overflow-hidden clip-blade bg-white border border-zinc-200 cursor-pointer"
+                className="group relative h-60 sm:h-80 overflow-hidden clip-blade bg-[#17171b] border border-[#2b2b31] cursor-pointer"
                 onClick={() =>
                   document.getElementById("horarios")?.scrollIntoView({ behavior: "smooth" })
                 }
@@ -70,7 +70,7 @@ export default function Modalities() {
                     className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-zinc-200 to-zinc-400" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#1b1b20] to-[#3a3a42]" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#101013] via-[#101013]/40 to-transparent" />
 

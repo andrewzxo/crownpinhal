@@ -124,7 +124,7 @@ function RoleBadge({ role }: { role: Role }) {
   }
   if (role === "ADMIN") {
     return (
-      <Badge variant="outline" className="border-zinc-300 text-zinc-600">
+      <Badge variant="outline" className="border-[#3a3a42] text-zinc-400">
         ADMIN
       </Badge>
     );
@@ -193,7 +193,7 @@ function OverviewTab({ stats, statsLoading }: OverviewTabProps) {
             <Card
               key={kpi.key}
               className={cn(
-                "gap-2 border-[#e4e4e7] bg-card py-4",
+                "gap-2 border-[#2b2b31] bg-card py-4",
                 highlighted && "border-[#d9a441]/50"
               )}
             >
@@ -206,7 +206,7 @@ function OverviewTab({ stats, statsLoading }: OverviewTabProps) {
                   <span className="truncate">{kpi.label}</span>
                 </p>
                 {statsLoading || value == null ? (
-                  <Skeleton className="mt-2 h-9 w-16 bg-[#f4f4f5]" />
+                  <Skeleton className="mt-2 h-9 w-16 bg-[#1a1a20]" />
                 ) : (
                   <p
                     className={cn(
@@ -224,7 +224,7 @@ function OverviewTab({ stats, statsLoading }: OverviewTabProps) {
       </div>
 
       {/* Últimos pedidos */}
-      <Card className="gap-4 border-[#e4e4e7] bg-card py-4">
+      <Card className="gap-4 border-[#2b2b31] bg-card py-4">
         <CardHeader className="px-4 [.border-b]:pb-0">
           <CardTitle className="font-display text-lg uppercase tracking-wide">
             Últimos Pedidos
@@ -241,7 +241,7 @@ function OverviewTab({ stats, statsLoading }: OverviewTabProps) {
               description="Os pedidos de assinatura aparecerão aqui."
             />
           ) : (
-            <ul className="divide-y divide-[#fafafa]">
+            <ul className="divide-y divide-[#101013]">
               {recent.map((s) => (
                 <li
                   key={s.id}
@@ -329,7 +329,7 @@ function OrdersTab({ onChanged }: { onChanged: () => void }) {
   }
 
   return (
-    <Card className="gap-4 border-[#e4e4e7] bg-card py-4">
+    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
       <CardHeader className="px-4 [.border-b]:pb-0">
         <CardTitle className="font-display text-lg uppercase tracking-wide">Pedidos</CardTitle>
         <CardDescription>
@@ -346,10 +346,10 @@ function OrdersTab({ onChanged }: { onChanged: () => void }) {
             description="Quando um cliente assinar um plano, o pedido aparecerá aqui."
           />
         ) : (
-          <div className="max-h-[60vh] overflow-auto rounded-md border border-[#e4e4e7] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#e4e4e7]">
+          <div className="max-h-[60vh] overflow-auto rounded-md border border-[#2b2b31] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#2b2b31]">
             <Table>
               <TableHeader>
-                <TableRow className="border-[#e4e4e7] hover:bg-transparent">
+                <TableRow className="border-[#2b2b31] hover:bg-transparent">
                   <TableHead className="text-[#d9a441]">Data</TableHead>
                   <TableHead className="text-[#d9a441]">Cliente</TableHead>
                   <TableHead className="text-[#d9a441]">Plano</TableHead>
@@ -360,7 +360,7 @@ function OrdersTab({ onChanged }: { onChanged: () => void }) {
               </TableHeader>
               <TableBody>
                 {items.map((s) => (
-                  <TableRow key={s.id} className="border-[#e4e4e7]">
+                  <TableRow key={s.id} className="border-[#2b2b31]">
                     <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
                       {formatDateTimeBR(s.createdAt)}
                     </TableCell>
@@ -401,7 +401,7 @@ function OrdersTab({ onChanged }: { onChanged: () => void }) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                           align="end"
-                          className="border-[#e4e4e7] bg-[#f4f4f5]"
+                          className="border-[#2b2b31] bg-[#1a1a20]"
                         >
                           <DropdownMenuItem
                             onClick={() => void setStatus(s.id, "ACTIVE")}
@@ -424,7 +424,7 @@ function OrdersTab({ onChanged }: { onChanged: () => void }) {
                             <Ban className="size-4 text-red-400" aria-hidden />
                             Cancelar
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator className="bg-[#e4e4e7]" />
+                          <DropdownMenuSeparator className="bg-[#2b2b31]" />
                           <DropdownMenuItem
                             onClick={() => setConfirmDelete(s)}
                             className="gap-2 text-red-400 focus:text-red-300"
@@ -449,7 +449,7 @@ function OrdersTab({ onChanged }: { onChanged: () => void }) {
           if (!open) setConfirmDelete(null);
         }}
       >
-        <AlertDialogContent className="border-[#e4e4e7] bg-[#f4f4f5]">
+        <AlertDialogContent className="border-[#2b2b31] bg-[#1a1a20]">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-display uppercase tracking-wide">
               Excluir pedido?
@@ -590,7 +590,7 @@ function UsersTab() {
   }
 
   return (
-    <Card className="gap-4 border-[#e4e4e7] bg-card py-4">
+    <Card className="gap-4 border-[#2b2b31] bg-card py-4">
       <CardHeader className="px-4 [.border-b]:pb-0">
         <CardTitle className="font-display text-lg uppercase tracking-wide">Usuários</CardTitle>
         <CardDescription>
@@ -609,7 +609,7 @@ function UsersTab() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar por nome ou e-mail..."
               aria-label="Buscar usuários por nome ou e-mail"
-              className="border-[#e4e4e7] bg-[#ffffff] pl-9"
+              className="border-[#2b2b31] bg-[#17171b] pl-9"
             />
           </div>
           <Button
@@ -634,10 +634,10 @@ function UsersTab() {
             }
           />
         ) : (
-          <div className="max-h-[60vh] overflow-auto rounded-md border border-[#e4e4e7] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#e4e4e7]">
+          <div className="max-h-[60vh] overflow-auto rounded-md border border-[#2b2b31] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#2b2b31]">
             <Table>
               <TableHeader>
-                <TableRow className="border-[#e4e4e7] hover:bg-transparent">
+                <TableRow className="border-[#2b2b31] hover:bg-transparent">
                   <TableHead className="text-[#d9a441]">Nome</TableHead>
                   <TableHead className="text-[#d9a441]">E-mail</TableHead>
                   <TableHead className="text-[#d9a441]">Telefone</TableHead>
@@ -649,7 +649,7 @@ function UsersTab() {
               </TableHeader>
               <TableBody>
                 {filtered.map((u) => (
-                  <TableRow key={u.id} className="border-[#e4e4e7]">
+                  <TableRow key={u.id} className="border-[#2b2b31]">
                     <TableCell className="whitespace-nowrap text-sm font-medium">
                       {u.name}
                     </TableCell>
@@ -684,7 +684,7 @@ function UsersTab() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                           align="end"
-                          className="border-[#e4e4e7] bg-[#f4f4f5]"
+                          className="border-[#2b2b31] bg-[#1a1a20]"
                         >
                           <DropdownMenuItem
                             onClick={() => openReset(u)}
@@ -700,7 +700,7 @@ function UsersTab() {
                             <UserCog className="size-4 text-[#d9a441]" aria-hidden />
                             Alterar Papel
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator className="bg-[#e4e4e7]" />
+                          <DropdownMenuSeparator className="bg-[#2b2b31]" />
                           <DropdownMenuItem
                             onClick={() => setConfirmDelete(u)}
                             className="gap-2 text-red-400 focus:text-red-300"
@@ -726,7 +726,7 @@ function UsersTab() {
           if (!open) setResetTarget(null);
         }}
       >
-        <DialogContent className="border-[#e4e4e7] bg-[#f4f4f5] sm:max-w-sm">
+        <DialogContent className="border-[#2b2b31] bg-[#1a1a20] sm:max-w-sm">
           <DialogHeader>
             <DialogTitle className="font-display uppercase tracking-wide">
               Redefinir Senha
@@ -756,7 +756,7 @@ function UsersTab() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Digite a nova senha"
                 autoFocus
-                className="border-[#e4e4e7] bg-[#ffffff] font-mono"
+                className="border-[#2b2b31] bg-[#17171b] font-mono"
               />
             </div>
             <DialogFooter>
@@ -784,7 +784,7 @@ function UsersTab() {
           if (!open) setRoleTarget(null);
         }}
       >
-        <DialogContent className="border-[#e4e4e7] bg-[#f4f4f5] sm:max-w-sm">
+        <DialogContent className="border-[#2b2b31] bg-[#1a1a20] sm:max-w-sm">
           <DialogHeader>
             <DialogTitle className="font-display uppercase tracking-wide">
               Alterar Papel
@@ -808,10 +808,10 @@ function UsersTab() {
                 Papel
               </Label>
               <Select value={newRole} onValueChange={(v) => setNewRole(v as Role)}>
-                <SelectTrigger id="user-role" className="w-full border-[#e4e4e7] bg-[#ffffff]">
+                <SelectTrigger id="user-role" className="w-full border-[#2b2b31] bg-[#17171b]">
                   <SelectValue placeholder="Selecione o papel" />
                 </SelectTrigger>
-                <SelectContent className="border-[#e4e4e7] bg-[#f4f4f5]">
+                <SelectContent className="border-[#2b2b31] bg-[#1a1a20]">
                   <SelectItem value="CLIENT">CLIENT</SelectItem>
                   <SelectItem value="ADMIN">ADMIN</SelectItem>
                   <SelectItem value="OWNER">OWNER</SelectItem>
@@ -843,7 +843,7 @@ function UsersTab() {
           if (!open) setConfirmDelete(null);
         }}
       >
-        <AlertDialogContent className="border-[#e4e4e7] bg-[#f4f4f5]">
+        <AlertDialogContent className="border-[#2b2b31] bg-[#1a1a20]">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-display uppercase tracking-wide">
               Excluir usuário?
@@ -907,7 +907,7 @@ export default function OwnerDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#fafafa] text-foreground">
+    <div className="flex min-h-screen flex-col bg-[#101013] text-foreground">
       <PanelHeader
         titleB="DASHBOARD"
         subtitle="Visão geral CROWN"
@@ -925,7 +925,7 @@ export default function OwnerDashboard() {
       </PanelHeader>
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
         <Tabs value={tab} onValueChange={(v) => setTab(v as OwnerTab)} className="w-full">
-          <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-md border border-[#e4e4e7] bg-[#f4f4f5] p-1 [scrollbar-width:thin] sm:w-fit [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#e4e4e7]">
+          <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-md border border-[#2b2b31] bg-[#1a1a20] p-1 [scrollbar-width:thin] sm:w-fit [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#2b2b31]">
             <TabsTrigger
               value="overview"
               className="gap-2 px-3 py-1.5 data-[state=active]:bg-[#d9a441]/10 data-[state=active]:text-[#d9a441]"

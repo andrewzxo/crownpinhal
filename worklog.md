@@ -316,3 +316,23 @@ Stage Summary:
 - Contraste WCAG calibrado (#a87421 sobre claro, #d9a441 sobre escuro); zero texto escuro sobre fundo escuro restante
 - Bonus: heroimage quebrada (URL assinada expirada) corrigida para /img/hero.jpg
 - seed continua não-destrutivo; todas as edições do admin persistem no banco
+
+---
+Task ID: 17
+Agent: orchestrator (Z.ai Code)
+Task: Refinar paleta após feedback — remover o branco, voltar à base escura e usar um cinza menos escuro em apenas ALGUMAS partes do site (pedido: "não gostei do branco, faça um cinza menos escuro apenas, e só algumas partes, não em todo o site")
+
+Work Log:
+- BASE ESCURA RESTAURADA (globals.css): vars :root voltaram ao tema escuro — --background #101013 (grafite), --foreground #f4f4f5, --card #17171b, --popover #141418, --muted/accent #1b1b20, --muted-foreground #a1a1aa, --border/--input #2b2b31; scrollbar escuro (track #141418, thumb #3a3a42); comentário da paleta atualizado
+- layout.tsx: classe "dark" re-adicionada ao <html> (variantes dark: do shadcn ativas de novo, como no estado verificado do Task 16)
+- CINZA MENOS ESCURO EM SÓ 3 SEÇÕES (bg-[#1a1a21] + border-y #23232a): HORÁRIOS, EMPRESAS e EVENTOS (Comunidade) — faixas de cinza perceptíveis contra a base #101013; cartões dessas seções em #212129 com hover #26262e; confirmado via getComputedStyle: sobre/modalidades/coletivas/planos/galeria = transparente (base), horarios/empresas/eventos = rgb(26,26,33)
+- SEÇÕES IMPORTANTES NA BASE ESCURA: Sobre, Modalidades, Coletivas, Planos, Galeria sem bg próprio
+- REVERSÃO DOS CARDS BRANCOS → dark: About (stats #17171b com chips #101013/#2b2b31, colagem com bordas #2b2b31, bloco clip-peak #141418), Modalities (cards #17171b/#2b2b31, fallback gradiente #1b1b20→#3a3a42), Coletivas (cartões dia #17171b com cabeçalho #141418, horários dourados #d9a441, benefícios #17171b), ScheduleSection (TabsList #212129, chips de hora #101013, cards #212129), Empresas (Wellhub #141418 com borda dourada, demais #212129), Plans (botões categoria/cards/badge/descontos #17171b e #1b1b20, botão secundário com borda hover dourada), Gallery (frames #17171b), Comunidade (Crown Games #101013 com borda dourada + gradientes #101013, cards #212129)
+- DOURADO UNIFICADO #d9a441: todos os text-[#a87421] (dourado escuro p/ fundo claro) viraram #d9a441 — Plans (preços, Info, detalhes de desconto), Empresas (checks/links), Coletivas (horários), ScheduleSection (aba hoje, hover), SectionTitle (palavra destacada); linhas divisoras dos eyebrows bg-zinc-300 → zinc-600
+- ADMIN/OWNER REVERTIDOS AO ESCURO via sed: #e4e4e7→#2b2b31, #f4f4f5→#1a1a20, #ffffff→#17171b, #fafafa→#101013, #d4d4d8→#3a3a42, badge border-zinc-300/text-zinc-600→#3a3a42/zinc-400 (AdminPanel, OwnerDashboard, panel-shared)
+- VERIFICAÇÃO BROWSER (desktop 1280x800 + mobile 390x844): AuthGate escuro com Google; hero escuro com foto real; Sobre/Modalidades/Coletivas/Planos/Galeria escuros; faixas cinza visíveis em Horários/Empresas/Eventos; badges e tabela de preços intactos; mobile 2 cards/fileira; footer escuro com CNPJ; login admin + dono testados — Painel Admin e Dashboard do Dono 100% escuros e legíveis; console limpo (só HMR/DevTools); dev.log sem erros; lint 0/0
+
+Stage Summary:
+- Paleta final: base grafite escuro (#101013) em todo o site, dourado #d9a441 restrito a destaques, e cinza menos escuro (#1a1a21) apenas em 3 seções secundárias (Horários, Empresas, Eventos) — sem branco, exatamente como o cliente pediu
+- Hierarquia visual: áreas de marca e conteúdo principal escuras, áreas secundárias sutilmente mais claras para dar ritmo à leitura
+- Nenhum conteúdo alterado: só cores; todas as edições do admin continuam persistindo (seed não-destrutivo)
