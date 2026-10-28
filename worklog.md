@@ -509,3 +509,21 @@ Stage Summary:
 - Hero estável com a foto real da CROWN GYM (logo na parede) — nunca mais some (URL local, sem expiração).
 - Upload do painel voltou a funcionar e aceita até 50MB.
 - Artefatos: public/img/hero.jpg (nova), DB settings.heroImageUrl, prisma/seed.ts, src/app/api/admin/upload/route.ts (recriada), src/lib/api.ts, src/components/crown/Hero.tsx.
+
+---
+Task ID: 24-b
+Agent: Z.ai Code (sessão atual)
+Task: Continuação do Task 24 — segunda causa do flicker da hero (imagem em cache) + validação do lote de fotos; orientação de deploy Render (pergunta do usuário).
+
+Work Log:
+- Diagnóstico: com a raiz original já resolvida (CDN expirada → /img/hero.jpg local), restava um segundo bug: o portão (AuthGate) usa a MESMA hero.jpg de fundo; ao entrar no site, a foto já está em cache e o evento onLoad não dispara → heroLocked ficava false → hero presa em opacity-0 ("aparece e some").
+- Hero.tsx: ref callback confere img.complete && naturalWidth > 0 (pega imagem em cache), removido key={heroSrc} (evita remontagem), adicionado loading="eager" + fetchPriority="high"; uma vez carregada, nunca mais esconde.
+- Confirmado no código: limite de upload já é 50MB (server route + client pre-check em api.ts) — pedido "10→50" já atendido; galeria é ilimitada.
+- BÔNUS: aba Galeria do admin ganhou "Enviar em lote (até 50)" — input multiple que envia até 50 fotos de uma vez com progresso "Enviando x/y" e criação automática de cada imagem.
+- Teste E2E do lote via browser: 3 PNGs injetados no input → 7→10 imagens na galeria; depois as 3 de teste foram excluídas por ID (200×3) e arquivos físicos removidos (galeria final: 7).
+- Verificação da hero: reload → opacity 0→1 e permanece 1 após 5s+; fluxo portão→visitante → opacity já nasce "1"; mobile 390x844 ok; console sem erros; lint limpo.
+
+Stage Summary:
+- Hero agora à prova de flicker em TODOS os cenários (rede lenta, cache, portão→site, troca de src pelo admin).
+- Upload: 50MB/foto (já existente) + lote de até 50 fotos por vez (novo).
+- Usuário migrou o deploy para Render — orientado: única env obrigatória DATABASE_URL (sem API keys externas); Build bun install + prisma generate/db push/seed + next build standalone; Start bun run start.
