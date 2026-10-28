@@ -9,6 +9,29 @@ const nextConfig: NextConfig = {
     "/**": ["./node_modules/.prisma/client/**", "./node_modules/@prisma/client/**"],
   },
   /* config options here */
+  // Cache longo das imagens: visitas de retorno carregam do disco, não da rede
+  async headers() {
+    return [
+      {
+        source: "/img/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      {
+        source: "/logo.png",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+    ];
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

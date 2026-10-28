@@ -37,6 +37,8 @@ export default function Footer() {
           <img
             src="/logo.png"
             alt="Logo CROWN Academia"
+            loading="lazy"
+            decoding="async"
             className="h-16 w-auto mb-5"
           />
             <p className="text-sm text-zinc-400 leading-relaxed">

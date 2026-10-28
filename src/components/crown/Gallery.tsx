@@ -31,6 +31,8 @@ export default function Gallery() {
                   <img
                     src={g.url}
                     alt={g.title || "Foto da estrutura da academia CROWN"}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   {/* Brilho dourado interno sutil — moldura viva */}

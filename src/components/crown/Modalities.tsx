@@ -39,6 +39,8 @@ export default function Modalities() {
                   <img
                     src={m.imageUrl}
                     alt={`Modalidade ${m.name}`}
+                    loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                   />
                 ) : (

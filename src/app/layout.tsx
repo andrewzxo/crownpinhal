@@ -39,6 +39,9 @@ export default function RootLayout({
       <body
         className={`${anton.variable} ${oswald.variable} ${inter.variable} antialiased bg-background text-foreground`}
       >
+        {/* React 19 move estes links para o <head>: a hero baixa junto com o HTML */}
+        <link rel="preload" as="image" href="/img/hero.jpg" fetchPriority="high" />
+        <link rel="preload" as="image" href="/logo.png" />
         {children}
         <Toaster position="top-center" richColors />
       </body>

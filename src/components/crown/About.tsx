@@ -68,6 +68,8 @@ export default function About() {
                   <img
                     src={imgs[0]}
                     alt="Recepção da academia CROWN"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-64 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
@@ -76,6 +78,8 @@ export default function About() {
                   <img
                     src={imgs[1]}
                     alt="Área de treino da CROWN"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />
@@ -86,6 +90,8 @@ export default function About() {
                   <img
                     src={imgs[2]}
                     alt="Sala de musculação da CROWN"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-56 sm:h-64 object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#101013]/70 to-transparent" />

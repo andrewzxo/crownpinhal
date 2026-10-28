@@ -80,6 +80,8 @@ export default function Comunidade() {
                 <img
                   src="/img/cross.jpg"
                   alt="Atletas treinando na CROWN para o Crown Games"
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#101013] via-[#101013]/30 to-transparent hidden lg:block" />

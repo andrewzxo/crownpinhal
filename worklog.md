@@ -543,3 +543,18 @@ Work Log:
 Stage Summary:
 - Build da Render agora sobrevive aos 2 cenários de falha (cliente não gerado / env ausente).
 - Usuário precisa apenas: DATABASE_URL no painel da Render + Build/Start commands corretos + redeploy.
+
+---
+Task ID: 26
+Agent: Z.ai Code (sessão atual)
+Task: Bug "volta pra página e demora/trava" + carregamento mais fluido do site e imagens.
+
+Work Log:
+- Investigado código: único setInterval é o relógio da HoursBand (60s, benigno); SectionNav usa RAF com cancelamento e cleanup corretos; sem websockets no site; imagens já leves (110-160KB). Nenhum congelamento em código — causa real do sintoma: cold start do plano free da Render (serviço hiberna após ~15min; 1ª visita demora 30-60s e F5 resolve).
+- Otimizações aplicadas: (1) preload de /img/hero.jpg (fetchPriority high) e /logo.png no layout — React 19 faz hoisting para <head>; (2) Cache-Control público (max-age=86400 + stale-while-revalidate=604800) para /img/:path* e /logo.png no next.config — visitas de retorno carregam do disco; (3) loading=lazy + decoding=async nas imagens abaixo da dobra: Galeria, Modalidades, About (3), Comunidade e logo do Footer.
+- Verificações: lint exit 0; curl confirma Cache-Control na resposta; preload links presentes no <head>; hero opacity=1 imediata (regressão do fix 24-b não ocorreu); scroll até a galeria → 5/5 imagens lazy carregadas, 0 falhas; console sem erros.
+- Nota: mudança no next.config reinicia o dev server automaticamente (transitório no preview).
+
+Stage Summary:
+- Site mais rápido na 1ª visita (hero baixa junto com o HTML, menos imagens concorrentes) e muito mais rápido nas visitas de retorno (cache de disco).
+- Pendência com usuário: URL onrender.com para ativar keep-alive (cron ping a cada 10min) contra hibernação do plano free — ou upgrade do plano.
