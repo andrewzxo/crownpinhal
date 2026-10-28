@@ -15,7 +15,10 @@ export default function Hero() {
   const whatsapp = s.whatsapp || "5519991504548";
   const waMessage = s.whatsappMsg || "Olá! Quero agendar meus 7 dias grátis na CROWN.";
   const waLink = `https://wa.me/${whatsapp}?text=${encodeURIComponent(waMessage)}`;
-  // Faz a imagem entrar com fade: nunca "pisca" nem some durante o carregamento
+  // Fade de entrada sem "piscar": o portão de acesso usa a MESMA foto de
+  // fundo, então quando o site monta ela já está no cache do navegador e o
+  // evento onLoad não dispara mais — por isso o ref confere img.complete.
+  // Depois de carregada, a imagem nunca volta a se esconder.
   const [heroLoaded, setHeroLoaded] = useState(false);
   const heroSrc = s.heroImageUrl || "/img/hero.jpg";
 
@@ -29,9 +32,14 @@ export default function Hero() {
     <section id="inicio" className="relative min-h-[92vh] flex items-center overflow-hidden scroll-mt-28">
       {/* Fundo */}
       <motion.img
-        key={heroSrc}
         src={heroSrc}
         alt="Interior da academia CROWN"
+        loading="eager"
+        fetchPriority="high"
+        ref={(el) => {
+          // Foto já em cache: complete=true antes do React registrar o onLoad
+          if (el && el.complete && el.naturalWidth > 0) setHeroLoaded(true);
+        }}
         onLoad={() => setHeroLoaded(true)}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
           heroLoaded ? "opacity-100" : "opacity-0"

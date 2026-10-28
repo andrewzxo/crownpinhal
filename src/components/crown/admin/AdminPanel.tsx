@@ -1269,6 +1269,8 @@ function GalleryTab() {
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [form, setForm] = useState({ url: "", title: "", order: 0 });
   const fileRef = useRef<HTMLInputElement>(null);
+  const batchRef = useRef<HTMLInputElement>(null);
+  const [batch, setBatch] = useState<{ done: number; total: number } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -1302,6 +1304,34 @@ function GalleryTab() {
     } finally {
       setUploading(false);
     }
+  }
+
+  /** Envia várias fotos de uma vez — até 50 por lote. */
+  async function handleBatch(files: FileList | null) {
+    if (!files || files.length === 0 || batch) return;
+    const list = Array.from(files).slice(0, 50);
+    setBatch({ done: 0, total: list.length });
+    let ok = 0;
+    for (let i = 0; i < list.length; i++) {
+      try {
+        const url = await uploadImage(list[i]);
+        await api("/api/admin/gallery", {
+          method: "POST",
+          body: JSON.stringify({ url, title: null, order: items.length + i }),
+        });
+        ok += 1;
+      } catch {
+        /* foto individual falhou — segue o lote */
+      }
+      setBatch({ done: i + 1, total: list.length });
+    }
+    setBatch(null);
+    toast.success(
+      ok === list.length
+        ? `${ok} fotos adicionadas à galeria.`
+        : `${ok} de ${list.length} fotos adicionadas — verifique as que faltaram.`
+    );
+    await Promise.all([load(), refreshContent()]);
   }
 
   async function save() {
@@ -1363,10 +1393,40 @@ function GalleryTab() {
           <CardTitle className="font-display text-lg uppercase tracking-wide">Galeria</CardTitle>
           <CardDescription>Imagens exibidas na seção de galeria do site.</CardDescription>
         </div>
-        <Button onClick={openCreate} className={goldButtonClass} aria-label="Adicionar imagem">
-          <Plus className="size-4" />
-          Adicionar Imagem
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            ref={batchRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              const files = e.target.files;
+              if (files && files.length > 0) void handleBatch(files);
+              e.target.value = "";
+            }}
+          />
+          <Button
+            variant="outline"
+            disabled={batch !== null}
+            onClick={() => batchRef.current?.click()}
+            className={outlineButtonClass}
+            aria-label="Enviar várias fotos de uma vez"
+          >
+            {batch ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Images className="size-4" />
+            )}
+            {batch
+              ? `Enviando ${batch.done}/${batch.total}...`
+              : "Enviar em lote (até 50)"}
+          </Button>
+          <Button onClick={openCreate} className={goldButtonClass} aria-label="Adicionar imagem">
+            <Plus className="size-4" />
+            Adicionar Imagem
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="px-4">
         {loading ? (
