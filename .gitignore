@@ -55,3 +55,6 @@ server.log
 # banco e segredos fora do git
 db/*.db
 db/*.db-journal
+
+# Uploads do painel admin (dados de runtime, nao vao pro git)
+public/img/uploads/
