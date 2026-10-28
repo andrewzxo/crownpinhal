@@ -475,7 +475,7 @@ async function main() {
     heroHighlight: 'FITNESS',
     heroSubtitle:
       'Um espaço completo para o seu Fitness & Lifestyle: treino, saúde e convivência no coração de Pinhal.',
-    heroImageUrl: '/img/hero-crown.png',
+    heroImageUrl: '/img/hero.jpg',
     // SOBRE A VIBE CROWN — conceito real: "Um espaço completo para o seu Fitness & Lifestyle. Conectando pessoas através do fitness."
     aboutTitle: 'MAIS QUE UMA ACADEMIA. SEU FITNESS & LIFESTYLE.',
     aboutText:
