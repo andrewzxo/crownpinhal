@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Permite build de verificação em pasta separada (não interfere no dev)
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+  // Garante que o engine do Prisma entre no build standalone (deploy Render)
+  outputFileTracingIncludes: {
+    "/**": ["./node_modules/.prisma/client/**", "./node_modules/@prisma/client/**"],
+  },
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,

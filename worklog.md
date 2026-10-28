@@ -527,3 +527,19 @@ Stage Summary:
 - Hero agora à prova de flicker em TODOS os cenários (rede lenta, cache, portão→site, troca de src pelo admin).
 - Upload: 50MB/foto (já existente) + lote de até 50 fotos por vez (novo).
 - Usuário migrou o deploy para Render — orientado: única env obrigatória DATABASE_URL (sem API keys externas); Build bun install + prisma generate/db push/seed + next build standalone; Start bun run start.
+
+---
+Task ID: 25
+Agent: Z.ai Code (sessão atual)
+Task: Corrigir falha de build na Render ("Failed to collect page data for /api/admin/modalities/[id]").
+
+Work Log:
+- Diagnóstico: db.ts instancia new PrismaClient() em escopo de módulo; no build da Render, sem prisma generate ou sem DATABASE_URL, o construtor lança erro ao avaliar a primeira rota de API — exatamente o erro relatado.
+- FIX 1 (src/lib/db.ts): datasourceUrl com fallback process.env.DATABASE_URL || 'file:./db/custom.db'; removido log: ['query'] (ruído em produção).
+- FIX 2 (package.json): postinstall "prisma generate" — cliente sempre gerado em qualquer bun install.
+- FIX 3 (next.config.ts): outputFileTracingIncludes para .prisma/@prisma (engine no standalone) + distDir override via NEXT_DIST_DIR p/ build de verificação sem mexer no dev.
+- Validação: build completo (next build) SEM DATABASE_URL passou; libquery_engine-debian-openssl-3.0.x.so.node presente no standalone; dev server 200; lint exit 0 (após remover pasta de build de teste).
+
+Stage Summary:
+- Build da Render agora sobrevive aos 2 cenários de falha (cliente não gerado / env ausente).
+- Usuário precisa apenas: DATABASE_URL no painel da Render + Build/Start commands corretos + redeploy.
