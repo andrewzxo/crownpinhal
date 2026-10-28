@@ -491,3 +491,21 @@ Stage Summary:
 - Agora o portão de acesso exibe os 3 acessos com login de 1 clique; senhas podem ser trocadas pelo dono no painel (Usuários → Redefinir Senha, já existente do Task 20).
 - Artefatos: src/components/crown/AuthGate.tsx (DEMO_ACCOUNTS + DemoAccounts + loginFormRef/requestSubmit).
 - Antes de ir ao ar: remover a caixa demo ou redefinir as senhas (flag para o dono).
+
+---
+Task ID: 24 (hero bugada + upload 50MB)
+Agent: Z.ai Code (main)
+Task: Hero "aparece e some"; subir limite de upload para 50MB; trocar hero pela foto enviada.
+
+Work Log:
+- CAUSA RAIZ da hero: settings.heroImageUrl no banco apontava para CDN externo com assinatura expirável (flow-content.google ... Expires=...) — quando expirava, a imagem 404ava e sumia.
+- FIX: foto nova do usuário (upload/pasted_image_1793147917887.png, 1376x768) convertida p/ JPG 82 (168KB) → public/img/hero.jpg; banco e seed.ts agora apontam /img/hero.jpg (local permanente, mesmo caminho do fallback → src nunca muda).
+- Hero.tsx: fade-in de 1s no onLoad (opacity 0→100) — carregamento suave, sem "pop".
+- UPLOAD: rota /api/admin/upload tinha sido APAGADA por acidente (commit 616549b) — 404; recriada com limite 50MB (server) + api.ts 50MB (cliente); testado com curl: 2MB→201 {url}, 51MB→413 mensagem amigável.
+- Push no GitHub (andrewzxo/crownpinhal) para deploy Cloudflare.
+- Verificado: 3 reloads seguidos com hero visível (opacity 1, complete, src estável); desktop + mobile 390x844 ok; console limpo; lint 0/0.
+
+Stage Summary:
+- Hero estável com a foto real da CROWN GYM (logo na parede) — nunca mais some (URL local, sem expiração).
+- Upload do painel voltou a funcionar e aceita até 50MB.
+- Artefatos: public/img/hero.jpg (nova), DB settings.heroImageUrl, prisma/seed.ts, src/app/api/admin/upload/route.ts (recriada), src/lib/api.ts, src/components/crown/Hero.tsx.
