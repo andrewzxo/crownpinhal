@@ -1,7 +1,8 @@
-import { PrismaClient } from '@prisma/client'
+import { createDb } from '../src/lib/db'
 import crypto from 'crypto'
 
-const prisma = new PrismaClient()
+// Usa a mesma factory do site: file: local ou Turso (libsql://) via adapter
+const prisma = createDb()
 
 function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString('hex')

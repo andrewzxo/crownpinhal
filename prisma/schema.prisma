@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "sqlite" // local/CLI; produção (Turso) via driver adapter em src/lib/db.ts
   url      = env("DATABASE_URL")
 }
 
@@ -91,6 +91,16 @@ model Subscription {
 model Setting {
   key   String @id
   value String
+}
+
+/// Imagens enviadas pelo painel admin, gravadas no banco (funciona na
+/// Vercel/Render, onde não há disco gravável) e servidas via /api/media/[id].
+model Media {
+  id        String   @id @default(cuid())
+  mime      String
+  size      Int
+  bytes     Bytes
+  createdAt DateTime @default(now())
 }
 
 /// Registro de cada login realizado no site (e-mail, Google ou cadastro).

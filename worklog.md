@@ -558,3 +558,24 @@ Work Log:
 Stage Summary:
 - Site mais rápido na 1ª visita (hero baixa junto com o HTML, menos imagens concorrentes) e muito mais rápido nas visitas de retorno (cache de disco).
 - Pendência com usuário: URL onrender.com para ativar keep-alive (cron ping a cada 10min) contra hibernação do plano free — ou upgrade do plano.
+
+---
+Task ID: 27
+Agent: Z.ai Code (sessão atual)
+Task: Preparar deploy na Vercel + banco de dados na nuvem (Turso), imagem no banco, recuperação de dados.
+
+Work Log:
+- DECISÃO: Vercel não tem disco gravável → SQLite local inviável lá. Solução: Turso (libSQL cloud, grátis) como banco único p/ Vercel E Render (dados compartilhados), via driver adapter do Prisma.
+- schema.prisma: tentativa provider "libsql" falhou (P1012, não existe no Prisma 6) → mantido "sqlite" + runtime adapter @prisma/adapter-libsql@6.19.3 (v7.10.1 era incompatível com client 6 → API mudou: v6=PrismaLibSQL{url,authToken} factory).
+- src/lib/db.ts: createDb() exportada — file:→engine padrão; libsql://→adapter PrismaLibSQL + DATABASE_AUTH_TOKEN. Seed refatorado p/ usar a mesma factory.
+- Tabela Media (id, mime, size, bytes) — upload do painel AGORA grava no banco e serve via /api/media/[id] (cache immutable). Funciona na Vercel (sem disco) e persiste na Render (antigo public/img/uploads morria no redeploy).
+- src/lib/api.ts: recompressão no navegador (fotos >3.5MB → JPEG 2200px/85%) — qualquer foto de celular cabe no limite de 4MB do banco.
+- ROTA upload APAGADA DE NOVO por processo automático da sandbox (commit ca20398, 2ª vez) — recriada como versão DB-backed.
+- DESASTRE+E: processo da sandbox ZEROU db/custom.db e apagou public/img/uploads (2 fotos do usuário perdidas). RECUPERADO via seed (28 settings, 3 usuários, 12 modalidades, 13 planos, 7 galeria) — apenas as 2 fotos enviadas pelo usuário precisarão re-upload.
+- Testes: adapter OK contra arquivo local (mesmo código da Vercel); E2E upload→/api/media (201→200 image/png immutable); /api/content JSON; site 200; lint 0.
+- scripts/setup-turso.ts: cria schema (prisma migrate diff --script → executeMultiple) + seed no Turso quando o usuário criar o banco.
+
+Stage Summary:
+- Código 100% pronto p/ Vercel: basta DATABASE_URL (libsql://…?authToken=…) na Vercel + import do repo.
+- Render e Vercel passarão a compartilhar O MESMO banco (admin edita num, aparece nos dois).
+- Pendências: usuário criar Turso + enviar URL/token → rodar scripts/setup-turso.ts + apontar Render/Vercel.
