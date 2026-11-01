@@ -579,3 +579,20 @@ Stage Summary:
 - Código 100% pronto p/ Vercel: basta DATABASE_URL (libsql://…?authToken=…) na Vercel + import do repo.
 - Render e Vercel passarão a compartilhar O MESMO banco (admin edita num, aparece nos dois).
 - Pendências: usuário criar Turso + enviar URL/token → rodar scripts/setup-turso.ts + apontar Render/Vercel.
+
+---
+Task ID: 27-b
+Agent: Z.ai Code (sessão atual)
+Task: Validar o caminho EXATO da Vercel (build com libsql:// setado) e entregar o passo a passo final ao usuário (mesmo fluxo do projeto "Design de Site de Agendamento").
+
+Work Log:
+- Estado confirmado: commit 952d2c8 (Turso pronto) já está em origin/main — código pronto para import na Vercel.
+- Teste do adapter: PrismaLibSQL v6 + PrismaClient({ adapter }) → construção e query executadas com sucesso (sem previewFeatures — driver adapters GA nessa versão). Exatamente o código que roda na Vercel com DATABASE_URL=libsql://.
+- Build simulando Vercel: NEXT_DIST_DIR=.next-build DATABASE_URL=libsql://… DATABASE_AUTH_TOKEN=… next build → PASSOU (sem "Failed to collect page data", o mesmo erro que a Render teve antes do fix 25).
+- Lint exit 0; dev server 200 (/ e /api/content); .next-build removida.
+- ALERTA antecipado: se a Render apontar para o Turso, o comando de build `bunx prisma db push` FALHARÁ (provider sqlite + URL libsql://) → build da Render deve virar `bun install && bun run build` (schema já existe no Turso via setup-turso.ts).
+- Passo a passo entregue ao usuário (4 etapas: Turso → setup script → Vercel import + envs → opcional Render no mesmo banco).
+
+Stage Summary:
+- Zero bloqueio de código: falta só o usuário criar o banco no Turso e importar o repo na Vercel com as 2 envs.
+- Aguardando do usuário: DATABASE_URL (libsql://…) + DATABASE_AUTH_TOKEN do Turso para rodar scripts/setup-turso.ts (schema + seed); URL da Render ainda pendente p/ keep-alive.
