@@ -28,12 +28,20 @@ async function main() {
     { encoding: "utf8", cwd: process.cwd() }
   );
 
-  // 2. Cria todas as tabelas no Turso
-  await client.executeMultiple(sql);
-  console.log("✓ Schema criado no Turso");
+  // 2. Cria as tabelas (IDEMPOTENTE: injeta IF NOT EXISTS para poder
+  //    re-executar o script sem quebrar nas tabelas já existentes)
+  const idempotentSql = sql
+    .replace(/CREATE TABLE (?!IF NOT EXISTS)/g, "CREATE TABLE IF NOT EXISTS ")
+    .replace(/CREATE UNIQUE INDEX (?!IF NOT EXISTS)/g, "CREATE UNIQUE INDEX IF NOT EXISTS ")
+    .replace(/CREATE INDEX (?!IF NOT EXISTS)/g, "CREATE INDEX IF NOT EXISTS ");
+  await client.executeMultiple(idempotentSql);
+  console.log("✓ Schema verificado/criado no Turso");
 
   // 3. Seed não-destrutivo (usuários demo, modalidades, planos, galeria, settings)
-  await import("../prisma/seed");
+  //    IMPORTANTE: await no main() exportado — sem isso o process.exit(0) abaixo
+  //    matava as escritas HTTP ao Turso no meio (bug do seed vazio).
+  const seed = await import("../prisma/seed");
+  await seed.main();
   console.log("✓ Seed concluído (conteúdo inicial no Turso)");
 
   process.exit(0);

@@ -596,3 +596,21 @@ Work Log:
 Stage Summary:
 - Zero bloqueio de código: falta só o usuário criar o banco no Turso e importar o repo na Vercel com as 2 envs.
 - Aguardando do usuário: DATABASE_URL (libsql://…) + DATABASE_AUTH_TOKEN do Turso para rodar scripts/setup-turso.ts (schema + seed); URL da Render ainda pendente p/ keep-alive.
+
+---
+Task ID: 27-c
+Agent: Z.ai Code (sessão atual)
+Task: Etapa 2 do deploy — usuário criou o Turso e enviou URL+token; rodar setup-turso.ts e popular o banco.
+
+Work Log:
+- 1ª rodada do setup: schema criado no Turso ✓, mas seed chegou VAZIO (0 registros). CAUSA RAIZ: prisma/seed.ts chamava main() sem exportar/await; setup-turso.ts fazia process.exit(0) logo após await import(...) — o exit matava as escritas HTTP assíncronas ao Turso antes de concluírem (no arquivo local o seed parecia funcionar por ser instantâneo).
+- FIX seed.ts: main() exportada + guarda import.meta.main para execução direta (bun prisma/seed.ts da Render continua igual).
+- FIX setup-turso.ts: await seed.main() explícito + SQL idempotente (CREATE TABLE/INDEX IF NOT EXISTS via replace no script do migrate diff) — script agora é re-executável; nota: client.execute() não aceita múltiplos statements e o diff --script não usa marcador statement-breakpoint.
+- Resultado no Turso (verificado via createDb()/adapter, mesmo código da Vercel): settings:28 users:3 modalities:12 plans:13 gallery:7 schedules:47; dono@crown.com com hash scrypt de crown123 validado; CROSS com 37 horários; probe de escrita/remoção OK.
+- Sanity: lint 0; bun prisma/seed.ts direto segue funcionando (não-destrutivo); dev server 200 + /api/content servindo dados.
+- Commit + push.
+
+Stage Summary:
+- BANCO PRONTO: crownpinhal-andrewzxo.aws-sa-east-1.turso.io populado e validado. Nada mais a executar contra o Turso nesta etapa.
+- Token enviado pelo usuário expira em 24h (exp-iat=86400) — orientar a gerar token SEM expiração no painel (Database → Tokens) para as envs da Vercel, senão o site cai amanhã.
+- Restante com o usuário: import do repo na Vercel com DATABASE_URL + DATABASE_AUTH_TOKEN (não expirável).

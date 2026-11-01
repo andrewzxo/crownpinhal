@@ -58,7 +58,9 @@ function buildSchedules(times: Record<number, string[]>, instructor?: string) {
   )
 }
 
-async function main() {
+// Exportada para scripts/setup-turso.ts poder aguardar TODAS as escritas
+// terminarem antes de encerrar o processo (evita seed abortado pela rede).
+export async function main() {
   // ---------- Usuários ----------
   await prisma.user.upsert({
     where: { email: 'dono@crown.com' },
@@ -516,9 +518,13 @@ async function main() {
   console.log('Seed concluído!')
 }
 
-main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
-  .finally(() => prisma.$disconnect())
+// Execução direta (bun prisma/seed.ts / prisma CLI / build da Render).
+// Quando importado como módulo, quem chama é responsável por await main().
+if (import.meta.main) {
+  main()
+    .catch((e) => {
+      console.error(e)
+      process.exit(1)
+    })
+    .finally(() => prisma.$disconnect())
+}
