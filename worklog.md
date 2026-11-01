@@ -614,3 +614,21 @@ Stage Summary:
 - BANCO PRONTO: crownpinhal-andrewzxo.aws-sa-east-1.turso.io populado e validado. Nada mais a executar contra o Turso nesta etapa.
 - Token enviado pelo usuário expira em 24h (exp-iat=86400) — orientar a gerar token SEM expiração no painel (Database → Tokens) para as envs da Vercel, senão o site cai amanhã.
 - Restante com o usuário: import do repo na Vercel com DATABASE_URL + DATABASE_AUTH_TOKEN (não expirável).
+
+---
+Task ID: 27-d
+Agent: Z.ai Code (sessão atual)
+Task: Verificação do site no ar na Vercel + remover bloco "Acessos de demonstração" do portão.
+
+Work Log:
+- Usuário confirmou que env vars NÃO estavam adicionadas ("No Environment Variables Added") → orientado passo a passo (Settings → Environment Variables → 2 vars sem aspas → Redeploy obrigatório).
+- Usuário aplicou; /api/content na Vercel passou a responder: settings:28 modalidades:12 planos:13 galeria:7 — TURSO CONECTADO EM PRODUÇÃO.
+- Diagnóstico prévio (quando API falhava): 500 instantâneo (0.26-0.48s) = sem tentativa de rede = fallback file:. Reprodução do runtime Vercel local (standalone + Node + Turso real) funcionou → provou que era só config de env.
+- Usuário pediu para REMOVER o bloco "Acessos de demonstração" (senhas visíveis publicamente). AuthGate.tsx: componente DemoAccounts + DEMO_ACCOUNTS apagados, uso no AuthForm removido, loginFormRef/useRef/ChevronDown órfãos limpos (-80 linhas).
+- Validações: lint 0; local — portão sem o bloco + login manual dono@crown.com → site entra; Vercel ao vivo — HTML sem "demonstra", portão limpo, login real na Vercel OK (nav completa aparece), sem erros de página.
+- Commit 5b02408 → redeploy automático da Vercel verificado no ar.
+
+Stage Summary:
+- SITE NO AR E 100% OPERACIONAL: https://crownpinhal.vercel.app (Vercel) + banco Turso sa-east-1 compartilhável.
+- Contas demo continuam no banco (dono/admin/cliente) mas sem exposição de senhas na UI — recomendo ao dono trocar as senhas no painel (Usuários → Redefinir Senha).
+- Pendências: URL da Render (keep-alive); opcional apontar Render pro mesmo Turso (build sem prisma db push).
