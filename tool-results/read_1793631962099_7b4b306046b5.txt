@@ -1,0 +1,933 @@
+     1→You are given a task to integrate an existing React component in the codebase
+     2→
+     3→The codebase should support:
+     4→- shadcn project structure  
+     5→- Tailwind CSS
+     6→- Typescript
+     7→
+     8→If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+     9→
+    10→Determine the default path for components and styles. 
+    11→If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+    12→Copy-paste this component to /components/ui folder:
+    13→```tsx
+    14→duotone-team-roster.tsx
+    15→"use client"
+    16→
+    17→import * as React from "react"
+    18→
+    19→/*
+    20→ * Duotone Team Roster: a "meet the people" section. A heavy display headline
+    21→ * sits bottom-left on a burning colour field; beside it, the team hangs in
+    22→ * tall columns of portraits that drift slowly in opposite directions. Every
+    23→ * photo is pushed through one tritone (shadow, midtone, highlight) built from
+    24→ * the palette, so a roster shot on ten different phones reads as one set.
+    25→ *
+    26→ * The signature: point at, tab to or tap a portrait and it lifts out of the
+    27→ * wall, colour bleeds back into it, the rest of the wall sinks into the field,
+    28→ * and its small craft chip unfolds into a card with the name, role, one line
+    29→ * and a link. The columns hold still while you read.
+    30→ *
+    31→ * Content, photos, open roles, colours (four presets or your own), column
+    32→ * count, drift speed, type and height are all props. Below ~700px the columns
+    33→ * become one drifting strip above the headline. Reduced motion keeps the
+    34→ * columns staggered and still. A pause button stops the drift at any time.
+    35→ */
+    36→
+    37→export type RosterPreset = "ember" | "cobalt" | "moss" | "mono"
+    38→
+    39→export type RosterPalette = {
+    40→  /** Darkest colour: the edges of the field and the chips. */
+    41→  ground: string
+    42→  /** The field between the edge and the glow. */
+    43→  deep: string
+    44→  /** The hot centre of the field, and the tritone midtone. */
+    45→  hot: string
+    46→  /** The brightest light in the field. */
+    47→  glow: string
+    48→  /** Headline, chip text and the CTA fill. */
+    49→  ink: string
+    50→  /** Tritone shadow and highlight applied to every portrait. */
+    51→  shadow: string
+    52→  highlight: string
+    53→  /** Tritone midtone. Defaults to a paler mix of hot and highlight so prints lift off the field. */
+    54→  mid?: string
+    55→}
+    56→
+    57→export type TeamMember = {
+    58→  name: string
+    59→  role: string
+    60→  /** Short label on the chip ("Colour", "Sound"). Defaults to the role. */
+    61→  craft?: string
+    62→  /** One line shown when the chip unfolds. */
+    63→  bio?: string
+    64→  /** Portrait URL. A monogram plate stands in when missing or broken. */
+    65→  photo?: string
+    66→  /** object-position for the portrait, e.g. "50% 30%". */
+    67→  focus?: string
+    68→  href?: string
+    69→  /** Link text in the unfolded card. Defaults to labels.memberLink. */
+    70→  linkLabel?: string
+    71→  /** Brightens (>1) or darkens (<1) this portrait before the tritone, for very dark or bright photos. */
+    72→  exposure?: number
+    73→}
+    74→
+    75→export type OpenRole = {
+    76→  title: string
+    77→  href: string
+    78→  /** Chip label. Defaults to "Hiring". */
+    79→  craft?: string
+    80→  /** One line under the title. */
+    81→  note?: string
+    82→  /** Big word in the empty frame. Defaults to "You?". */
+    83→  mark?: string
+    84→  /** Link text in the unfolded card. Defaults to labels.roleLink. */
+    85→  linkLabel?: string
+    86→}
+    87→
+    88→/** Every built-in string, for translation. */
+    89→export type RosterLabels = {
+    90→  pause: string
+    91→  play: string
+    92→  /** Accessible name of the portrait wall. */
+    93→  team: string
+    94→  /** Prefix read before an open role's title. */
+    95→  openRole: string
+    96→  /** Chip on an open-role frame without its own craft. */
+    97→  hiring: string
+    98→  roleLink: string
+    99→  memberLink: string
+   100→}
+   101→
+   102→export const DEFAULT_LABELS: RosterLabels = {
+   103→  pause: "Pause",
+   104→  play: "Play",
+   105→  team: "Team",
+   106→  openRole: "Open role",
+   107→  hiring: "Hiring",
+   108→  roleLink: "See the role",
+   109→  memberLink: "Say hello",
+   110→}
+   111→
+   112→export type RosterLink = { label: string; href: string }
+   113→
+   114→export type DuotoneTeamRosterProps = {
+   115→  members?: TeamMember[]
+   116→  /** Empty frames placed among the portraits, each linking to a job. */
+   117→  openRoles?: OpenRole[]
+   118→  /** Small display word above the headline. */
+   119→  eyebrow?: string
+   120→  /** The headline. Use "
+   121→" to break lines; each line is fitted to the column. */
+   122→  title?: string
+   123→  intro?: string
+   124→  cta?: RosterLink | null
+   125→  secondaryCta?: RosterLink | null
+   126→  preset?: RosterPreset
+   127→  /** Overrides any colour of the preset. */
+   128→  palette?: RosterPaletteInput
+   129→  /** Portrait columns on wide screens (2 to 4). Tablets get 2; phones a strip. */
+   130→  columns?: number
+   131→  /** Seconds a column takes to drift past one portrait. Lower is faster. */
+   132→  driftSeconds?: number
+   133→  /** false (or driftSeconds <= 0) gives a still, scannable wall that grows with the team, headline pinned beside it. */
+   134→  drift?: boolean
+   135→  /** Section height on tablet and desktop. A definite length, never a percentage. */
+   136→  height?: string
+   137→  /** Display face for the headline, eyebrow and monograms. */
+   138→  fontFamily?: string
+   139→  /** Horizontal stretch of the display face (1 = as drawn). */
+   140→  stretch?: number
+   141→  uppercase?: boolean
+   142→  grain?: boolean
+   143→  /** Built-in strings (pause, play, team, openRole, hiring, roleLink, memberLink). */
+   144→  labels?: RosterLabelsInput
+   145→  className?: string
+   146→  /** Called when a portrait is clicked or opened with the keyboard. */
+   147→  onMemberSelect?: (member: TeamMember) => void
+   148→  /** A mouse click on a portrait follows its link (never a mailto:, which stays on the "Say hello" link). Default true. */
+   149→  clickFollowsLink?: boolean
+   150→}
+   151→
+   152→// #region roster-logic
+   153→export const PRESETS = {
+   154→  ember: { ground: "#170403", deep: "#4f0d06", hot: "#ee7a1c", glow: "#ffb54a", ink: "#fff0c8", shadow: "#260604", highlight: "#ffe2ad" },
+   155→  cobalt: { ground: "#03061f", deep: "#0d1c6e", hot: "#2e57f5", glow: "#86a6ff", ink: "#eef1ff", shadow: "#050b33", highlight: "#d9e3ff" },
+   156→  moss: { ground: "#061008", deep: "#163519", hot: "#5d8a35", glow: "#c3d66e", ink: "#f3f6dd", shadow: "#08170b", highlight: "#eef3c4" },
+   157→  mono: { ground: "#090909", deep: "#262626", hot: "#8c8c8c", glow: "#e0e0e0", ink: "#fafafa", shadow: "#0d0d0d", highlight: "#f4f4f4" },
+   158→}
+   159→
+   160→export function resolvePalette(preset: string, overrides: any): RosterPalette {
+   161→  const table: any = PRESETS
+   162→  const base = table[preset] || PRESETS.ember
+   163→  const out: any = Object.assign({}, base)
+   164→  if (overrides) for (const k of Object.keys(base)) if (overrides[k]) out[k] = overrides[k]
+   165→  return out
+   166→}
+   167→
+   168→/** "#f80" or "#ff8800" to [r, g, b] in 0..1, for the SVG tritone tables. */
+   169→export function hexToUnit(hex: string) {
+   170→  let h = String(hex || "").trim().replace("#", "")
+   171→  if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]
+   172→  if (!/^[0-9a-fA-F]{6}$/.test(h)) return [0, 0, 0]
+   173→  return [0, 2, 4].map((i) => Math.round((parseInt(h.slice(i, i + 2), 16) / 255) * 1000) / 1000)
+   174→}
+   175→
+   176→/** Mixes two hex colours, t = 0 gives a, t = 1 gives b. */
+   177→export function mixHex(a: string, b: string, t: number) {
+   178→  const x = hexToUnit(a)
+   179→  const y = hexToUnit(b)
+   180→  return "#" + [0, 1, 2].map((i) => Math.round((x[i] + (y[i] - x[i]) * t) * 255).toString(16).padStart(2, "0")).join("")
+   181→}
+   182→
+   183→/** One feFuncR/G/B table per channel: shadow, midtone, highlight. */
+   184→export function tritoneTables(shadow: string, mid: string, highlight: string) {
+   185→  const s = hexToUnit(shadow)
+   186→  const m = hexToUnit(mid)
+   187→  const h = hexToUnit(highlight)
+   188→  return [0, 1, 2].map((c) => s[c] + " " + m[c] + " " + h[c])
+   189→}
+   190→
+   191→export function initials(name: string) {
+   192→  const parts = String(name || "").trim().split(/\s+/).filter(Boolean)
+   193→  if (!parts.length) return "?"
+   194→  const first = parts[0][0]
+   195→  const last = parts.length > 1 ? parts[parts.length - 1][0] : ""
+   196→  return (first + last).toUpperCase()
+   197→}
+   198→
+   199→/**
+   200→ * Deals the people (and open roles) into columns round-robin, so neighbours
+   201→ * differ, then pads short columns with repeats until each holds `minPerColumn`
+   202→ * so a drifting loop never shows a gap. Repeats are flagged `dup` and are
+   203→ * hidden from assistive tech. Open roles are spread through the deck.
+   204→ */
+   205→export function dealColumns(count: number, roleCount: number, columns: number, minPerColumn: number) {
+   206→  const cols = Math.max(1, Math.floor(columns) || 1)
+   207→  const deck: any[] = []
+   208→  for (let i = 0; i < count; i++) deck.push({ kind: "member", index: i })
+   209→  for (let r = 0; r < roleCount; r++) {
+   210→    const at = Math.min(deck.length, Math.round(((r + 1) * (count + roleCount)) / (roleCount + 1)) - 1 + r)
+   211→    deck.splice(Math.max(0, at), 0, { kind: "role", index: r })
+   212→  }
+   213→  const out: any[][] = []
+   214→  for (let c = 0; c < cols; c++) out.push([])
+   215→  deck.forEach((d, i) => out[i % cols].push({ kind: d.kind, index: d.index, dup: false }))
+   216→  if (!deck.length) return out
+   217→  // Pad from the far end of the column furthest away, so a repeat never sits
+   218→  // level with the same face in the next column.
+   219→  for (let c = 0; c < cols; c++) {
+   220→    let from = (c + Math.floor(cols / 2) + (cols % 2 ? 1 : 0)) % cols
+   221→    if (cols === 1) from = 0
+   222→    const pool = out[from].filter((e) => !e.dup).slice().reverse()
+   223→    const rest = deck.map((d) => ({ kind: d.kind, index: d.index, dup: false })).reverse()
+   224→    const candidates = pool.concat(rest)
+   225→    let k = 0
+   226→    let guard = 0
+   227→    while (out[c].length < minPerColumn && guard < candidates.length * 3) {
+   228→      const d = candidates[k % candidates.length]
+   229→      k++
+   230→      guard++
+   231→      const clash = out[c].some((e) => e.kind === d.kind && e.index === d.index)
+   232→      if (clash && guard < candidates.length) continue
+   233→      out[c].push({ kind: d.kind, index: d.index, dup: true })
+   234→    }
+   235→  }
+   236→  return out
+   237→}
+   238→
+   239→/** Font size that makes the widest headline line fill `available` px. */
+   240→export function fitTitleSize(available: number, widestAt100: number, stretch: number, min: number, max: number) {
+   241→  if (!(available > 0) || !(widestAt100 > 0)) return min
+   242→  const size = (available / (widestAt100 * (stretch > 0 ? stretch : 1))) * 100
+   243→  return Math.max(min, Math.min(max, Math.floor(size * 10) / 10))
+   244→}
+   245→
+   246→/** Layout for a container width: a strip on phones, 2 columns on tablets. */
+   247→export function layoutFor(width: number, columns: number) {
+   248→  if (width > 0 && width < 700) return 0
+   249→  const wanted = Math.max(2, Math.min(4, Math.round(columns) || 3))
+   250→  if (width > 0 && width < 1000) return 2
+   251→  return wanted
+   252→}
+   253→
+   254→export function splitLines(title: string) {
+   255→  return String(title || "")
+   256→    .split("
+   257→")
+   258→    .map((l) => l.trim())
+   259→    .filter(Boolean)
+   260→}
+   261→// #endregion roster-logic
+   262→
+   263→const U = "https://images.unsplash.com/"
+   264→const Q = "?auto=format&fit=crop&w=720&h=960&q=80"
+   265→
+   266→export const DEFAULT_MEMBERS: TeamMember[] = [
+   267→  { name: "Priya Nair", role: "Supervising colourist", craft: "Colour", bio: "Grades every feature that leaves the building. Prefers film emulation to LUTs.", photo: U + "photo-1494790108377-be9c29b29330" + Q, focus: "50% 30%", href: "mailto:priya@foxglove-post.example" },
+   268→  { name: "Daniel Osei", role: "Head of sound", craft: "Sound", bio: "Mixes in Atmos, then checks every reel on a pair of tired laptop speakers.", photo: U + "photo-1507003211169-0a1dd7228f2d" + Q, focus: "50% 30%", href: "mailto:daniel@foxglove-post.example" },
+   269→  { name: "Ellie Marsh", role: "Offline editor", craft: "Edit", bio: "Cuts long-form documentary. Asks what the film is about before opening the timeline.", photo: U + "photo-1438761681033-6461ffad8d80" + Q, focus: "50% 35%", href: "mailto:ellie@foxglove-post.example" },
+   270→  { name: "Marcus Bell", role: "VFX supervisor", craft: "VFX", bio: "Fixes what the shoot could not: skies, rigs, the boom that dipped into frame.", photo: U + "photo-1500648767791-00dcc994a43e" + Q, focus: "50% 30%", href: "mailto:marcus@foxglove-post.example" },
+   271→  { name: "Hannah Cole", role: "Post producer", craft: "Production", bio: "Keeps schedules, budgets and deliverables honest from first call to final QC.", photo: U + "photo-1544005313-94ddf0286df2" + Q, focus: "50% 30%", href: "mailto:hannah@foxglove-post.example" },
+   272→  { name: "Graham Whitlock", role: "Online editor", craft: "Finishing", bio: "Conforms, masters and delivers to whatever spec a broadcaster invents next.", photo: U + "photo-1472099645785-5658abf4ff4e" + Q, focus: "50% 30%", href: "mailto:graham@foxglove-post.example" },
+   273→  { name: "Mira Kowalczyk", role: "Motion designer", craft: "Motion", bio: "Titles, maps and the end credits nobody notices until they are wrong.", photo: U + "photo-1517841905240-472988babdf9" + Q, focus: "50% 30%", href: "mailto:mira@foxglove-post.example" },
+   274→  { name: "Jules Okafor", role: "Dialogue editor", craft: "Dialogue", bio: "Rebuilds noisy location sound one syllable at a time.", photo: U + "photo-1506794778202-cad84cf45f1d" + Q, focus: "50% 30%", href: "mailto:jules@foxglove-post.example" },
+   275→  { name: "Sam Lindqvist", role: "Assistant colourist", craft: "Colour", bio: "Matches cameras, preps the grade and runs the dailies every morning.", photo: U + "photo-1502823403499-6ccfcf4fb453" + Q, focus: "50% 30%", href: "mailto:sam@foxglove-post.example" },
+   276→  { name: "Noa Brandt", role: "Studio manager", craft: "Studio", bio: "Runs the suites, the kit room and, under protest, the coffee rota.", photo: U + "photo-1524504388940-b1c1722653e1" + Q, focus: "50% 30%", href: "mailto:noa@foxglove-post.example" },
+   277→]
+   278→
+   279→const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect
+   280→
+   281→const DISPLAY_STACK = '"Arial Black", "Archivo Black", "Helvetica Neue", Inter, "Segoe UI", system-ui, sans-serif'
+   282→
+   283→const css = `
+   284→.dtr{position:relative;isolation:isolate;overflow:hidden;width:100%;container-type:inline-size;color:var(--dtr-ink);background:var(--dtr-ground);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;--dtr-ease:cubic-bezier(.23,1,.32,1);--dtr-gap:14px;--dtr-pad:clamp(20px,3.2cqw,48px)}
+   285→.dtr *,.dtr *::before,.dtr *::after{box-sizing:border-box}
+   286→.dtr-field{position:absolute;inset:0;z-index:-2;background:radial-gradient(38cqw 46cqw at 0% 100%,var(--dtr-ground) 0%,color-mix(in srgb,var(--dtr-ground) 55%,var(--dtr-deep)) 72%,transparent 100%),radial-gradient(70% 62% at 34% 36%,var(--dtr-glow) 0%,var(--dtr-hot) 26%,color-mix(in srgb,var(--dtr-hot) 55%,var(--dtr-deep)) 48%,transparent 78%),radial-gradient(60% 90% at 78% 30%,color-mix(in srgb,var(--dtr-hot) 70%,var(--dtr-deep)) 0%,transparent 70%),linear-gradient(98deg,var(--dtr-ground) 0%,var(--dtr-deep) 16%,transparent 42%),linear-gradient(0deg,var(--dtr-ground) 0%,color-mix(in srgb,var(--dtr-deep) 85%,transparent) 30%,transparent 62%),var(--dtr-deep)}
+   287→.dtr-grain{position:absolute;inset:-50%;z-index:-1;pointer-events:none;opacity:.2;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -.35'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:220px 220px}
+   288→.dtr-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+   289→.dtr-in{position:relative;display:grid;grid-template-columns:minmax(0,42fr) minmax(0,58fr);height:100%}
+   290→.dtr[data-cols="2"] .dtr-in{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+   291→.dtr-copy{position:relative;z-index:5;isolation:isolate;grid-row:1;grid-column:1;pointer-events:none;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--dtr-pad);padding-right:clamp(16px,2cqw,32px);min-width:0}
+   292→.dtr-title{position:relative;margin:0;text-shadow:0 .02em .14em color-mix(in srgb,var(--dtr-ground) 30%,transparent);font-family:var(--dtr-display);font-weight:900;font-synthesis:none;line-height:.84;letter-spacing:-.035em;color:var(--dtr-ink);font-size:var(--dtr-ts,clamp(56px,9cqw,200px));text-transform:var(--dtr-case)}
+   293→.dtr-eyebrow{display:block;font-size:.36em;line-height:1;letter-spacing:-.01em;margin:0 0 .16em .02em;transform:scaleX(var(--dtr-stretch));transform-origin:0 50%;white-space:nowrap}
+   294→.dtr-line{display:block;clip-path:inset(-30% -400% 0 -10%);padding-bottom:.04em;margin-bottom:-.04em}
+   295→.dtr-line>span{display:inline-block;white-space:nowrap;transform:scaleX(var(--dtr-stretch));transform-origin:0 50%}
+   296→.dtr-line>span>span{display:inline-block;animation:dtr-line-in 900ms var(--dtr-ease) both;animation-delay:calc(120ms + var(--i,0) * 50ms)}
+   297→.dtr-intro,.dtr-actions{pointer-events:auto}
+   298→.dtr-intro{margin:clamp(18px,2.2cqw,28px) 0 0;max-width:38ch;font-size:clamp(15px,1.15cqw,17px);line-height:1.55;color:color-mix(in srgb,var(--dtr-ink) 86%,transparent);text-wrap:pretty}
+   299→.dtr-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:clamp(20px,2.4cqw,30px)}
+   300→.dtr-cta{position:relative;display:inline-flex;align-items:center;gap:12px;height:46px;padding:0 18px 0 20px;border-radius:3px;background:var(--dtr-ink);color:var(--dtr-ground);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;overflow:hidden;transition:transform 160ms var(--dtr-ease),background-color 220ms ease;outline:none}
+   301→.dtr-cta::before{content:"";position:absolute;inset:0;background:var(--dtr-glow);clip-path:inset(0 100% 0 0);transition:clip-path 280ms var(--dtr-ease)}
+   302→.dtr-cta>span{position:relative;z-index:1}
+   303→.dtr-cta-label{position:relative;display:inline-block;overflow:hidden;height:1.2em;line-height:1.2em}
+   304→.dtr-cta-label>span{display:block;transition:transform 260ms var(--dtr-ease)}
+   305→.dtr-cta-arrow{display:inline-block;transition:transform 260ms var(--dtr-ease)}
+   306→.dtr-cta:active{transform:scale(.97)}
+   307→.dtr-cta:focus-visible::before{clip-path:inset(0 0 0 0)}
+   308→.dtr-cta:focus-visible,.dtr-link:focus-visible,.dtr-pause:focus-visible,.dtr-panel a:focus-visible{outline:2px solid var(--dtr-ink);outline-offset:3px}
+   309→.dtr-link{color:var(--dtr-ink);font-size:14px;font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;transition:text-underline-offset 220ms var(--dtr-ease),opacity 200ms ease;outline:none}
+   310→.dtr-wall{position:relative;z-index:1;grid-row:1;grid-column:2;display:grid;grid-template-columns:repeat(var(--dtr-cols),minmax(0,1fr));gap:var(--dtr-gap);padding:0 var(--dtr-pad) 0 clamp(8px,1cqw,16px);height:100%;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%)}
+   311→.dtr-col{position:relative;min-width:0;animation:dtr-rise 1100ms var(--dtr-ease) both;animation-delay:calc(var(--ci) * 90ms)}
+   312→.dtr-track{display:flex;flex-direction:column;will-change:transform;transition:translate 280ms var(--dtr-ease);animation:dtr-up var(--dtr-dur) linear infinite;animation-delay:var(--dtr-phase)}
+   313→.dtr-col[data-dir="down"] .dtr-track{animation-name:dtr-down}
+   314→.dtr[data-paused] .dtr-track,.dtr[data-active] .dtr-track,.dtr[data-offscreen] .dtr-track,.dtr-wall:focus-within .dtr-track,.dtr[data-paused] .dtr-strip-track,.dtr[data-active] .dtr-strip-track,.dtr[data-offscreen] .dtr-strip-track,.dtr-strip:focus-within .dtr-strip-track{animation-play-state:paused}
+   315→.dtr-card{position:relative;container:dtrcard/inline-size;margin:0 0 var(--dtr-gap);aspect-ratio:3/4;border-radius:3px;transition:transform 260ms var(--dtr-ease);-webkit-tap-highlight-color:transparent}
+   316→.dtr-card::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:0 2px 6px color-mix(in srgb,var(--dtr-ground) 40%,transparent),0 18px 44px -12px color-mix(in srgb,var(--dtr-ground) 85%,transparent);opacity:0;transition:opacity 260ms ease;pointer-events:none}
+   317→.dtr-photo{position:absolute;inset:0;overflow:hidden;border-radius:3px;background:var(--dtr-deep);transition:opacity 260ms ease,filter 260ms ease}
+   318→.dtr-photo img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:cover;transition:transform 300ms var(--dtr-ease)}
+   319→.dtr-photo img{transform-origin:50% 22%}
+   320→.dtr-card[data-on] .dtr-photo img{transform:scale(1.05)}
+   321→.dtr-hit{position:absolute;inset:0;z-index:1;margin:0;padding:0;border:0;border-radius:3px;background:transparent;cursor:default;outline:none;-webkit-tap-highlight-color:transparent}
+   322→.dtr-card[data-click] .dtr-hit{cursor:pointer}
+   323→.dtr-hit:focus-visible{box-shadow:0 0 0 2px var(--dtr-ground),0 0 0 4px var(--dtr-ink)}
+   324→.dtr-true{opacity:0;transition:opacity 300ms ease}
+   325→.dtr-plate{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(90% 70% at 50% 35%,var(--dtr-hot),var(--dtr-deep) 70%,var(--dtr-ground));font-family:var(--dtr-display);font-weight:900;color:var(--dtr-ink);font-size:clamp(40px,7cqw,96px);letter-spacing:-.04em}
+   326→.dtr-plate span{transform:scaleX(var(--dtr-stretch));transition:transform 300ms var(--dtr-ease)}
+   327→.dtr-card[data-on] .dtr-plate span{transform:translateY(-.95em) scaleX(var(--dtr-stretch)) scale(.82)}
+   328→.dtr-plate{grid-template-rows:1fr auto 1fr}.dtr-plate span{grid-row:2}
+   329→.dtr-plate em{transition:opacity 160ms ease;grid-row:3;align-self:start;margin-top:.9em;max-width:80%;font:700 12px/1.35 ui-sans-serif,system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;font-style:normal;text-align:center;color:color-mix(in srgb,var(--dtr-ink) 78%,transparent)}
+   330→.dtr-role .dtr-plate{background:repeating-linear-gradient(135deg,transparent 0 10px,color-mix(in srgb,var(--dtr-ink) 9%,transparent) 10px 11px),radial-gradient(90% 70% at 50% 30%,color-mix(in srgb,var(--dtr-hot) 70%,var(--dtr-deep)),var(--dtr-ground) 85%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dtr-ink) 28%,transparent);font-size:clamp(34px,5.2cqw,76px)}
+   331→.dtr-card{--dtr-ct:calc(100% - 26px);--dtr-cr:calc(100% - var(--dtr-cw));--dtr-cb:0px;--dtr-cl:0px}
+   332→.dtr-chip,.dtr-panel{position:absolute;left:12px;bottom:12px;background:color-mix(in srgb,var(--dtr-ground) 95%,transparent);color:var(--dtr-ink);border-radius:3px}
+   333→.dtr-chip{padding:8px 10px 7px;font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;transition:opacity 160ms ease}
+   334→.dtr-panel{z-index:2;right:12px;max-height:calc(100% - 24px);overflow:hidden;padding:10px 12px 11px;clip-path:inset(var(--dtr-ct) var(--dtr-cr) var(--dtr-cb) var(--dtr-cl) round 3px);opacity:0;visibility:hidden;transition:clip-path 200ms var(--dtr-ease),opacity 100ms ease 120ms,visibility 0s linear 220ms;pointer-events:none}
+   335→.dtr-col:first-child .dtr-chip{left:auto;right:12px}
+   336→.dtr-col:first-child .dtr-card{--dtr-cr:0px;--dtr-cl:calc(100% - var(--dtr-cw))}
+   337→
+   338→.dtr-name{margin:0;font-size:clamp(15px,7cqw,19px);font-weight:800;line-height:1.15;letter-spacing:-.01em}
+   339→.dtr-roleline{margin:3px 0 0;font-size:13px;line-height:1.35;color:color-mix(in srgb,var(--dtr-ink) 78%,transparent)}
+   340→.dtr-bio{margin:6px 0 0;font-size:13px;line-height:1.4;color:color-mix(in srgb,var(--dtr-ink) 90%,transparent)}
+   341→.dtr-panel a{display:inline-flex;align-items:center;gap:6px;margin-top:8px;color:var(--dtr-ink);font-size:13px;font-weight:700;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;outline:none}
+   342→.dtr-panel a span{display:inline-block;transition:transform 260ms var(--dtr-ease)}
+   343→.dtr-card[data-on]{z-index:3;transform:translateY(-6px) scale(1.02)}
+   344→.dtr-card[data-on]::after{opacity:1}
+   345→.dtr-card[data-on] .dtr-true{opacity:.72}
+   346→.dtr-card[data-on] .dtr-chip,.dtr-card[data-on] .dtr-plate em{opacity:0;transition-duration:90ms}
+   347→.dtr-card[data-on] .dtr-panel{clip-path:inset(0 0 0 0 round 3px);opacity:1;visibility:visible;pointer-events:auto;transition:clip-path 300ms var(--dtr-ease),opacity 60ms ease,visibility 0s}
+   348→.dtr-title{transform-origin:0 100%;transition:transform 300ms var(--dtr-ease)}
+   349→.dtr[data-active-col="0"] .dtr-title{transform:scale(.84)}
+   350→.dtr[data-active] .dtr-card:not([data-on]) .dtr-photo{opacity:.42;filter:saturate(.7)}
+   351→.dtr[data-active] .dtr-card:not([data-on]) .dtr-chip{opacity:.5}
+   352→.dtr-pause{position:absolute;right:var(--dtr-pad);bottom:14px;z-index:6;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dtr-ink) 32%,transparent);display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:0;border-radius:3px;background:color-mix(in srgb,var(--dtr-ground) 88%,transparent);color:var(--dtr-ink);font:700 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:transform 160ms var(--dtr-ease),background-color 200ms ease;outline:none}
+   353→.dtr-pause:active{transform:scale(.96)}
+   354→.dtr-pause i{display:inline-block;width:8px;height:9px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+   355→.dtr[data-paused] .dtr-pause i{border-right:0;border-left:8px solid currentColor;border-top:4.5px solid transparent;border-bottom:4.5px solid transparent;width:0;height:0}
+   356→.dtr-strip{display:none}
+   357→.dtr[data-mode="strip"] .dtr-in{display:flex;flex-direction:column;height:auto}
+   358→.dtr[data-mode="strip"] .dtr-wall{display:none}
+   359→.dtr[data-mode="strip"] .dtr-strip{display:block;position:relative;order:-1;overflow:hidden;padding:20px 0 4px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%)}
+   360→.dtr-strip-track{display:flex;width:max-content;padding-left:20px;will-change:transform;transition:translate 280ms var(--dtr-ease);animation:dtr-left var(--dtr-sdur) linear infinite}
+   361→.dtr-strip .dtr-card{width:clamp(170px,56cqw,250px);margin:0 10px 0 0;flex:none}
+   362→.dtr[data-mode="strip"] .dtr-copy{padding:18px 20px 28px}
+   363→.dtr[data-mode="strip"] .dtr-pause{position:static;margin-left:auto}
+   364→.dtr[data-static] .dtr-track{animation:none}
+   365→.dtr[data-static] .dtr-wall{height:auto;padding-top:var(--dtr-pad);padding-bottom:var(--dtr-pad);-webkit-mask-image:none;mask-image:none}
+   366→.dtr[data-static] .dtr-col:nth-child(2){padding-top:clamp(32px,6cqw,96px)}
+   367→.dtr[data-static] .dtr-col:nth-child(3){padding-top:clamp(16px,3cqw,48px)}
+   368→.dtr[data-static] .dtr-col:nth-child(4){padding-top:clamp(48px,8cqw,128px)}
+   369→.dtr[data-static] .dtr-in{height:auto;align-items:start}
+   370→.dtr[data-static] .dtr-copy{position:sticky;top:0;height:var(--dtr-h);min-height:600px}
+   371→.dtr[data-static][data-mode="strip"] .dtr-copy{position:relative;height:auto;min-height:0}
+   372→.dtr[data-static] .dtr-strip{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+   373→.dtr[data-static] .dtr-strip-track{animation:none;padding-right:20px}
+   374→.dtr[data-static] .dtr-strip .dtr-card{scroll-snap-align:start}
+   375→@container dtrcard (max-width:229px){.dtr-bio{display:none}.dtr-panel{padding:9px 10px 10px}}
+   376→@keyframes dtr-up{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-50%,0)}}
+   377→@keyframes dtr-down{from{transform:translate3d(0,-50%,0)}to{transform:translate3d(0,0,0)}}
+   378→@keyframes dtr-left{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-50% + 10px),0,0)}}
+   379→@keyframes dtr-rise{from{opacity:0;transform:translate3d(0,56px,0)}to{opacity:1;transform:none}}
+   380→@keyframes dtr-line-in{from{transform:translate3d(0,104%,0)}to{transform:none}}
+   381→@media (hover:hover) and (pointer:fine){
+   382→.dtr-cta:hover::before{clip-path:inset(0 0 0 0)}
+   383→.dtr-cta:hover .dtr-cta-label>span{transform:translateY(-100%)}
+   384→.dtr-cta:hover .dtr-cta-arrow{transform:translateX(4px)}
+   385→.dtr-link:hover{text-underline-offset:8px}
+   386→.dtr-panel a:hover span{transform:translate(2px,-2px)}
+   387→.dtr-pause:hover{background:var(--dtr-ground)}
+   388→}
+   389→@media (prefers-reduced-motion:reduce){
+   390→.dtr-track,.dtr-strip-track{animation:none;transform:translate3d(0,calc(-50% * var(--dtr-rest,0)),0)}
+   391→.dtr-strip-track{transform:none}
+   392→.dtr-col,.dtr-line>span>span{animation:none}
+   393→.dtr-card,.dtr-panel,.dtr-cta-label>span,.dtr-cta-arrow{transition-duration:1ms}
+   394→.dtr-card[data-on],.dtr-card[data-on] .dtr-photo img{transform:none}
+   395→.dtr-title{transition-duration:1ms}
+   396→.dtr-pause{display:none}
+   397→}
+   398→`
+   399→
+   400→type Slot =
+   401→  | { key: string; kind: "member"; member: TeamMember; dup: boolean }
+   402→  | { key: string; kind: "role"; role: OpenRole; dup: boolean }
+   403→
+   404→/** Nudges a drifting column (or the phone strip) so a focused card is fully visible. */
+   405→function bringIntoView(card: HTMLElement) {
+   406→  const frame = card.closest(".dtr-wall, .dtr-strip") as HTMLElement | null
+   407→  const track = card.closest(".dtr-track, .dtr-strip-track") as HTMLElement | null
+   408→  if (!frame || !track) return
+   409→  const f = frame.getBoundingClientRect()
+   410→  const r = card.getBoundingClientRect()
+   411→  const vertical = track.classList.contains("dtr-track")
+   412→  // Start from where the track is right now (it may still be easing back).
+   413→  const now = getComputedStyle(track).translate
+   414→  const parts = !now || now === "none" ? ["0", "0"] : now.split(" ")
+   415→  let x = parseFloat(parts[0]) || 0
+   416→  let y = parseFloat(parts[1] || "0") || 0
+   417→  const m = 24
+   418→  if (vertical) {
+   419→    if (r.top < f.top + m) y += f.top + m - r.top
+   420→    else if (r.bottom > f.bottom - m) y -= r.bottom - (f.bottom - m)
+   421→  } else {
+   422→    if (r.left < f.left + m) x += f.left + m - r.left
+   423→    else if (r.right > f.right - m) x -= r.right - (f.right - m)
+   424→  }
+   425→  track.style.translate = Math.round(x) + "px " + Math.round(y) + "px"
+   426→}
+   427→
+   428→/** Lets the track ease back into its loop once focus moves on. */
+   429→function releaseNudge(card: HTMLElement) {
+   430→  const track = card.closest(".dtr-track, .dtr-strip-track") as HTMLElement | null
+   431→  if (track) track.style.translate = ""
+   432→}
+   433→
+   434→function Portrait(props: {
+   435→  slot: Slot
+   436→  on: boolean
+   437→  filterId: string
+   438→  labels: RosterLabels
+   439→  onEnter: (key: string) => void
+   440→  onLeave: (key: string) => void
+   441→  onToggle: (key: string) => void
+   442→  onSelect?: (member: TeamMember) => void
+   443→  follows: boolean
+   444→}) {
+   445→  const { slot, on, filterId, labels, onEnter, onLeave, onToggle, onSelect, follows } = props
+   446→  const [failed, setFailed] = React.useState(false)
+   447→  const pointer = React.useRef("mouse")
+   448→  const panelId = "p" + React.useId().replace(/[^a-zA-Z0-9]/g, "")
+   449→  const hidden = slot.dup
+   450→  const isRole = slot.kind === "role"
+   451→  const member = slot.kind === "member" ? slot.member : null
+   452→  const role = slot.kind === "role" ? slot.role : null
+   453→  const craft = member ? member.craft || member.role : role ? role.craft || labels.hiring : ""
+   454→  const label = member ? member.name + ", " + member.role : role ? labels.openRole + ": " + role.title : ""
+   455→  const photo = member && member.photo && !failed ? member.photo : ""
+   456→  const href = member ? member.href : role ? role.href : undefined
+   457→  const linkLabel = member ? member.linkLabel || labels.memberLink : (role && role.linkLabel) || labels.roleLink
+   458→  const exposure = member && member.exposure && member.exposure > 0 ? member.exposure : 1
+   459→  const focus = (member && member.focus) || "50% 22%"
+   460→  const followable = follows && Boolean(href) && !/^mailto:/i.test(String(href))
+   461→  const clickable = Boolean((member && onSelect) || followable)
+   462→
+   463→  const follow = (card: HTMLElement) => {
+   464→    const a = card.querySelector(".dtr-panel a") as HTMLAnchorElement | null
+   465→    if (a) a.click()
+   466→  }
+   467→
+   468→  return (
+   469→    <div
+   470→      className={"dtr-card" + (isRole ? " dtr-role" : "")}
+   471→      data-on={on ? "" : undefined}
+   472→      data-click={clickable ? "" : undefined}
+   473→      aria-hidden={hidden ? true : undefined}
+   474→      style={{ ["--dtr-cw" as any]: Math.min(26, craft.length) * 0.74 + 2.2 + "em" }}
+   475→      onPointerDown={(e) => {
+   476→        pointer.current = e.pointerType
+   477→      }}
+   478→      onPointerEnter={(e) => {
+   479→        if (e.pointerType !== "mouse") return
+   480→        // A card cut off by the frame slides fully into view (it stays under the pointer).
+   481→        bringIntoView(e.currentTarget)
+   482→        onEnter(slot.key)
+   483→      }}
+   484→      onPointerLeave={(e) => {
+   485→        if (e.pointerType !== "mouse") return
+   486→        onLeave(slot.key)
+   487→        if (!e.currentTarget.contains(document.activeElement)) releaseNudge(e.currentTarget)
+   488→      }}
+   489→      onBlur={(e) => {
+   490→        if (e.currentTarget.contains(e.relatedTarget as Node | null)) return
+   491→        onLeave(slot.key)
+   492→        releaseNudge(e.currentTarget)
+   493→      }}
+   494→    >
+   495→      <div className="dtr-photo">
+   496→        {photo ? (
+   497→          <>
+   498→            <img
+   499→              className="dtr-duo"
+   500→              src={photo}
+   501→              alt=""
+   502→              width={720}
+   503→              height={960}
+   504→              loading="lazy"
+   505→              decoding="async"
+   506→              draggable={false}
+   507→              style={{
+   508→                filter: (exposure !== 1 ? "brightness(" + exposure + ") " : "") + "url(#" + filterId + ")",
+   509→                objectPosition: focus,
+   510→              }}
+   511→              onError={() => setFailed(true)}
+   512→            />
+   513→            <img
+   514→              className="dtr-true"
+   515→              src={photo}
+   516→              alt=""
+   517→              width={720}
+   518→              height={960}
+   519→              loading="lazy"
+   520→              decoding="async"
+   521→              draggable={false}
+   522→              style={{ objectPosition: focus }}
+   523→            />
+   524→          </>
+   525→        ) : (
+   526→          <div className="dtr-plate" aria-hidden="true">
+   527→            <span>{member ? initials(member.name) : (role && role.mark) || "You?"}</span>
+   528→            {role ? <em>{role.title}</em> : null}
+   529→          </div>
+   530→        )}
+   531→      </div>
+   532→      <span className="dtr-chip" aria-hidden="true">
+   533→        {craft}
+   534→      </span>
+   535→      <button
+   536→        type="button"
+   537→        className="dtr-hit"
+   538→        tabIndex={hidden ? -1 : 0}
+   539→        aria-label={label}
+   540→        aria-expanded={hidden ? undefined : on}
+   541→        aria-controls={panelId}
+   542→        onFocus={(e) => {
+   543→          // Pointer focus is handled by hover and tap; keyboard focus unfolds here.
+   544→          if (!e.currentTarget.matches(":focus-visible")) return
+   545→          onEnter(slot.key)
+   546→          bringIntoView(e.currentTarget.parentElement as HTMLElement)
+   547→        }}
+   548→        onClick={(e) => {
+   549→          const card = e.currentTarget.parentElement as HTMLElement
+   550→          if (member && onSelect) onSelect(member)
+   551→          if (e.detail === 0) {
+   552→            // Keyboard: Enter opens the card, a second Enter moves to its link.
+   553→            if (!on) {
+   554→              onEnter(slot.key)
+   555→              bringIntoView(card)
+   556→            } else {
+   557→              const a = card.querySelector(".dtr-panel a") as HTMLElement | null
+   558→              if (a) a.focus()
+   559→            }
+   560→            return
+   561→          }
+   562→          if (pointer.current === "mouse") {
+   563→            if (followable) follow(card)
+   564→            return
+   565→          }
+   566→          if (!on) bringIntoView(card)
+   567→          onToggle(slot.key)
+   568→        }}
+   569→        onKeyDown={(e) => {
+   570→          if (e.key === "Escape") onLeave(slot.key)
+   571→        }}
+   572→      />
+   573→      <div
+   574→        className="dtr-panel"
+   575→        id={panelId}
+   576→        aria-hidden={on ? undefined : true}
+   577→        onKeyDown={(e) => {
+   578→          if (e.key !== "Escape") return
+   579→          const btn = e.currentTarget.parentElement?.querySelector(".dtr-hit") as HTMLElement | null
+   580→          if (btn) btn.focus()
+   581→          onLeave(slot.key)
+   582→        }}
+   583→      >
+   584→        <p className="dtr-name">{member ? member.name : role ? role.title : ""}</p>
+   585→        {member || (role && role.note) ? <p className="dtr-roleline">{member ? member.role : role ? role.note : ""}</p> : null}
+   586→        {member && member.bio ? <p className="dtr-bio">{member.bio}</p> : null}
+   587→        {href ? (
+   588→          <a href={href} tabIndex={hidden || !on ? -1 : 0}>
+   589→            {linkLabel} <span aria-hidden="true">↗</span>
+   590→          </a>
+   591→        ) : null}
+   592→      </div>
+   593→    </div>
+   594→  )
+   595→}
+   596→
+   597→export default function DuotoneTeamRoster({
+   598→  members = DEFAULT_MEMBERS,
+   599→  openRoles = [],
+   600→  eyebrow = "Meet",
+   601→  title = "The
+   602→crew",
+   603→  intro = "Ten editors, colourists and sound people finishing features, series and ads in a converted print works in Leeds.",
+   604→  cta = { label: "Start a project", href: "#contact" },
+   605→  secondaryCta = null,
+   606→  preset = "ember",
+   607→  palette,
+   608→  columns = 3,
+   609→  driftSeconds = 9,
+   610→  drift = true,
+   611→  height = "100svh",
+   612→  fontFamily = DISPLAY_STACK,
+   613→  stretch = 1.16,
+   614→  uppercase = true,
+   615→  grain = true,
+   616→  labels,
+   617→  className = "",
+   618→  onMemberSelect,
+   619→  clickFollowsLink = true,
+   620→}: DuotoneTeamRosterProps) {
+   621→  const pal = resolvePalette(preset, palette)
+   622→  const text: RosterLabels = { ...DEFAULT_LABELS, ...(labels || {}) }
+   623→  const rawId = React.useId()
+   624→  const uid = "dtr" + rawId.replace(/[^a-zA-Z0-9]/g, "")
+   625→  const filterId = uid + "-tone"
+   626→  const titleId = uid + "-title"
+   627→  const rootRef = React.useRef(null as HTMLElement | null)
+   628→  const copyRef = React.useRef(null as HTMLDivElement | null)
+   629→  const titleRef = React.useRef(null as HTMLHeadingElement | null)
+   630→  const [cols, setCols] = React.useState(layoutFor(0, columns))
+   631→  const [titleSize, setTitleSize] = React.useState(0)
+   632→  const [active, setActive] = React.useState(null as string | null)
+   633→  const [paused, setPaused] = React.useState(false)
+   634→  const [outOfView, setOutOfView] = React.useState(false)
+   635→  const [tabHidden, setTabHidden] = React.useState(false)
+   636→  const offscreen = outOfView || tabHidden
+   637→
+   638→  const lines = splitLines(title)
+   639→  // The shadow end is lifted toward the field so dark skin and dark clothes keep their detail.
+   640→  const mid = (palette && palette.mid) || mixHex(pal.hot, pal.highlight, 0.35)
+   641→  const tables = tritoneTables(mixHex(pal.shadow, pal.deep, 0.4), mid, mixHex(pal.highlight, pal.ink, 0.5))
+   642→  const still = !drift || !(driftSeconds > 0)
+   643→  const copies = still ? [0] : [0, 1]
+   644→  const [minPer, setMinPer] = React.useState(4)
+   645→  const plan = React.useMemo(
+   646→    () => dealColumns(members.length, openRoles.length, cols || 1, cols && !still ? minPer : 0),
+   647→    [members.length, openRoles.length, cols, minPer, still],
+   648→  )
+   649→
+   650→  const slotFor = (e: { kind: string; index: number; dup: boolean }, prefix: string): Slot =>
+   651→    e.kind === "role"
+   652→      ? { key: prefix, kind: "role", role: openRoles[e.index], dup: e.dup }
+   653→      : { key: prefix, kind: "member", member: members[e.index], dup: e.dup }
+   654→
+   655→  // Measure the container: choose the layout and fit the headline to its column.
+   656→  useIsoLayoutEffect(() => {
+   657→    const root = rootRef.current
+   658→    const copy = copyRef.current
+   659→    const head = titleRef.current
+   660→    if (!root || !copy || !head) return
+   661→    const fit = () => {
+   662→      const w = root.getBoundingClientRect().width
+   663→      const next = layoutFor(w, columns)
+   664→      setCols((c) => (c === next ? c : next))
+   665→      const spans = head.querySelectorAll(".dtr-line > span")
+   666→      let widest = 0
+   667→      const cur = parseFloat(getComputedStyle(head).fontSize) || 100
+   668→      spans.forEach((s) => {
+   669→        widest = Math.max(widest, (s as HTMLElement).offsetWidth)
+   670→      })
+   671→      const widestAt100 = (widest / cur) * 100
+   672→      const cs = getComputedStyle(copy)
+   673→      const avail = copy.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
+   674→      const h = root.getBoundingClientRect().height
+   675→      const strip = next === 0
+   676→      // Enough portraits per column that one loop is taller than the wall.
+   677→      if (next > 0) {
+   678→        const wallW = root.getBoundingClientRect().width * (next === 2 ? 0.5 : 0.58)
+   679→        const cardH = ((wallW - 14 * (next + 1)) / next) * (4 / 3) + 14
+   680→        const need = Math.max(3, Math.ceil(h / Math.max(80, cardH)))
+   681→        setMinPer((m) => (m === need ? m : need))
+   682→      }
+   683→      const maxByHeight = strip ? 200 : Math.max(56, (h * 0.52) / Math.max(1, lines.length + 0.45))
+   684→      // On the wall layout the widest line runs on into the first column of portraits, like a poster.
+   685→      const overhang = strip ? 1 : 1.18
+   686→      setTitleSize(fitTitleSize(avail * overhang, widestAt100, stretch, 40, Math.min(280, maxByHeight)))
+   687→    }
+   688→    fit()
+   689→    const ro = new ResizeObserver(fit)
+   690→    ro.observe(root)
+   691→    return () => ro.disconnect()
+   692→  }, [columns, stretch, title, fontFamily, uppercase, lines.length])
+   693→
+   694→  // Stop drifting while nobody can see it.
+   695→  React.useEffect(() => {
+   696→    const root = rootRef.current
+   697→    if (!root || typeof IntersectionObserver === "undefined") return
+   698→    const io = new IntersectionObserver(([entry]) => setOutOfView(!entry.isIntersecting), { threshold: 0 })
+   699→    io.observe(root)
+   700→    const vis = () => setTabHidden(document.hidden)
+   701→    document.addEventListener("visibilitychange", vis)
+   702→    return () => {
+   703→      io.disconnect()
+   704→      document.removeEventListener("visibilitychange", vis)
+   705→    }
+   706→  }, [])
+   707→
+   708→  const onEnter = React.useCallback((key: string) => setActive(key), [])
+   709→  const onLeave = React.useCallback((key: string) => setActive((a) => (a === key ? null : a)), [])
+   710→  const onToggle = React.useCallback((key: string) => setActive((a) => (a === key ? null : key)), [])
+   711→
+   712→  // Tap outside an unfolded card folds it again.
+   713→  React.useEffect(() => {
+   714→    if (!active) return
+   715→    const down = (e: PointerEvent) => {
+   716→      if (e.pointerType === "mouse") return
+   717→      const t = e.target as HTMLElement | null
+   718→      if (!t || !t.closest || !t.closest(".dtr-card")) setActive(null)
+   719→    }
+   720→    document.addEventListener("pointerdown", down)
+   721→    return () => document.removeEventListener("pointerdown", down)
+   722→  }, [active])
+   723→
+   724→  const rootStyle = {
+   725→    ["--dtr-ground" as any]: pal.ground,
+   726→    ["--dtr-deep" as any]: pal.deep,
+   727→    ["--dtr-hot" as any]: pal.hot,
+   728→    ["--dtr-glow" as any]: pal.glow,
+   729→    ["--dtr-ink" as any]: pal.ink,
+   730→    ["--dtr-display" as any]: fontFamily,
+   731→    ["--dtr-stretch" as any]: String(stretch),
+   732→    ["--dtr-case" as any]: uppercase ? "uppercase" : "none",
+   733→    ["--dtr-cols" as any]: String(cols || 1),
+   734→    ["--dtr-ts" as any]: titleSize ? titleSize + "px" : undefined,
+   735→    ["--dtr-sdur" as any]: Math.max(8, (members.length + openRoles.length) * Math.max(1, driftSeconds) * 0.55) + "s",
+   736→    ["--dtr-h" as any]: height,
+   737→    height: cols === 0 || still ? "auto" : height,
+   738→    minHeight: cols === 0 ? undefined : still ? height : "600px",
+   739→  } as React.CSSProperties
+   740→
+   741→  const pauseButton = (
+   742→    <button
+   743→      type="button"
+   744→      className="dtr-pause"
+   745→      aria-pressed={paused}
+   746→      onClick={() => setPaused((p) => !p)}
+   747→    >
+   748→      <i aria-hidden="true" />
+   749→      {paused ? text.play : text.pause}
+   750→    </button>
+   751→  )
+   752→
+   753→  const phases = [0, 0.38, 0.71, 0.18]
+   754→
+   755→  return (
+   756→    <section
+   757→      ref={rootRef}
+   758→      className={"dtr " + className}
+   759→      style={rootStyle}
+   760→      aria-labelledby={titleId}
+   761→      data-mode={cols === 0 ? "strip" : "columns"}
+   762→      data-cols={cols || undefined}
+   763→      data-active={active ? "" : undefined}
+   764→      data-active-col={active && cols !== 0 ? active.split("-")[0] : undefined}
+   765→      data-paused={paused ? "" : undefined}
+   766→      data-static={still ? "" : undefined}
+   767→      data-offscreen={offscreen ? "" : undefined}
+   768→    >
+   769→      <style>{css}</style>
+   770→      <svg className="dtr-defs" aria-hidden="true" focusable="false">
+   771→        <filter id={filterId} colorInterpolationFilters="sRGB">
+   772→          <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0" />
+   773→          <feComponentTransfer>
+   774→            <feFuncR type="table" tableValues="0 0.13 0.5 0.9 1" />
+   775→            <feFuncG type="table" tableValues="0 0.13 0.5 0.9 1" />
+   776→            <feFuncB type="table" tableValues="0 0.13 0.5 0.9 1" />
+   777→          </feComponentTransfer>
+   778→          <feComponentTransfer>
+   779→            <feFuncR type="table" tableValues={tables[0]} />
+   780→            <feFuncG type="table" tableValues={tables[1]} />
+   781→            <feFuncB type="table" tableValues={tables[2]} />
+   782→          </feComponentTransfer>
+   783→        </filter>
+   784→      </svg>
+   785→      <div className="dtr-field" aria-hidden="true" />
+   786→      {grain ? <div className="dtr-grain" aria-hidden="true" /> : null}
+   787→      {cols !== 0 && !still ? pauseButton : null}
+   788→
+   789→      <div className="dtr-in">
+   790→        <div className="dtr-copy" ref={copyRef}>
+   791→          <h2 className="dtr-title" id={titleId} ref={titleRef}>
+   792→            {eyebrow ? <span className="dtr-eyebrow">{eyebrow} </span> : null}
+   793→            {lines.map((l, i) => (
+   794→              <span className="dtr-line" key={i} style={{ ["--i" as any]: i }}>
+   795→                <span>
+   796→                  <span>{l}</span>
+   797→                </span>
+   798→                {i < lines.length - 1 ? " " : null}
+   799→              </span>
+   800→            ))}
+   801→          </h2>
+   802→          {intro ? <p className="dtr-intro">{intro}</p> : null}
+   803→          {cta || secondaryCta ? (
+   804→            <div className="dtr-actions">
+   805→              {cta ? (
+   806→                <a className="dtr-cta" href={cta.href}>
+   807→                  <span className="dtr-cta-label">
+   808→                    <span>{cta.label}</span>
+   809→                    <span aria-hidden="true">{cta.label}</span>
+   810→                  </span>
+   811→                  <span className="dtr-cta-arrow" aria-hidden="true">
+   812→                    →
+   813→                  </span>
+   814→                </a>
+   815→              ) : null}
+   816→              {secondaryCta ? (
+   817→                <a className="dtr-link" href={secondaryCta.href}>
+   818→                  {secondaryCta.label}
+   819→                </a>
+   820→              ) : null}
+   821→              {cols === 0 && !still ? pauseButton : null}
+   822→            </div>
+   823→          ) : null}
+   824→        </div>
+   825→
+   826→        {cols === 0 ? (
+   827→          <div className="dtr-strip" role="group" aria-label={text.team}>
+   828→            <div className="dtr-strip-track">
+   829→              {copies.map((copy) =>
+   830→                plan[0].map((e, i) => {
+   831→                  const slot = slotFor({ ...e, dup: e.dup || copy === 1 }, "s" + copy + "-" + i)
+   832→                  return (
+   833→                    <Portrait
+   834→                      key={slot.key}
+   835→                      slot={slot}
+   836→                      on={active === slot.key}
+   837→                      filterId={filterId}
+   838→                      labels={text}
+   839→                      onEnter={onEnter}
+   840→                      onLeave={onLeave}
+   841→                      onToggle={onToggle}
+   842→                      onSelect={onMemberSelect}
+   843→                      follows={clickFollowsLink}
+   844→                    />
+   845→                  )
+   846→                }),
+   847→              )}
+   848→            </div>
+   849→          </div>
+   850→        ) : (
+   851→          <div className="dtr-wall" role="group" aria-label={text.team}>
+   852→            {plan.map((col, c) => {
+   853→              const dur = Math.max(6, col.length * Math.max(1, driftSeconds))
+   854→              const phase = phases[c % phases.length]
+   855→              return (
+   856→                <div
+   857→                  className="dtr-col"
+   858→                  key={c}
+   859→                  data-dir={c % 2 ? "down" : "up"}
+   860→                  style={{
+   861→                    ["--ci" as any]: c,
+   862→                    ["--dtr-dur" as any]: dur + "s",
+   863→                    ["--dtr-phase" as any]: -(dur * phase) + "s",
+   864→                    ["--dtr-rest" as any]: c % 2 ? 1 - phase : phase,
+   865→                  }}
+   866→                >
+   867→                  <div className="dtr-track">
+   868→                    {copies.map((copy) =>
+   869→                      col.map((e, i) => {
+   870→                        const slot = slotFor({ ...e, dup: e.dup || copy === 1 }, c + "-" + copy + "-" + i)
+   871→                        return (
+   872→                          <div key={slot.key}>
+   873→                            <Portrait
+   874→                              slot={slot}
+   875→                              on={active === slot.key}
+   876→                              filterId={filterId}
+   877→                              labels={text}
+   878→                              onEnter={onEnter}
+   879→                              onLeave={onLeave}
+   880→                              onToggle={onToggle}
+   881→                              onSelect={onMemberSelect}
+   882→                              follows={clickFollowsLink}
+   883→                            />
+   884→                          </div>
+   885→                        )
+   886→                      }),
+   887→                    )}
+   888→                  </div>
+   889→                </div>
+   890→              )
+   891→            })}
+   892→          </div>
+   893→        )}
+   894→      </div>
+   895→    </section>
+   896→  )
+   897→}
+   898→
+   899→// Declared after the JSX: the 21st CLI tokenizer hangs on generics before it.
+   900→export type RosterPaletteInput = Partial<RosterPalette>
+   901→export type RosterLabelsInput = Partial<RosterLabels>
+   902→
+   903→
+   904→demo.tsx
+   905→import DuotoneTeamRoster from "@/components/ui/duotone-team-roster"
+   906→
+   907→export default function DuotoneTeamRosterDemo() {
+   908→  return (
+   909→    <div className="w-full">
+   910→      <DuotoneTeamRoster />
+   911→    </div>
+   912→  )
+   913→}
+   914→
+   915→```
+   916→
+   917→Implementation Guidelines
+   918→ 1. Analyze the component structure and identify all required dependencies
+   919→ 2. Review the component's argumens and state
+   920→ 3. Identify any required context providers or hooks and install them
+   921→ 4. Questions to Ask
+   922→ - What data/props will be passed to this component?
+   923→ - Are there any specific state management requirements?
+   924→ - Are there any required assets (images, icons, etc.)?
+   925→ - What is the expected responsive behavior?
+   926→ - What is the best place to use this component in the app?
+   927→
+   928→Steps to integrate
+   929→ 0. Copy paste all the code above in the correct directories
+   930→ 1. Install external dependencies
+   931→ 2. Fill image assets with Unsplash stock images you know exist
+   932→ 3. Use lucide-react icons for svgs or logos if component requires them
+   933→

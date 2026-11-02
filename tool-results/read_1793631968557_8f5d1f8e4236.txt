@@ -1,0 +1,402 @@
+    36→    36→
+    37→    37→export type RosterPreset = "ember" | "cobalt" | "moss" | "mono"
+    38→    38→
+    39→    39→export type RosterPalette = {
+    40→    40→  /** Darkest colour: the edges of the field and the chips. */
+    41→    41→  ground: string
+    42→    42→  /** The field between the edge and the glow. */
+    43→    43→  deep: string
+    44→    44→  /** The hot centre of the field, and the tritone midtone. */
+    45→    45→  hot: string
+    46→    46→  /** The brightest light in the field. */
+    47→    47→  glow: string
+    48→    48→  /** Headline, chip text and the CTA fill. */
+    49→    49→  ink: string
+    50→    50→  /** Tritone shadow and highlight applied to every portrait. */
+    51→    51→  shadow: string
+    52→    52→  highlight: string
+    53→    53→  /** Tritone midtone. Defaults to a paler mix of hot and highlight so prints lift off the field. */
+    54→    54→  mid?: string
+    55→    55→}
+    56→    56→
+    57→    57→export type TeamMember = {
+    58→    58→  name: string
+    59→    59→  role: string
+    60→    60→  /** Short label on the chip ("Colour", "Sound"). Defaults to the role. */
+    61→    61→  craft?: string
+    62→    62→  /** One line shown when the chip unfolds. */
+    63→    63→  bio?: string
+    64→    64→  /** Portrait URL. A monogram plate stands in when missing or broken. */
+    65→    65→  photo?: string
+    66→    66→  /** object-position for the portrait, e.g. "50% 30%". */
+    67→    67→  focus?: string
+    68→    68→  href?: string
+    69→    69→  /** Link text in the unfolded card. Defaults to labels.memberLink. */
+    70→    70→  linkLabel?: string
+    71→    71→  /** Brightens (>1) or darkens (<1) this portrait before the tritone, for very dark or bright photos. */
+    72→    72→  exposure?: number
+    73→    73→}
+    74→    74→
+    75→    75→export type OpenRole = {
+    76→    76→  title: string
+    77→    77→  href: string
+    78→    78→  /** Chip label. Defaults to "Hiring". */
+    79→    79→  craft?: string
+    80→    80→  /** One line under the title. */
+    81→    81→  note?: string
+    82→    82→  /** Big word in the empty frame. Defaults to "You?". */
+    83→    83→  mark?: string
+    84→    84→  /** Link text in the unfolded card. Defaults to labels.roleLink. */
+    85→    85→  linkLabel?: string
+    86→    86→}
+    87→    87→
+    88→    88→/** Every built-in string, for translation. */
+    89→    89→export type RosterLabels = {
+    90→    90→  pause: string
+    91→    91→  play: string
+    92→    92→  /** Accessible name of the portrait wall. */
+    93→    93→  team: string
+    94→    94→  /** Prefix read before an open role's title. */
+    95→    95→  openRole: string
+    96→    96→  /** Chip on an open-role frame without its own craft. */
+    97→    97→  hiring: string
+    98→    98→  roleLink: string
+    99→    99→  memberLink: string
+   100→   100→}
+   101→   101→
+   102→   102→export const DEFAULT_LABELS: RosterLabels = {
+   103→   103→  pause: "Pause",
+   104→   104→  play: "Play",
+   105→   105→  team: "Team",
+   106→   106→  openRole: "Open role",
+   107→   107→  hiring: "Hiring",
+   108→   108→  roleLink: "See the role",
+   109→   109→  memberLink: "Say hello",
+   110→   110→}
+   111→   111→
+   112→   112→export type RosterLink = { label: string; href: string }
+   113→   113→
+   114→   114→export type DuotoneTeamRosterProps = {
+   115→   115→  members?: TeamMember[]
+   116→   116→  /** Empty frames placed among the portraits, each linking to a job. */
+   117→   117→  openRoles?: OpenRole[]
+   118→   118→  /** Small display word above the headline. */
+   119→   119→  eyebrow?: string
+   120→   120→  /** The headline. Use "
+   121→   121→" to break lines; each line is fitted to the column. */
+   122→   122→  title?: string
+   123→   123→  intro?: string
+   124→   124→  cta?: RosterLink | null
+   125→   125→  secondaryCta?: RosterLink | null
+   126→   126→  preset?: RosterPreset
+   127→   127→  /** Overrides any colour of the preset. */
+   128→   128→  palette?: RosterPaletteInput
+   129→   129→  /** Portrait columns on wide screens (2 to 4). Tablets get 2; phones a strip. */
+   130→   130→  columns?: number
+   131→   131→  /** Seconds a column takes to drift past one portrait. Lower is faster. */
+   132→   132→  driftSeconds?: number
+   133→   133→  /** false (or driftSeconds <= 0) gives a still, scannable wall that grows with the team, headline pinned beside it. */
+   134→   134→  drift?: boolean
+   135→   135→  /** Section height on tablet and desktop. A definite length, never a percentage. */
+   136→   136→  height?: string
+   137→   137→  /** Display face for the headline, eyebrow and monograms. */
+   138→   138→  fontFamily?: string
+   139→   139→  /** Horizontal stretch of the display face (1 = as drawn). */
+   140→   140→  stretch?: number
+   141→   141→  uppercase?: boolean
+   142→   142→  grain?: boolean
+   143→   143→  /** Built-in strings (pause, play, team, openRole, hiring, roleLink, memberLink). */
+   144→   144→  labels?: RosterLabelsInput
+   145→   145→  className?: string
+   146→   146→  /** Called when a portrait is clicked or opened with the keyboard. */
+   147→   147→  onMemberSelect?: (member: TeamMember) => void
+   148→   148→  /** A mouse click on a portrait follows its link (never a mailto:, which stays on the "Say hello" link). Default true. */
+   149→   149→  clickFollowsLink?: boolean
+   150→   150→}
+   151→   151→
+   152→   152→// #region roster-logic
+   153→   153→export const PRESETS = {
+   154→   154→  ember: { ground: "#170403", deep: "#4f0d06", hot: "#ee7a1c", glow: "#ffb54a", ink: "#fff0c8", shadow: "#260604", highlight: "#ffe2ad" },
+   155→   155→  cobalt: { ground: "#03061f", deep: "#0d1c6e", hot: "#2e57f5", glow: "#86a6ff", ink: "#eef1ff", shadow: "#050b33", highlight: "#d9e3ff" },
+   156→   156→  moss: { ground: "#061008", deep: "#163519", hot: "#5d8a35", glow: "#c3d66e", ink: "#f3f6dd", shadow: "#08170b", highlight: "#eef3c4" },
+   157→   157→  mono: { ground: "#090909", deep: "#262626", hot: "#8c8c8c", glow: "#e0e0e0", ink: "#fafafa", shadow: "#0d0d0d", highlight: "#f4f4f4" },
+   158→   158→}
+   159→   159→
+   160→   160→export function resolvePalette(preset: string, overrides: any): RosterPalette {
+   161→   161→  const table: any = PRESETS
+   162→   162→  const base = table[preset] || PRESETS.ember
+   163→   163→  const out: any = Object.assign({}, base)
+   164→   164→  if (overrides) for (const k of Object.keys(base)) if (overrides[k]) out[k] = overrides[k]
+   165→   165→  return out
+   166→   166→}
+   167→   167→
+   168→   168→/** "#f80" or "#ff8800" to [r, g, b] in 0..1, for the SVG tritone tables. */
+   169→   169→export function hexToUnit(hex: string) {
+   170→   170→  let h = String(hex || "").trim().replace("#", "")
+   171→   171→  if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]
+   172→   172→  if (!/^[0-9a-fA-F]{6}$/.test(h)) return [0, 0, 0]
+   173→   173→  return [0, 2, 4].map((i) => Math.round((parseInt(h.slice(i, i + 2), 16) / 255) * 1000) / 1000)
+   174→   174→}
+   175→   175→
+   176→   176→/** Mixes two hex colours, t = 0 gives a, t = 1 gives b. */
+   177→   177→export function mixHex(a: string, b: string, t: number) {
+   178→   178→  const x = hexToUnit(a)
+   179→   179→  const y = hexToUnit(b)
+   180→   180→  return "#" + [0, 1, 2].map((i) => Math.round((x[i] + (y[i] - x[i]) * t) * 255).toString(16).padStart(2, "0")).join("")
+   181→   181→}
+   182→   182→
+   183→   183→/** One feFuncR/G/B table per channel: shadow, midtone, highlight. */
+   184→   184→export function tritoneTables(shadow: string, mid: string, highlight: string) {
+   185→   185→  const s = hexToUnit(shadow)
+   186→   186→  const m = hexToUnit(mid)
+   187→   187→  const h = hexToUnit(highlight)
+   188→   188→  return [0, 1, 2].map((c) => s[c] + " " + m[c] + " " + h[c])
+   189→   189→}
+   190→   190→
+   191→   191→export function initials(name: string) {
+   192→   192→  const parts = String(name || "").trim().split(/\s+/).filter(Boolean)
+   193→   193→  if (!parts.length) return "?"
+   194→   194→  const first = parts[0][0]
+   195→   195→  const last = parts.length > 1 ? parts[parts.length - 1][0] : ""
+   196→   196→  return (first + last).toUpperCase()
+   197→   197→}
+   198→   198→
+   199→   199→/**
+   200→   200→ * Deals the people (and open roles) into columns round-robin, so neighbours
+   201→   201→ * differ, then pads short columns with repeats until each holds `minPerColumn`
+   202→   202→ * so a drifting loop never shows a gap. Repeats are flagged `dup` and are
+   203→   203→ * hidden from assistive tech. Open roles are spread through the deck.
+   204→   204→ */
+   205→   205→export function dealColumns(count: number, roleCount: number, columns: number, minPerColumn: number) {
+   206→   206→  const cols = Math.max(1, Math.floor(columns) || 1)
+   207→   207→  const deck: any[] = []
+   208→   208→  for (let i = 0; i < count; i++) deck.push({ kind: "member", index: i })
+   209→   209→  for (let r = 0; r < roleCount; r++) {
+   210→   210→    const at = Math.min(deck.length, Math.round(((r + 1) * (count + roleCount)) / (roleCount + 1)) - 1 + r)
+   211→   211→    deck.splice(Math.max(0, at), 0, { kind: "role", index: r })
+   212→   212→  }
+   213→   213→  const out: any[][] = []
+   214→   214→  for (let c = 0; c < cols; c++) out.push([])
+   215→   215→  deck.forEach((d, i) => out[i % cols].push({ kind: d.kind, index: d.index, dup: false }))
+   216→   216→  if (!deck.length) return out
+   217→   217→  // Pad from the far end of the column furthest away, so a repeat never sits
+   218→   218→  // level with the same face in the next column.
+   219→   219→  for (let c = 0; c < cols; c++) {
+   220→   220→    let from = (c + Math.floor(cols / 2) + (cols % 2 ? 1 : 0)) % cols
+   221→   221→    if (cols === 1) from = 0
+   222→   222→    const pool = out[from].filter((e) => !e.dup).slice().reverse()
+   223→   223→    const rest = deck.map((d) => ({ kind: d.kind, index: d.index, dup: false })).reverse()
+   224→   224→    const candidates = pool.concat(rest)
+   225→   225→    let k = 0
+   226→   226→    let guard = 0
+   227→   227→    while (out[c].length < minPerColumn && guard < candidates.length * 3) {
+   228→   228→      const d = candidates[k % candidates.length]
+   229→   229→      k++
+   230→   230→      guard++
+   231→   231→      const clash = out[c].some((e) => e.kind === d.kind && e.index === d.index)
+   232→   232→      if (clash && guard < candidates.length) continue
+   233→   233→      out[c].push({ kind: d.kind, index: d.index, dup: true })
+   234→   234→    }
+   235→   235→  }
+   236→   236→  return out
+   237→   237→}
+   238→   238→
+   239→   239→/** Font size that makes the widest headline line fill `available` px. */
+   240→   240→export function fitTitleSize(available: number, widestAt100: number, stretch: number, min: number, max: number) {
+   241→   241→  if (!(available > 0) || !(widestAt100 > 0)) return min
+   242→   242→  const size = (available / (widestAt100 * (stretch > 0 ? stretch : 1))) * 100
+   243→   243→  return Math.max(min, Math.min(max, Math.floor(size * 10) / 10))
+   244→   244→}
+   245→   245→
+   246→   246→/** Layout for a container width: a strip on phones, 2 columns on tablets. */
+   247→   247→export function layoutFor(width: number, columns: number) {
+   248→   248→  if (width > 0 && width < 700) return 0
+   249→   249→  const wanted = Math.max(2, Math.min(4, Math.round(columns) || 3))
+   250→   250→  if (width > 0 && width < 1000) return 2
+   251→   251→  return wanted
+   252→   252→}
+   253→   253→
+   254→   254→export function splitLines(title: string) {
+   255→   255→  return String(title || "")
+   256→   256→    .split("
+   257→   257→")
+   258→   258→    .map((l) => l.trim())
+   259→   259→    .filter(Boolean)
+   260→   260→}
+   261→   261→// #endregion roster-logic
+   262→   262→
+   263→   263→const U = "https://images.unsplash.com/"
+   264→   264→const Q = "?auto=format&fit=crop&w=720&h=960&q=80"
+   265→   265→
+   266→   266→export const DEFAULT_MEMBERS: TeamMember[] = [
+   267→   267→  { name: "Priya Nair", role: "Supervising colourist", craft: "Colour", bio: "Grades every feature that leaves the building. Prefers film emulation to LUTs.", photo: U + "photo-1494790108377-be9c29b29330" + Q, focus: "50% 30%", href: "mailto:priya@foxglove-post.example" },
+   268→   268→  { name: "Daniel Osei", role: "Head of sound", craft: "Sound", bio: "Mixes in Atmos, then checks every reel on a pair of tired laptop speakers.", photo: U + "photo-1507003211169-0a1dd7228f2d" + Q, focus: "50% 30%", href: "mailto:daniel@foxglove-post.example" },
+   269→   269→  { name: "Ellie Marsh", role: "Offline editor", craft: "Edit", bio: "Cuts long-form documentary. Asks what the film is about before opening the timeline.", photo: U + "photo-1438761681033-6461ffad8d80" + Q, focus: "50% 35%", href: "mailto:ellie@foxglove-post.example" },
+   270→   270→  { name: "Marcus Bell", role: "VFX supervisor", craft: "VFX", bio: "Fixes what the shoot could not: skies, rigs, the boom that dipped into frame.", photo: U + "photo-1500648767791-00dcc994a43e" + Q, focus: "50% 30%", href: "mailto:marcus@foxglove-post.example" },
+   271→   271→  { name: "Hannah Cole", role: "Post producer", craft: "Production", bio: "Keeps schedules, budgets and deliverables honest from first call to final QC.", photo: U + "photo-1544005313-94ddf0286df2" + Q, focus: "50% 30%", href: "mailto:hannah@foxglove-post.example" },
+   272→   272→  { name: "Graham Whitlock", role: "Online editor", craft: "Finishing", bio: "Conforms, masters and delivers to whatever spec a broadcaster invents next.", photo: U + "photo-1472099645785-5658abf4ff4e" + Q, focus: "50% 30%", href: "mailto:graham@foxglove-post.example" },
+   273→   273→  { name: "Mira Kowalczyk", role: "Motion designer", craft: "Motion", bio: "Titles, maps and the end credits nobody notices until they are wrong.", photo: U + "photo-1517841905240-472988babdf9" + Q, focus: "50% 30%", href: "mailto:mira@foxglove-post.example" },
+   274→   274→  { name: "Jules Okafor", role: "Dialogue editor", craft: "Dialogue", bio: "Rebuilds noisy location sound one syllable at a time.", photo: U + "photo-1506794778202-cad84cf45f1d" + Q, focus: "50% 30%", href: "mailto:jules@foxglove-post.example" },
+   275→   275→  { name: "Sam Lindqvist", role: "Assistant colourist", craft: "Colour", bio: "Matches cameras, preps the grade and runs the dailies every morning.", photo: U + "photo-1502823403499-6ccfcf4fb453" + Q, focus: "50% 30%", href: "mailto:sam@foxglove-post.example" },
+   276→   276→  { name: "Noa Brandt", role: "Studio manager", craft: "Studio", bio: "Runs the suites, the kit room and, under protest, the coffee rota.", photo: U + "photo-1524504388940-b1c1722653e1" + Q, focus: "50% 30%", href: "mailto:noa@foxglove-post.example" },
+   277→   277→]
+   278→   278→
+   279→   279→const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect
+   280→   280→
+   281→   281→const DISPLAY_STACK = '"Arial Black", "Archivo Black", "Helvetica Neue", Inter, "Segoe UI", system-ui, sans-serif'
+   282→   282→
+   283→   283→const css = `
+   284→   284→.dtr{position:relative;isolation:isolate;overflow:hidden;width:100%;container-type:inline-size;color:var(--dtr-ink);background:var(--dtr-ground);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;--dtr-ease:cubic-bezier(.23,1,.32,1);--dtr-gap:14px;--dtr-pad:clamp(20px,3.2cqw,48px)}
+   285→   285→.dtr *,.dtr *::before,.dtr *::after{box-sizing:border-box}
+   286→   286→.dtr-field{position:absolute;inset:0;z-index:-2;background:radial-gradient(38cqw 46cqw at 0% 100%,var(--dtr-ground) 0%,color-mix(in srgb,var(--dtr-ground) 55%,var(--dtr-deep)) 72%,transparent 100%),radial-gradient(70% 62% at 34% 36%,var(--dtr-glow) 0%,var(--dtr-hot) 26%,color-mix(in srgb,var(--dtr-hot) 55%,var(--dtr-deep)) 48%,transparent 78%),radial-gradient(60% 90% at 78% 30%,color-mix(in srgb,var(--dtr-hot) 70%,var(--dtr-deep)) 0%,transparent 70%),linear-gradient(98deg,var(--dtr-ground) 0%,var(--dtr-deep) 16%,transparent 42%),linear-gradient(0deg,var(--dtr-ground) 0%,color-mix(in srgb,var(--dtr-deep) 85%,transparent) 30%,transparent 62%),var(--dtr-deep)}
+   287→   287→.dtr-grain{position:absolute;inset:-50%;z-index:-1;pointer-events:none;opacity:.2;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -.35'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:220px 220px}
+   288→   288→.dtr-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+   289→   289→.dtr-in{position:relative;display:grid;grid-template-columns:minmax(0,42fr) minmax(0,58fr);height:100%}
+   290→   290→.dtr[data-cols="2"] .dtr-in{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+   291→   291→.dtr-copy{position:relative;z-index:5;isolation:isolate;grid-row:1;grid-column:1;pointer-events:none;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--dtr-pad);padding-right:clamp(16px,2cqw,32px);min-width:0}
+   292→   292→.dtr-title{position:relative;margin:0;text-shadow:0 .02em .14em color-mix(in srgb,var(--dtr-ground) 30%,transparent);font-family:var(--dtr-display);font-weight:900;font-synthesis:none;line-height:.84;letter-spacing:-.035em;color:var(--dtr-ink);font-size:var(--dtr-ts,clamp(56px,9cqw,200px));text-transform:var(--dtr-case)}
+   293→   293→.dtr-eyebrow{display:block;font-size:.36em;line-height:1;letter-spacing:-.01em;margin:0 0 .16em .02em;transform:scaleX(var(--dtr-stretch));transform-origin:0 50%;white-space:nowrap}
+   294→   294→.dtr-line{display:block;clip-path:inset(-30% -400% 0 -10%);padding-bottom:.04em;margin-bottom:-.04em}
+   295→   295→.dtr-line>span{display:inline-block;white-space:nowrap;transform:scaleX(var(--dtr-stretch));transform-origin:0 50%}
+   296→   296→.dtr-line>span>span{display:inline-block;animation:dtr-line-in 900ms var(--dtr-ease) both;animation-delay:calc(120ms + var(--i,0) * 50ms)}
+   297→   297→.dtr-intro,.dtr-actions{pointer-events:auto}
+   298→   298→.dtr-intro{margin:clamp(18px,2.2cqw,28px) 0 0;max-width:38ch;font-size:clamp(15px,1.15cqw,17px);line-height:1.55;color:color-mix(in srgb,var(--dtr-ink) 86%,transparent);text-wrap:pretty}
+   299→   299→.dtr-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:clamp(20px,2.4cqw,30px)}
+   300→   300→.dtr-cta{position:relative;display:inline-flex;align-items:center;gap:12px;height:46px;padding:0 18px 0 20px;border-radius:3px;background:var(--dtr-ink);color:var(--dtr-ground);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;overflow:hidden;transition:transform 160ms var(--dtr-ease),background-color 220ms ease;outline:none}
+   301→   301→.dtr-cta::before{content:"";position:absolute;inset:0;background:var(--dtr-glow);clip-path:inset(0 100% 0 0);transition:clip-path 280ms var(--dtr-ease)}
+   302→   302→.dtr-cta>span{position:relative;z-index:1}
+   303→   303→.dtr-cta-label{position:relative;display:inline-block;overflow:hidden;height:1.2em;line-height:1.2em}
+   304→   304→.dtr-cta-label>span{display:block;transition:transform 260ms var(--dtr-ease)}
+   305→   305→.dtr-cta-arrow{display:inline-block;transition:transform 260ms var(--dtr-ease)}
+   306→   306→.dtr-cta:active{transform:scale(.97)}
+   307→   307→.dtr-cta:focus-visible::before{clip-path:inset(0 0 0 0)}
+   308→   308→.dtr-cta:focus-visible,.dtr-link:focus-visible,.dtr-pause:focus-visible,.dtr-panel a:focus-visible{outline:2px solid var(--dtr-ink);outline-offset:3px}
+   309→   309→.dtr-link{color:var(--dtr-ink);font-size:14px;font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;transition:text-underline-offset 220ms var(--dtr-ease),opacity 200ms ease;outline:none}
+   310→   310→.dtr-wall{position:relative;z-index:1;grid-row:1;grid-column:2;display:grid;grid-template-columns:repeat(var(--dtr-cols),minmax(0,1fr));gap:var(--dtr-gap);padding:0 var(--dtr-pad) 0 clamp(8px,1cqw,16px);height:100%;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%)}
+   311→   311→.dtr-col{position:relative;min-width:0;animation:dtr-rise 1100ms var(--dtr-ease) both;animation-delay:calc(var(--ci) * 90ms)}
+   312→   312→.dtr-track{display:flex;flex-direction:column;will-change:transform;transition:translate 280ms var(--dtr-ease);animation:dtr-up var(--dtr-dur) linear infinite;animation-delay:var(--dtr-phase)}
+   313→   313→.dtr-col[data-dir="down"] .dtr-track{animation-name:dtr-down}
+   314→   314→.dtr[data-paused] .dtr-track,.dtr[data-active] .dtr-track,.dtr[data-offscreen] .dtr-track,.dtr-wall:focus-within .dtr-track,.dtr[data-paused] .dtr-strip-track,.dtr[data-active] .dtr-strip-track,.dtr[data-offscreen] .dtr-strip-track,.dtr-strip:focus-within .dtr-strip-track{animation-play-state:paused}
+   315→   315→.dtr-card{position:relative;container:dtrcard/inline-size;margin:0 0 var(--dtr-gap);aspect-ratio:3/4;border-radius:3px;transition:transform 260ms var(--dtr-ease);-webkit-tap-highlight-color:transparent}
+   316→   316→.dtr-card::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:0 2px 6px color-mix(in srgb,var(--dtr-ground) 40%,transparent),0 18px 44px -12px color-mix(in srgb,var(--dtr-ground) 85%,transparent);opacity:0;transition:opacity 260ms ease;pointer-events:none}
+   317→   317→.dtr-photo{position:absolute;inset:0;overflow:hidden;border-radius:3px;background:var(--dtr-deep);transition:opacity 260ms ease,filter 260ms ease}
+   318→   318→.dtr-photo img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:cover;transition:transform 300ms var(--dtr-ease)}
+   319→   319→.dtr-photo img{transform-origin:50% 22%}
+   320→   320→.dtr-card[data-on] .dtr-photo img{transform:scale(1.05)}
+   321→   321→.dtr-hit{position:absolute;inset:0;z-index:1;margin:0;padding:0;border:0;border-radius:3px;background:transparent;cursor:default;outline:none;-webkit-tap-highlight-color:transparent}
+   322→   322→.dtr-card[data-click] .dtr-hit{cursor:pointer}
+   323→   323→.dtr-hit:focus-visible{box-shadow:0 0 0 2px var(--dtr-ground),0 0 0 4px var(--dtr-ink)}
+   324→   324→.dtr-true{opacity:0;transition:opacity 300ms ease}
+   325→   325→.dtr-plate{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(90% 70% at 50% 35%,var(--dtr-hot),var(--dtr-deep) 70%,var(--dtr-ground));font-family:var(--dtr-display);font-weight:900;color:var(--dtr-ink);font-size:clamp(40px,7cqw,96px);letter-spacing:-.04em}
+   326→   326→.dtr-plate span{transform:scaleX(var(--dtr-stretch));transition:transform 300ms var(--dtr-ease)}
+   327→   327→.dtr-card[data-on] .dtr-plate span{transform:translateY(-.95em) scaleX(var(--dtr-stretch)) scale(.82)}
+   328→   328→.dtr-plate{grid-template-rows:1fr auto 1fr}.dtr-plate span{grid-row:2}
+   329→   329→.dtr-plate em{transition:opacity 160ms ease;grid-row:3;align-self:start;margin-top:.9em;max-width:80%;font:700 12px/1.35 ui-sans-serif,system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;font-style:normal;text-align:center;color:color-mix(in srgb,var(--dtr-ink) 78%,transparent)}
+   330→   330→.dtr-role .dtr-plate{background:repeating-linear-gradient(135deg,transparent 0 10px,color-mix(in srgb,var(--dtr-ink) 9%,transparent) 10px 11px),radial-gradient(90% 70% at 50% 30%,color-mix(in srgb,var(--dtr-hot) 70%,var(--dtr-deep)),var(--dtr-ground) 85%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dtr-ink) 28%,transparent);font-size:clamp(34px,5.2cqw,76px)}
+   331→   331→.dtr-card{--dtr-ct:calc(100% - 26px);--dtr-cr:calc(100% - var(--dtr-cw));--dtr-cb:0px;--dtr-cl:0px}
+   332→   332→.dtr-chip,.dtr-panel{position:absolute;left:12px;bottom:12px;background:color-mix(in srgb,var(--dtr-ground) 95%,transparent);color:var(--dtr-ink);border-radius:3px}
+   333→   333→.dtr-chip{padding:8px 10px 7px;font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;transition:opacity 160ms ease}
+   334→   334→.dtr-panel{z-index:2;right:12px;max-height:calc(100% - 24px);overflow:hidden;padding:10px 12px 11px;clip-path:inset(var(--dtr-ct) var(--dtr-cr) var(--dtr-cb) var(--dtr-cl) round 3px);opacity:0;visibility:hidden;transition:clip-path 200ms var(--dtr-ease),opacity 100ms ease 120ms,visibility 0s linear 220ms;pointer-events:none}
+   335→   335→.dtr-col:first-child .dtr-chip{left:auto;right:12px}
+   336→   336→.dtr-col:first-child .dtr-card{--dtr-cr:0px;--dtr-cl:calc(100% - var(--dtr-cw))}
+   337→   337→
+   338→   338→.dtr-name{margin:0;font-size:clamp(15px,7cqw,19px);font-weight:800;line-height:1.15;letter-spacing:-.01em}
+   339→   339→.dtr-roleline{margin:3px 0 0;font-size:13px;line-height:1.35;color:color-mix(in srgb,var(--dtr-ink) 78%,transparent)}
+   340→   340→.dtr-bio{margin:6px 0 0;font-size:13px;line-height:1.4;color:color-mix(in srgb,var(--dtr-ink) 90%,transparent)}
+   341→   341→.dtr-panel a{display:inline-flex;align-items:center;gap:6px;margin-top:8px;color:var(--dtr-ink);font-size:13px;font-weight:700;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;outline:none}
+   342→   342→.dtr-panel a span{display:inline-block;transition:transform 260ms var(--dtr-ease)}
+   343→   343→.dtr-card[data-on]{z-index:3;transform:translateY(-6px) scale(1.02)}
+   344→   344→.dtr-card[data-on]::after{opacity:1}
+   345→   345→.dtr-card[data-on] .dtr-true{opacity:.72}
+   346→   346→.dtr-card[data-on] .dtr-chip,.dtr-card[data-on] .dtr-plate em{opacity:0;transition-duration:90ms}
+   347→   347→.dtr-card[data-on] .dtr-panel{clip-path:inset(0 0 0 0 round 3px);opacity:1;visibility:visible;pointer-events:auto;transition:clip-path 300ms var(--dtr-ease),opacity 60ms ease,visibility 0s}
+   348→   348→.dtr-title{transform-origin:0 100%;transition:transform 300ms var(--dtr-ease)}
+   349→   349→.dtr[data-active-col="0"] .dtr-title{transform:scale(.84)}
+   350→   350→.dtr[data-active] .dtr-card:not([data-on]) .dtr-photo{opacity:.42;filter:saturate(.7)}
+   351→   351→.dtr[data-active] .dtr-card:not([data-on]) .dtr-chip{opacity:.5}
+   352→   352→.dtr-pause{position:absolute;right:var(--dtr-pad);bottom:14px;z-index:6;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dtr-ink) 32%,transparent);display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:0;border-radius:3px;background:color-mix(in srgb,var(--dtr-ground) 88%,transparent);color:var(--dtr-ink);font:700 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:transform 160ms var(--dtr-ease),background-color 200ms ease;outline:none}
+   353→   353→.dtr-pause:active{transform:scale(.96)}
+   354→   354→.dtr-pause i{display:inline-block;width:8px;height:9px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+   355→   355→.dtr[data-paused] .dtr-pause i{border-right:0;border-left:8px solid currentColor;border-top:4.5px solid transparent;border-bottom:4.5px solid transparent;width:0;height:0}
+   356→   356→.dtr-strip{display:none}
+   357→   357→.dtr[data-mode="strip"] .dtr-in{display:flex;flex-direction:column;height:auto}
+   358→   358→.dtr[data-mode="strip"] .dtr-wall{display:none}
+   359→   359→.dtr[data-mode="strip"] .dtr-strip{display:block;position:relative;order:-1;overflow:hidden;padding:20px 0 4px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%)}
+   360→   360→.dtr-strip-track{display:flex;width:max-content;padding-left:20px;will-change:transform;transition:translate 280ms var(--dtr-ease);animation:dtr-left var(--dtr-sdur) linear infinite}
+   361→   361→.dtr-strip .dtr-card{width:clamp(170px,56cqw,250px);margin:0 10px 0 0;flex:none}
+   362→   362→.dtr[data-mode="strip"] .dtr-copy{padding:18px 20px 28px}
+   363→   363→.dtr[data-mode="strip"] .dtr-pause{position:static;margin-left:auto}
+   364→   364→.dtr[data-static] .dtr-track{animation:none}
+   365→   365→.dtr[data-static] .dtr-wall{height:auto;padding-top:var(--dtr-pad);padding-bottom:var(--dtr-pad);-webkit-mask-image:none;mask-image:none}
+   366→   366→.dtr[data-static] .dtr-col:nth-child(2){padding-top:clamp(32px,6cqw,96px)}
+   367→   367→.dtr[data-static] .dtr-col:nth-child(3){padding-top:clamp(16px,3cqw,48px)}
+   368→   368→.dtr[data-static] .dtr-col:nth-child(4){padding-top:clamp(48px,8cqw,128px)}
+   369→   369→.dtr[data-static] .dtr-in{height:auto;align-items:start}
+   370→   370→.dtr[data-static] .dtr-copy{position:sticky;top:0;height:var(--dtr-h);min-height:600px}
+   371→   371→.dtr[data-static][data-mode="strip"] .dtr-copy{position:relative;height:auto;min-height:0}
+   372→   372→.dtr[data-static] .dtr-strip{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+   373→   373→.dtr[data-static] .dtr-strip-track{animation:none;padding-right:20px}
+   374→   374→.dtr[data-static] .dtr-strip .dtr-card{scroll-snap-align:start}
+   375→   375→@container dtrcard (max-width:229px){.dtr-bio{display:none}.dtr-panel{padding:9px 10px 10px}}
+   376→   376→@keyframes dtr-up{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-50%,0)}}
+   377→   377→@keyframes dtr-down{from{transform:translate3d(0,-50%,0)}to{transform:translate3d(0,0,0)}}
+   378→   378→@keyframes dtr-left{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-50% + 10px),0,0)}}
+   379→   379→@keyframes dtr-rise{from{opacity:0;transform:translate3d(0,56px,0)}to{opacity:1;transform:none}}
+   380→   380→@keyframes dtr-line-in{from{transform:translate3d(0,104%,0)}to{transform:none}}
+   381→   381→@media (hover:hover) and (pointer:fine){
+   382→   382→.dtr-cta:hover::before{clip-path:inset(0 0 0 0)}
+   383→   383→.dtr-cta:hover .dtr-cta-label>span{transform:translateY(-100%)}
+   384→   384→.dtr-cta:hover .dtr-cta-arrow{transform:translateX(4px)}
+   385→   385→.dtr-link:hover{text-underline-offset:8px}
+   386→   386→.dtr-panel a:hover span{transform:translate(2px,-2px)}
+   387→   387→.dtr-pause:hover{background:var(--dtr-ground)}
+   388→   388→}
+   389→   389→@media (prefers-reduced-motion:reduce){
+   390→   390→.dtr-track,.dtr-strip-track{animation:none;transform:translate3d(0,calc(-50% * var(--dtr-rest,0)),0)}
+   391→   391→.dtr-strip-track{transform:none}
+   392→   392→.dtr-col,.dtr-line>span>span{animation:none}
+   393→   393→.dtr-card,.dtr-panel,.dtr-cta-label>span,.dtr-cta-arrow{transition-duration:1ms}
+   394→   394→.dtr-card[data-on],.dtr-card[data-on] .dtr-photo img{transform:none}
+   395→   395→.dtr-title{transition-duration:1ms}
+   396→   396→.dtr-pause{display:none}
+   397→   397→}
+   398→   398→`
+   399→   399→
+   400→   400→type Slot =
+   401→   401→  | { key: string; kind: "member"; member: TeamMember; dup: boolean }
+   402→   402→  | { key: string; kind: "role"; role: OpenRole; dup: boolean }
+   403→   403→
+   404→   404→/** Nudges a drifting column (or the phone strip) so a focused card is fully visible. */
+   405→   405→function bringIntoView(card: HTMLElement) {
+   406→   406→  const frame = card.closest(".dtr-wall, .dtr-strip") as HTMLElement | null
+   407→   407→  const track = card.closest(".dtr-track, .dtr-strip-track") as HTMLElement | null
+   408→   408→  if (!frame || !track) return
+   409→   409→  const f = frame.getBoundingClientRect()
+   410→   410→  const r = card.getBoundingClientRect()
+   411→   411→  const vertical = track.classList.contains("dtr-track")
+   412→   412→  // Start from where the track is right now (it may still be easing back).
+   413→   413→  const now = getComputedStyle(track).translate
+   414→   414→  const parts = !now || now === "none" ? ["0", "0"] : now.split(" ")
+   415→   415→  let x = parseFloat(parts[0]) || 0
+   416→   416→  let y = parseFloat(parts[1] || "0") || 0
+   417→   417→  const m = 24
+   418→   418→  if (vertical) {
+   419→   419→    if (r.top < f.top + m) y += f.top + m - r.top
+   420→   420→    else if (r.bottom > f.bottom - m) y -= r.bottom - (f.bottom - m)
+   421→   421→  } else {
+   422→   422→    if (r.left < f.left + m) x += f.left + m - r.left
+   423→   423→    else if (r.right > f.right - m) x -= r.right - (f.right - m)
+   424→   424→  }
+   425→   425→  track.style.translate = Math.round(x) + "px " + Math.round(y) + "px"
+   426→   426→}
+   427→   427→
+   428→   428→/** Lets the track ease back into its loop once focus moves on. */
+   429→   429→function releaseNudge(card: HTMLElement) {
+   430→   430→  const track = card.closest(".dtr-track, .dtr-strip-track") as HTMLElement | null
+   431→   431→  if (track) track.style.translate = ""
+   432→   432→}
+   433→   433→
+   434→   434→function Portrait(props: {
+   435→   435→  slot: Slot
+
+[showing lines 36-435 of 933; use offset=436 with limit to continue reading]
