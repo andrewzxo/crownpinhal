@@ -651,3 +651,20 @@ Work Log:
 
 Stage Summary:
 - Deploy duplo com SEO completo. Pendente do usuário (cada um exige conta própria + env na Vercel + redeploy): NEXT_PUBLIC_GA_ID (GA4), NEXT_PUBLIC_CLARITY_ID (Clarity), NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION (Search Console) e depois enviar sitemap.xml no Search Console.
+
+---
+Task ID: 29
+Agent: Z.ai Code (sessão atual)
+Task: Substituir a seção "Nossas Modalidades" pelo componente Duotone Team Roster (enviado pelo usuário via 21st.dev).
+
+Work Log:
+- Componente criado em src/components/ui/duotone-team-roster.tsx (autocontido, sem deps externas): colunas de retratos em duotone tritone (SVG feColorMatrix) com drift vertical oposto, hover/tap levanta o card + painel unfold com nome/descrição/link, modo strip no mobile (<700px), pausa, reduced-motion, acessibilidade (aria-expanded/labels), ~890 linhas.
+- Correções do paste: strings quebradas em literais com newline real (title default e splitLines → "\n"); deps de useCallback p/ React Compiler lint ([setActive]); DEFAULT_MEMBERS Unsplash removido (members=[] default).
+- Integração (src/components/crown/Modalities.tsx): 12 modalidades do banco → members; chip = frequência real ("37x/semana", "Acesso livre"); roleline = resumo da grade com compressão de dias consecutivos ("Todos os dias • 06:00 às 19:30", "Ter • 19:00", "Seg a Sex…"); bio = descrição; href = wa.me com mensagem POR modalidade; linkLabel "Agendar pelo WhatsApp". Paleta override CROWN (ouro #d9a441/#f5d488 sobre preto), fonte var(--font-anton), título "NOSSAS
+MODALIDADES", CTA 7 dias grátis (settings.whatsappMsg) + secundário #planos. Fallback mantido quando não há modalidades.
+- Testes local: lint 0; desktop 3 colunas/24 cards/título fit 100px; hover real (mouse move) → data-on + painel visible (nome/grade/bio/link wa.me/5519991504548 per-modality); PAUSAR/RETOMAR ok; mobile 390px → modo strip com cards horizontais + headline abaixo; console sem erros.
+- NOTA AUTOMAÇÃO: refs de Playwright apontavam p/ cards DUPLICADOS (cópia 2 do loop de drift, metade clipada pelo overflow:hidden) → hit-test falhava "covered by #sobre"; usuário real não é afetado (cards visíveis hoveram OK; dups são tabIndex -1 + aria-hidden).
+- Verificado AO VIVO na Vercel: roster renderiza (columns/24 cards/drift), screenshot confirma visual dourado + painel aberto. Commit aa76823.
+
+Stage Summary:
+- Nova seção de modalidades: mural cinematográfico em duotone dourado com as 12 modalidades, horários reais nos chips e conversão direta pro WhatsApp em cada card. Desktop (mural com drift) e mobile (strip) validados local e produção.
