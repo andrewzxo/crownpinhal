@@ -632,3 +632,22 @@ Stage Summary:
 - SITE NO AR E 100% OPERACIONAL: https://crownpinhal.vercel.app (Vercel) + banco Turso sa-east-1 compartilhável.
 - Contas demo continuam no banco (dono/admin/cliente) mas sem exposição de senhas na UI — recomendo ao dono trocar as senhas no painel (Usuários → Redefinir Senha).
 - Pendências: URL da Render (keep-alive); opcional apontar Render pro mesmo Turso (build sem prisma db push).
+
+---
+Task ID: 28
+Agent: Z.ai Code (sessão atual)
+Task: Pacote completo de SEO/analytics: favicon, meta tags (SEO+OG), JSON-LD, sitemap/llms.txt/robots.txt, Google Analytics, Search Console, Microsoft Clarity e imagens 100% WebP.
+
+Work Log:
+- IMAGENS WEBP: scripts/convert-webp.ts (sharp) — 19 imagens convertidas q82: 5959KB → 1816KB (-69%); destaques real-entrada 1855KB→120KB e real-interior 2116KB→192KB. 8 arquivos sem uso apagados (crossfit, funcional, gallery-hall/recepcao, logo-original, hero-crown, texture-gold + musculacao/funcional.webp pós-check de refs). OG image criada: /img/og-cover.jpg 1200×630 (JPG — WhatsApp não suporta webp em og:image) com hero + gradiente + tipografia CROWN.
+- FAVICON: convenção do Next — src/app/icon.png (512²) + src/app/apple-icon.png (180²) gerados do logo sobre fundo #101013; metadata.icons manual removida.
+- BANCO: scripts/db-urls-to-webp.ts migrou 20 URLs (12 modalidades + 7 galeria + heroImageUrl) no LOCAL e no TURSO; seed.ts atualizado p/ .webp (futuros seeds já nascem certo).
+- CÓDIGO: todas refs /img/*.jpg|png e /logo.png → .webp (layout preload, AuthGate, 8× logo).
+- META TAGS (layout.tsx): metadataBase (env NEXT_PUBLIC_SITE_URL || vercel), title/description/keywords reais, canonical, OG completo (10 tags, pt_BR, og-cover 1200×630), Twitter summary_large_image, robots googleBot max-image-preview:large, verification.google via env.
+- JSON-LD: ExerciseGym (@id, slogan, address, phone, openingHours Mo-Fr 5-22h/Sa 8-16h/Dom 8-14h, sameAs instagram/beacons/ticketbro, priceRange).
+- GA4 + CLARITY: next/script afterInteractive, condicionais a NEXT_PUBLIC_GA_ID e NEXT_PUBLIC_CLARITY_ID (sem env = zero script).
+- ROTAS: sitemap.ts + robots.ts (com Sitemap:) substituem robots.txt estático (apagado); public/llms.txt com localização, horários, 12 modalidades, planos reais e APIs.
+- VALIDAÇÃO: lint 0; local — robots/sitemap/llms/hero.webp/logo.webp 200, og 10 tags, favicon link 512², JSON-LD 1, GA ausente sem env (correto), portão com hero.webp carregada; VERCEL — tudo 200, API com 12/12+7/7 webp, canonical, ExerciseGym no HTML. Commit 0ddee5b.
+
+Stage Summary:
+- Deploy duplo com SEO completo. Pendente do usuário (cada um exige conta própria + env na Vercel + redeploy): NEXT_PUBLIC_GA_ID (GA4), NEXT_PUBLIC_CLARITY_ID (Clarity), NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION (Search Console) e depois enviar sitemap.xml no Search Console.
