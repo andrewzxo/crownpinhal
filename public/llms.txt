@@ -1,0 +1,49 @@
+# CROWN Academia — Espírito Santo do Pinhal-SP
+
+> Academia completa (Fitness & Lifestyle) em Espírito Santo do Pinhal, SP, Brasil.
+> Slogan: "Conectando pessoas através do fitness". Site de página única em português (pt-BR).
+
+Site: https://crownpinhal.vercel.app
+Sitemap: https://crownpinhal.vercel.app/sitemap.xml
+Conteúdo estruturado (JSON da API): https://crownpinhal.vercel.app/api/content
+
+## Localização e contato
+
+- Endereço: Av. Washington Luís, 45 — Espírito Santo do Pinhal-SP, CEP 13990-000 (a ~700m da Praça Nestor de Almeida Vergueiro)
+- WhatsApp: (19) 99150-4548 (mensagens pré-preenchidas pelo site)
+- Instagram: @crownpinhal — https://www.instagram.com/crownpinhal
+- Hub de agendamento: https://beacons.ai/crownpinhal
+- Ingressos e eventos: https://crown-gym-pinhal.ticketbro.com/
+- Razão social: Lrt Atividades em Condicionamento Fisico LTDA • CNPJ 57.249.247/0001-63
+
+## Horários (musculação)
+
+- Segunda a sexta: 05h às 22h
+- Sábado: 08h às 16h
+- Domingo: 08h às 14h
+
+## Modalidades (12)
+
+Musculação (acesso livre no horário de funcionamento), CROSS (programação @herculesfunctional, seg a sex 6h/7h/8h e 16h30/17h30/18h30/19h30, sáb 8h, dom 9h), HYROX (afiliada oficial HYROX Brasil, seg/qua 7h e dom 9h), CROWN RUN (terças 19h, Estádio Velho), CROWN DANCE (seg 18h), BIKE/cycling indoor (seg e qua 18h15), JUMP (ter e qui 18h), PILATES (ter 19h), MUAY THAI, BOXE, BEACH TENNIS e FUTEVÔLEI (quadras de areia com o Arena Beach Bar no pós-jogo).
+
+## Planos (valores mensais reais)
+
+- CROWN GOLD (2 modalidades): R$ 269/mês (semestral R$ 209, anual R$ 189)
+- MUSCULAÇÃO LIVRE: R$ 159/mês (semestral R$ 139, anual R$ 119)
+- CROSS 2X NA SEMANA: R$ 149/mês
+- CROSS ILIMITADO: R$ 209/mês
+- ARTES MARCIAIS (boxe e/ou muay thai): R$ 159/mês
+- CROWN CYCLING: R$ 109/mês
+- BEACH TENNIS: R$ 199/mês (1x/sem) ou R$ 299/mês (2x/sem)
+- FUTEVÔLEI: R$ 139/mês (1x/sem) ou R$ 199/mês (2x/sem)
+- CROWN CLUB A/B/C/D (combos de 2 a 4 modalidades): R$ 289 a R$ 519/mês
+- DAY USE: R$ 100/hora (2h R$ 170, 3h R$ 250)
+- Convênios: plano família/empresa 10%, horário econômico 30%, oficiais militares 20%, estacionamento grátis. Parceiros: Wellhub (Gympass) e TotalPass.
+- Campanha: novos alunos testam com 7 dias grátis (agendamento pelo WhatsApp ou hub).
+
+## Funcionalidades do site
+
+- Portão de acesso: login/cadastro por e-mail, "Entrar com Google" (quando configurado) e modo visitante
+- Grade de horários por modalidade, galeria de fotos, informações de contato com link do Google Maps
+- Área do dono/admin: cadastro de modalidades, horários, planos, galeria (upload em lote) e usuários
+- Assinatura de planos pelo site (pedido registrado e visível no painel)

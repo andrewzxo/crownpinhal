@@ -17,7 +17,7 @@ function Splash() {
   return (
     <div className="min-h-screen bg-[#101013] flex flex-col items-center justify-center gap-10">
       <img
-        src="/logo.png"
+        src="/logo.webp"
         alt="Carregando CROWN Academia"
         className="w-72 sm:w-96 animate-pulse"
       />

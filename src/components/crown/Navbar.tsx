@@ -58,7 +58,7 @@ export default function Navbar() {
           className="flex items-center cursor-pointer shrink-0"
         >
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="Logo CROWN Academia"
             className={`w-auto transition-all duration-300 ${
               scrolled ? "h-11" : "h-14"
@@ -110,7 +110,7 @@ export default function Navbar() {
               <SheetHeader className="p-5 border-b border-[#2b2b31]">
                 <SheetTitle className="flex items-center">
                   <img
-                    src="/logo.png"
+                    src="/logo.webp"
                     alt="Logo CROWN Academia"
                     className="h-10 w-auto"
                   />

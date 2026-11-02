@@ -35,7 +35,7 @@ export default function Footer() {
           {/* Marca */}
           <div>
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="Logo CROWN Academia"
             loading="lazy"
             decoding="async"

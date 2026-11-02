@@ -20,7 +20,7 @@ export default function Hero() {
   // evento onLoad não dispara mais — por isso o ref confere img.complete.
   // Depois de carregada, a imagem nunca volta a se esconder.
   const [heroLoaded, setHeroLoaded] = useState(false);
-  const heroSrc = s.heroImageUrl || "/img/hero.jpg";
+  const heroSrc = s.heroImageUrl || "/img/hero.webp";
 
   const [pre, post] = (() => {
     const idx = heroHighlight ? heroTitle.indexOf(heroHighlight) : -1;

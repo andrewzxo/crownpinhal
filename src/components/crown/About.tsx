@@ -15,9 +15,9 @@ export default function About() {
   ];
 
   const imgs = [
-    gallery[0]?.url || "/img/real-entrada.png",
-    gallery[2]?.url || "/img/gallery-pesos.jpg",
-    gallery[1]?.url || "/img/real-interior.png",
+    gallery[0]?.url || "/img/real-entrada.webp",
+    gallery[2]?.url || "/img/gallery-pesos.webp",
+    gallery[1]?.url || "/img/real-interior.webp",
   ];
 
   const aboutTitle = settings?.aboutTitle || "MAIS QUE UMA ACADEMIA. SEU FITNESS & LIFESTYLE.";

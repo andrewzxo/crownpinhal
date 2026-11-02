@@ -78,7 +78,7 @@ export default function Comunidade() {
               {/* Imagem */}
               <div className="relative min-h-64 lg:min-h-full">
                 <img
-                  src="/img/cross.jpg"
+                  src="/img/cross.webp"
                   alt="Atletas treinando na CROWN para o Crown Games"
                   loading="lazy"
                   decoding="async"

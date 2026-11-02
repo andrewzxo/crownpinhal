@@ -342,7 +342,7 @@ export default function AuthGate() {
     <div className="min-h-screen bg-[#101013] text-zinc-50 relative overflow-hidden">
       {/* Fundo */}
       <img
-        src="/img/hero.jpg"
+        src="/img/hero.webp"
         alt=""
         aria-hidden
         className="absolute inset-0 w-full h-full object-cover opacity-15"
@@ -358,7 +358,7 @@ export default function AuthGate() {
           className="hidden lg:flex flex-col items-center text-center max-w-md relative"
         >
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="Logo da Academia CROWN Pinhal-SP"
             className="w-80"
           />
@@ -381,7 +381,7 @@ export default function AuthGate() {
         >
           <div className="lg:hidden flex justify-center mb-6">
             <img
-              src="/logo.png"
+              src="/logo.webp"
               alt="Logo da Academia CROWN Pinhal-SP"
               className="h-20 w-auto"
             />
