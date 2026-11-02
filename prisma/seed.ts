@@ -105,7 +105,7 @@ export async function main() {
       name: 'Musculação',
       description:
         'Musculação completa com área de força e cardio, professores na casa e acesso livre durante todo o funcionamento da academia.',
-      imageUrl: '/img/real-interior.png',
+      imageUrl: '/img/real-interior.webp',
       icon: 'Dumbbell',
       order: 1,
       schedules: { create: [] },
@@ -114,7 +114,7 @@ export async function main() {
       name: 'CROSS',
       description:
         'O treino mais intenso da CROWN, com programação de afiliados @herculesfunctional. Força, resistência e condicionamento de verdade — manhã e noite, toda semana.',
-      imageUrl: '/img/cross.jpg',
+      imageUrl: '/img/cross.webp',
       icon: 'Flame',
       order: 2,
       schedules: { create: buildSchedules(CROSS_TIMES) },
@@ -123,7 +123,7 @@ export async function main() {
       name: 'HYROX',
       description:
         'A CROWN é afiliada oficial HYROX Brasil. Preparação completa para a prova: corrida, sled push, wall balls, burpees e mais. Para competir ou explodir o condicionamento.',
-      imageUrl: '/img/hyrox.jpg',
+      imageUrl: '/img/hyrox.webp',
       icon: 'Trophy',
       order: 3,
       schedules: { create: buildSchedules(HYROX_TIMES) },
@@ -132,7 +132,7 @@ export async function main() {
       name: 'CROWN RUN',
       description:
         'O treino de corrida da CROWN. Toda terça-feira às 19h no Estádio Velho. Corra com a comunidade, melhore seu ritmo e sua resistência.',
-      imageUrl: '/img/run.jpg',
+      imageUrl: '/img/run.webp',
       icon: 'Footprints',
       order: 4,
       schedules: { create: buildSchedules(RUN_TIMES, 'Local: Estádio Velho') },
@@ -141,7 +141,7 @@ export async function main() {
       name: 'CROWN DANCE',
       description:
         'Ritmos que queimam calorias sem parecer treino. Cardio, dança e energia coletiva em uma aula só. Toda segunda às 18h.',
-      imageUrl: '/img/zumba.jpg',
+      imageUrl: '/img/zumba.webp',
       icon: 'Music',
       order: 5,
       schedules: { create: buildSchedules(DANCE_TIMES) },
@@ -150,7 +150,7 @@ export async function main() {
       name: 'BIKE',
       description:
         'Cycling indoor com trilha e energia lá em cima. Pedaladas intensas para queimar calorias e ganhar fôlego. Segunda e quarta às 18h15.',
-      imageUrl: '/img/spinning.jpg',
+      imageUrl: '/img/spinning.webp',
       icon: 'Bike',
       order: 6,
       schedules: { create: buildSchedules(BIKE_TIMES) },
@@ -159,7 +159,7 @@ export async function main() {
       name: 'JUMP',
       description:
         'Cardio de alto rendimento com leveza para as articulações. A aula divertida que assusta a balança. Terça e quinta às 18h.',
-      imageUrl: '/img/jump.jpg',
+      imageUrl: '/img/jump.webp',
       icon: 'Activity',
       order: 7,
       schedules: { create: buildSchedules(JUMP_TIMES) },
@@ -168,7 +168,7 @@ export async function main() {
       name: 'PILATES',
       description:
         'Força, flexibilidade, postura e respiração. A aula que equilibra o corpo e a mente. Toda terça às 19h.',
-      imageUrl: '/img/pilates.jpg',
+      imageUrl: '/img/pilates.webp',
       icon: 'Sparkles',
       order: 8,
       schedules: { create: buildSchedules(PILATES_TIMES) },
@@ -177,7 +177,7 @@ export async function main() {
       name: 'MUAY THAI',
       description:
         'Lutas na CROWN: arte marcial tailandesa completa — golpes, joelhadas e condicionamento de atleta. Aulas para todos os níveis.',
-      imageUrl: '/img/muay-thai.jpg',
+      imageUrl: '/img/muay-thai.webp',
       icon: 'Swords',
       order: 9,
       schedules: { create: [] },
@@ -186,7 +186,7 @@ export async function main() {
       name: 'BOXE',
       description:
         'Técnica de punhos, footwork e condicionamento em treinos que desafiam de verdade. Uma das lutas da CROWN — venha testar.',
-      imageUrl: '/img/boxe.jpg',
+      imageUrl: '/img/boxe.webp',
       icon: 'Zap',
       order: 10,
       schedules: { create: [] },
@@ -195,7 +195,7 @@ export async function main() {
       name: 'BEACH TENNIS',
       description:
         'Quadras de areia integradas para jogar a modalidade que conquistou o Brasil. E o pós-jogo? Porções e bebidas no Arena Beach Bar.',
-      imageUrl: '/img/beach-tennis.jpg',
+      imageUrl: '/img/beach-tennis.webp',
       icon: 'Medal',
       order: 11,
       schedules: { create: [] },
@@ -204,7 +204,7 @@ export async function main() {
       name: 'FUTEVÔLEI',
       description:
         'Futebol + vôlei na areia da CROWN. Quadras de areia integradas e o pós-jogo garantido no Arena Beach Bar.',
-      imageUrl: '/img/futevolei.jpg',
+      imageUrl: '/img/futevolei.webp',
       icon: 'Medal',
       order: 12,
       schedules: { create: [] },
@@ -454,13 +454,13 @@ export async function main() {
 
   // ---------- Galeria (fotos reais + complemento) ----------
   const galleryData = [
-    { url: '/img/real-entrada.png', title: 'Recepção CROWN', order: 1 },
-    { url: '/img/real-interior.png', title: 'Sala de musculação', order: 2 },
-    { url: '/img/gallery-pesos.jpg', title: 'Área de pesos', order: 3 },
-    { url: '/img/gallery-cardio.jpg', title: 'Área de cardio', order: 4 },
-    { url: '/img/cross.jpg', title: 'Aula de CROSS', order: 5 },
-    { url: '/img/muay-thai.jpg', title: 'Muay Thai', order: 6 },
-    { url: '/img/futevolei.jpg', title: 'Futevôlei', order: 7 },
+    { url: '/img/real-entrada.webp', title: 'Recepção CROWN', order: 1 },
+    { url: '/img/real-interior.webp', title: 'Sala de musculação', order: 2 },
+    { url: '/img/gallery-pesos.webp', title: 'Área de pesos', order: 3 },
+    { url: '/img/gallery-cardio.webp', title: 'Área de cardio', order: 4 },
+    { url: '/img/cross.webp', title: 'Aula de CROSS', order: 5 },
+    { url: '/img/muay-thai.webp', title: 'Muay Thai', order: 6 },
+    { url: '/img/futevolei.webp', title: 'Futevôlei', order: 7 },
   ]
   for (const g of galleryData) {
     const existing = await prisma.galleryImage.findFirst({ where: { url: g.url } })
@@ -478,7 +478,7 @@ export async function main() {
     heroHighlight: 'FITNESS',
     heroSubtitle:
       'Um espaço completo para o seu Fitness & Lifestyle: treino, saúde e convivência no coração de Pinhal.',
-    heroImageUrl: '/img/hero.jpg',
+    heroImageUrl: '/img/hero.webp',
     // SOBRE A VIBE CROWN — conceito real: "Um espaço completo para o seu Fitness & Lifestyle. Conectando pessoas através do fitness."
     aboutTitle: 'MAIS QUE UMA ACADEMIA. SEU FITNESS & LIFESTYLE.',
     aboutText:

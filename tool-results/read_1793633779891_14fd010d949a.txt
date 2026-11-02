@@ -1,0 +1,868 @@
+     1→     1→"use client"
+     2→     2→
+     3→     3→import * as React from "react"
+     4→     4→
+     5→     5→/*
+     6→     6→ * Duotone Team Roster: a "meet the people" section. A heavy display headline
+     7→     7→ * sits bottom-left on a burning colour field; beside it, the team hangs in
+     8→     8→ * tall columns of portraits that drift slowly in opposite directions. Every
+     9→     9→ * photo is pushed through one tritone (shadow, midtone, highlight) built from
+    10→    10→ * the palette, so a roster shot on ten different phones reads as one set.
+    11→    11→ *
+    12→    12→ * The signature: point at, tab to or tap a portrait and it lifts out of the
+    13→    13→ * wall, colour bleeds back into it, the rest of the wall sinks into the field,
+    14→    14→ * and its small craft chip unfolds into a card with the name, role, one line
+    15→    15→ * and a link. The columns hold still while you read.
+    16→    16→ *
+    17→    17→ * Content, photos, open roles, colours (four presets or your own), column
+    18→    18→ * count, drift speed, type and height are all props. Below ~700px the columns
+    19→    19→ * become one drifting strip above the headline. Reduced motion keeps the
+    20→    20→ * columns staggered and still. A pause button stops the drift at any time.
+    21→    21→ *
+    22→    22→ * Integração CROWN (Task 29): usado na seção de modalidades — cada "retrato"
+    23→    23→ * é uma modalidade; chip = frequência semanal; card = descrição + WhatsApp.
+    24→    24→ */
+    25→    25→
+    26→    26→export type RosterPreset = "ember" | "cobalt" | "moss" | "mono"
+    27→    27→
+    28→    28→export type RosterPalette = {
+    29→    29→  /** Darkest colour: the edges of the field and the chips. */
+    30→    30→  ground: string
+    31→    31→  /** The field between the edge and the glow. */
+    32→    32→  deep: string
+    33→    33→  /** The hot centre of the field, and the tritone midtone. */
+    34→    34→  hot: string
+    35→    35→  /** The brightest light in the field. */
+    36→    36→  glow: string
+    37→    37→  /** Headline, chip text and the CTA fill. */
+    38→    38→  ink: string
+    39→    39→  /** Tritone shadow and highlight applied to every portrait. */
+    40→    40→  shadow: string
+    41→    41→  highlight: string
+    42→    42→  /** Tritone midtone. Defaults to a paler mix of hot and highlight so prints lift off the field. */
+    43→    43→  mid?: string
+    44→    44→}
+    45→    45→
+    46→    46→export type TeamMember = {
+    47→    47→  name: string
+    48→    48→  role: string
+    49→    49→  /** Short label on the chip ("Colour", "Sound"). Defaults to the role. */
+    50→    50→  craft?: string
+    51→    51→  /** One line shown when the chip unfolds. */
+    52→    52→  bio?: string
+    53→    53→  /** Portrait URL. A monogram plate stands in when missing or broken. */
+    54→    54→  photo?: string
+    55→    55→  /** object-position for the portrait, e.g. "50% 30%". */
+    56→    56→  focus?: string
+    57→    57→  href?: string
+    58→    58→  /** Link text in the unfolded card. Defaults to labels.memberLink. */
+    59→    59→  linkLabel?: string
+    60→    60→  /** Brightens (>1) or darkens (<1) this portrait before the tritone, for very dark or bright photos. */
+    61→    61→  exposure?: number
+    62→    62→}
+    63→    63→
+    64→    64→export type OpenRole = {
+    65→    65→  title: string
+    66→    66→  href: string
+    67→    67→  /** Chip label. Defaults to "Hiring". */
+    68→    68→  craft?: string
+    69→    69→  /** One line under the title. */
+    70→    70→  note?: string
+    71→    71→  /** Big word in the empty frame. Defaults to "You?". */
+    72→    72→  mark?: string
+    73→    73→  /** Link text in the unfolded card. Defaults to labels.roleLink. */
+    74→    74→  linkLabel?: string
+    75→    75→}
+    76→    76→
+    77→    77→/** Every built-in string, for translation. */
+    78→    78→export type RosterLabels = {
+    79→    79→  pause: string
+    80→    80→  play: string
+    81→    81→  /** Accessible name of the portrait wall. */
+    82→    82→  team: string
+    83→    83→  /** Prefix read before an open role's title. */
+    84→    84→  openRole: string
+    85→    85→  /** Chip on an open-role frame without its own craft. */
+    86→    86→  hiring: string
+    87→    87→  roleLink: string
+    88→    88→  memberLink: string
+    89→    89→}
+    90→    90→
+    91→    91→export const DEFAULT_LABELS: RosterLabels = {
+    92→    92→  pause: "Pause",
+    93→    93→  play: "Play",
+    94→    94→  team: "Team",
+    95→    95→  openRole: "Open role",
+    96→    96→  hiring: "Hiring",
+    97→    97→  roleLink: "See the role",
+    98→    98→  memberLink: "Say hello",
+    99→    99→}
+   100→   100→
+   101→   101→export type RosterLink = { label: string; href: string }
+   102→   102→
+   103→   103→export type DuotoneTeamRosterProps = {
+   104→   104→  members?: TeamMember[]
+   105→   105→  /** Empty frames placed among the portraits, each linking to a job. */
+   106→   106→  openRoles?: OpenRole[]
+   107→   107→  /** Small display word above the headline. */
+   108→   108→  eyebrow?: string
+   109→   109→  /** The headline. Use "\n" to break lines; each line is fitted to the column. */
+   110→   110→  title?: string
+   111→   111→  intro?: string
+   112→   112→  cta?: RosterLink | null
+   113→   113→  secondaryCta?: RosterLink | null
+   114→   114→  preset?: RosterPreset
+   115→   115→  /** Overrides any colour of the preset. */
+   116→   116→  palette?: Partial<RosterPalette>
+   117→   117→  /** Portrait columns on wide screens (2 to 4). Tablets get 2; phones a strip. */
+   118→   118→  columns?: number
+   119→   119→  /** Seconds a column takes to drift past one portrait. Lower is faster. */
+   120→   120→  driftSeconds?: number
+   121→   121→  /** false (or driftSeconds <= 0) gives a still, scannable wall that grows with the team, headline pinned beside it. */
+   122→   122→  drift?: boolean
+   123→   123→  /** Section height on tablet and desktop. A definite length, never a percentage. */
+   124→   124→  height?: string
+   125→   125→  /** Display face for the headline, eyebrow and monograms. */
+   126→   126→  fontFamily?: string
+   127→   127→  /** Horizontal stretch of the display face (1 = as drawn). */
+   128→   128→  stretch?: number
+   129→   129→  uppercase?: boolean
+   130→   130→  grain?: boolean
+   131→   131→  /** Built-in strings (pause, play, team, openRole, hiring, roleLink, memberLink). */
+   132→   132→  labels?: Partial<RosterLabels>
+   133→   133→  className?: string
+   134→   134→  /** Called when a portrait is clicked or opened with the keyboard. */
+   135→   135→  onMemberSelect?: (member: TeamMember) => void
+   136→   136→  /** A mouse click on a portrait follows its link (never a mailto:, which stays on the "Say hello" link). Default true. */
+   137→   137→  clickFollowsLink?: boolean
+   138→   138→}
+   139→   139→
+   140→   140→// #region roster-logic
+   141→   141→export const PRESETS = {
+   142→   142→  ember: { ground: "#170403", deep: "#4f0d06", hot: "#ee7a1c", glow: "#ffb54a", ink: "#fff0c8", shadow: "#260604", highlight: "#ffe2ad" },
+   143→   143→  cobalt: { ground: "#03061f", deep: "#0d1c6e", hot: "#2e57f5", glow: "#86a6ff", ink: "#eef1ff", shadow: "#050b33", highlight: "#d9e3ff" },
+   144→   144→  moss: { ground: "#061008", deep: "#163519", hot: "#5d8a35", glow: "#c3d66e", ink: "#f3f6dd", shadow: "#08170b", highlight: "#eef3c4" },
+   145→   145→  mono: { ground: "#090909", deep: "#262626", hot: "#8c8c8c", glow: "#e0e0e0", ink: "#fafafa", shadow: "#0d0d0d", highlight: "#f4f4f4" },
+   146→   146→}
+   147→   147→
+   148→   148→export function resolvePalette(preset: string, overrides: Partial<RosterPalette> | undefined): RosterPalette {
+   149→   149→  const table: Record<string, RosterPalette> = PRESETS
+   150→   150→  const base = table[preset] || PRESETS.ember
+   151→   151→  const out: RosterPalette = Object.assign({}, base)
+   152→   152→  if (overrides) for (const k of Object.keys(base) as (keyof RosterPalette)[]) if (overrides[k]) out[k] = overrides[k]!
+   153→   153→  return out
+   154→   154→}
+   155→   155→
+   156→   156→/** "#f80" or "#ff8800" to [r, g, b] in 0..1, for the SVG tritone tables. */
+   157→   157→export function hexToUnit(hex: string) {
+   158→   158→  let h = String(hex || "").trim().replace("#", "")
+   159→   159→  if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]
+   160→   160→  if (!/^[0-9a-fA-F]{6}$/.test(h)) return [0, 0, 0]
+   161→   161→  return [0, 2, 4].map((i) => Math.round((parseInt(h.slice(i, i + 2), 16) / 255) * 1000) / 1000)
+   162→   162→}
+   163→   163→
+   164→   164→/** Mixes two hex colours, t = 0 gives a, t = 1 gives b. */
+   165→   165→export function mixHex(a: string, b: string, t: number) {
+   166→   166→  const x = hexToUnit(a)
+   167→   167→  const y = hexToUnit(b)
+   168→   168→  return "#" + [0, 1, 2].map((i) => Math.round((x[i] + (y[i] - x[i]) * t) * 255).toString(16).padStart(2, "0")).join("")
+   169→   169→}
+   170→   170→
+   171→   171→/** One feFuncR/G/B table per channel: shadow, midtone, highlight. */
+   172→   172→export function tritoneTables(shadow: string, mid: string, highlight: string) {
+   173→   173→  const s = hexToUnit(shadow)
+   174→   174→  const m = hexToUnit(mid)
+   175→   175→  const h = hexToUnit(highlight)
+   176→   176→  return [0, 1, 2].map((c) => s[c] + " " + m[c] + " " + h[c])
+   177→   177→}
+   178→   178→
+   179→   179→export function initials(name: string) {
+   180→   180→  const parts = String(name || "").trim().split(/\s+/).filter(Boolean)
+   181→   181→  if (!parts.length) return "?"
+   182→   182→  const first = parts[0][0]
+   183→   183→  const last = parts.length > 1 ? parts[parts.length - 1][0] : ""
+   184→   184→  return (first + last).toUpperCase()
+   185→   185→}
+   186→   186→
+   187→   187→/**
+   188→   188→ * Deals the people (and open roles) into columns round-robin, so neighbours
+   189→   189→ * differ, then pads short columns with repeats until each holds `minPerColumn`
+   190→   190→ * so a drifting loop never shows a gap. Repeats are flagged `dup` and are
+   191→   191→ * hidden from assistive tech. Open roles are spread through the deck.
+   192→   192→ */
+   193→   193→export function dealColumns(count: number, roleCount: number, columns: number, minPerColumn: number) {
+   194→   194→  const cols = Math.max(1, Math.floor(columns) || 1)
+   195→   195→  const deck: { kind: "member" | "role"; index: number }[] = []
+   196→   196→  for (let i = 0; i < count; i++) deck.push({ kind: "member", index: i })
+   197→   197→  for (let r = 0; r < roleCount; r++) {
+   198→   198→    const at = Math.min(deck.length, Math.round(((r + 1) * (count + roleCount)) / (roleCount + 1)) - 1 + r)
+   199→   199→    deck.splice(Math.max(0, at), 0, { kind: "role", index: r })
+   200→   200→  }
+   201→   201→  const out: { kind: "member" | "role"; index: number; dup: boolean }[][] = []
+   202→   202→  for (let c = 0; c < cols; c++) out.push([])
+   203→   203→  deck.forEach((d, i) => out[i % cols].push({ kind: d.kind, index: d.index, dup: false }))
+   204→   204→  if (!deck.length) return out
+   205→   205→  // Pad from the far end of the column furthest away, so a repeat never sits
+   206→   206→  // level with the same face in the next column.
+   207→   207→  for (let c = 0; c < cols; c++) {
+   208→   208→    let from = (c + Math.floor(cols / 2) + (cols % 2 ? 1 : 0)) % cols
+   209→   209→    if (cols === 1) from = 0
+   210→   210→    const pool = out[from].filter((e) => !e.dup).slice().reverse()
+   211→   211→    const rest = deck.map((d) => ({ kind: d.kind, index: d.index, dup: false })).reverse()
+   212→   212→    const candidates = pool.concat(rest)
+   213→   213→    let k = 0
+   214→   214→    let guard = 0
+   215→   215→    while (out[c].length < minPerColumn && guard < candidates.length * 3) {
+   216→   216→      const d = candidates[k % candidates.length]
+   217→   217→      k++
+   218→   218→      guard++
+   219→   219→      const clash = out[c].some((e) => e.kind === d.kind && e.index === d.index)
+   220→   220→      if (clash && guard < candidates.length) continue
+   221→   221→      out[c].push({ kind: d.kind, index: d.index, dup: true })
+   222→   222→    }
+   223→   223→  }
+   224→   224→  return out
+   225→   225→}
+   226→   226→
+   227→   227→/** Font size that makes the widest headline line fill `available` px. */
+   228→   228→export function fitTitleSize(available: number, widestAt100: number, stretch: number, min: number, max: number) {
+   229→   229→  if (!(available > 0) || !(widestAt100 > 0)) return min
+   230→   230→  const size = (available / (widestAt100 * (stretch > 0 ? stretch : 1))) * 100
+   231→   231→  return Math.max(min, Math.min(max, Math.floor(size * 10) / 10))
+   232→   232→}
+   233→   233→
+   234→   234→/** Layout for a container width: a strip on phones, 2 columns on tablets. */
+   235→   235→export function layoutFor(width: number, columns: number) {
+   236→   236→  if (width > 0 && width < 700) return 0
+   237→   237→  const wanted = Math.max(2, Math.min(4, Math.round(columns) || 3))
+   238→   238→  if (width > 0 && width < 1000) return 2
+   239→   239→  return wanted
+   240→   240→}
+   241→   241→
+   242→   242→export function splitLines(title: string) {
+   243→   243→  return String(title || "")
+   244→   244→    .split("\n")
+   245→   245→    .map((l) => l.trim())
+   246→   246→    .filter(Boolean)
+   247→   247→}
+   248→   248→// #endregion roster-logic
+   249→   249→
+   250→   250→const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect
+   251→   251→
+   252→   252→const DISPLAY_STACK = '"Arial Black", "Archivo Black", "Helvetica Neue", Inter, "Segoe UI", system-ui, sans-serif'
+   253→   253→
+   254→   254→const css = `
+   255→   255→.dtr{position:relative;isolation:isolate;overflow:hidden;width:100%;container-type:inline-size;color:var(--dtr-ink);background:var(--dtr-ground);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;--dtr-ease:cubic-bezier(.23,1,.32,1);--dtr-gap:14px;--dtr-pad:clamp(20px,3.2cqw,48px)}
+   256→   256→.dtr *,.dtr *::before,.dtr *::after{box-sizing:border-box}
+   257→   257→.dtr-field{position:absolute;inset:0;z-index:-2;background:radial-gradient(38cqw 46cqw at 0% 100%,var(--dtr-ground) 0%,color-mix(in srgb,var(--dtr-ground) 55%,var(--dtr-deep)) 72%,transparent 100%),radial-gradient(70% 62% at 34% 36%,var(--dtr-glow) 0%,var(--dtr-hot) 26%,color-mix(in srgb,var(--dtr-hot) 55%,var(--dtr-deep)) 48%,transparent 78%),radial-gradient(60% 90% at 78% 30%,color-mix(in srgb,var(--dtr-hot) 70%,var(--dtr-deep)) 0%,transparent 70%),linear-gradient(98deg,var(--dtr-ground) 0%,var(--dtr-deep) 16%,transparent 42%),linear-gradient(0deg,var(--dtr-ground) 0%,color-mix(in srgb,var(--dtr-deep) 85%,transparent) 30%,transparent 62%),var(--dtr-deep)}
+   258→   258→.dtr-grain{position:absolute;inset:-50%;z-index:-1;pointer-events:none;opacity:.2;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -.35'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:220px 220px}
+   259→   259→.dtr-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+   260→   260→.dtr-in{position:relative;display:grid;grid-template-columns:minmax(0,42fr) minmax(0,58fr);height:100%}
+   261→   261→.dtr[data-cols="2"] .dtr-in{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+   262→   262→.dtr-copy{position:relative;z-index:5;isolation:isolate;grid-row:1;grid-column:1;pointer-events:none;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--dtr-pad);padding-right:clamp(16px,2cqw,32px);min-width:0}
+   263→   263→.dtr-title{position:relative;margin:0;text-shadow:0 .02em .14em color-mix(in srgb,var(--dtr-ground) 30%,transparent);font-family:var(--dtr-display);font-weight:900;font-synthesis:none;line-height:.84;letter-spacing:-.035em;color:var(--dtr-ink);font-size:var(--dtr-ts,clamp(56px,9cqw,200px));text-transform:var(--dtr-case)}
+   264→   264→.dtr-eyebrow{display:block;font-size:.36em;line-height:1;letter-spacing:-.01em;margin:0 0 .16em .02em;transform:scaleX(var(--dtr-stretch));transform-origin:0 50%;white-space:nowrap}
+   265→   265→.dtr-line{display:block;clip-path:inset(-30% -400% 0 -10%);padding-bottom:.04em;margin-bottom:-.04em}
+   266→   266→.dtr-line>span{display:inline-block;white-space:nowrap;transform:scaleX(var(--dtr-stretch));transform-origin:0 50%}
+   267→   267→.dtr-line>span>span{display:inline-block;animation:dtr-line-in 900ms var(--dtr-ease) both;animation-delay:calc(120ms + var(--i,0) * 50ms)}
+   268→   268→.dtr-intro,.dtr-actions{pointer-events:auto}
+   269→   269→.dtr-intro{margin:clamp(18px,2.2cqw,28px) 0 0;max-width:38ch;font-size:clamp(15px,1.15cqw,17px);line-height:1.55;color:color-mix(in srgb,var(--dtr-ink) 86%,transparent);text-wrap:pretty}
+   270→   270→.dtr-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:clamp(20px,2.4cqw,30px)}
+   271→   271→.dtr-cta{position:relative;display:inline-flex;align-items:center;gap:12px;height:46px;padding:0 18px 0 20px;border-radius:3px;background:var(--dtr-ink);color:var(--dtr-ground);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;overflow:hidden;transition:transform 160ms var(--dtr-ease),background-color 220ms ease;outline:none}
+   272→   272→.dtr-cta::before{content:"";position:absolute;inset:0;background:var(--dtr-glow);clip-path:inset(0 100% 0 0);transition:clip-path 280ms var(--dtr-ease)}
+   273→   273→.dtr-cta>span{position:relative;z-index:1}
+   274→   274→.dtr-cta-label{position:relative;display:inline-block;overflow:hidden;height:1.2em;line-height:1.2em}
+   275→   275→.dtr-cta-label>span{display:block;transition:transform 260ms var(--dtr-ease)}
+   276→   276→.dtr-cta-arrow{display:inline-block;transition:transform 260ms var(--dtr-ease)}
+   277→   277→.dtr-cta:active{transform:scale(.97)}
+   278→   278→.dtr-cta:focus-visible::before{clip-path:inset(0 0 0 0)}
+   279→   279→.dtr-cta:focus-visible,.dtr-link:focus-visible,.dtr-pause:focus-visible,.dtr-panel a:focus-visible{outline:2px solid var(--dtr-ink);outline-offset:3px}
+   280→   280→.dtr-link{color:var(--dtr-ink);font-size:14px;font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;transition:text-underline-offset 220ms var(--dtr-ease),opacity 200ms ease;outline:none}
+   281→   281→.dtr-wall{position:relative;z-index:1;grid-row:1;grid-column:2;display:grid;grid-template-columns:repeat(var(--dtr-cols),minmax(0,1fr));gap:var(--dtr-gap);padding:0 var(--dtr-pad) 0 clamp(8px,1cqw,16px);height:100%;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%)}
+   282→   282→.dtr-col{position:relative;min-width:0;animation:dtr-rise 1100ms var(--dtr-ease) both;animation-delay:calc(var(--ci) * 90ms)}
+   283→   283→.dtr-track{display:flex;flex-direction:column;will-change:transform;transition:translate 280ms var(--dtr-ease);animation:dtr-up var(--dtr-dur) linear infinite;animation-delay:var(--dtr-phase)}
+   284→   284→.dtr-col[data-dir="down"] .dtr-track{animation-name:dtr-down}
+   285→   285→.dtr[data-paused] .dtr-track,.dtr[data-active] .dtr-track,.dtr[data-offscreen] .dtr-track,.dtr-wall:focus-within .dtr-track,.dtr[data-paused] .dtr-strip-track,.dtr[data-active] .dtr-strip-track,.dtr[data-offscreen] .dtr-strip-track,.dtr-strip:focus-within .dtr-strip-track{animation-play-state:paused}
+   286→   286→.dtr-card{position:relative;container:dtrcard/inline-size;margin:0 0 var(--dtr-gap);aspect-ratio:3/4;border-radius:3px;transition:transform 260ms var(--dtr-ease);-webkit-tap-highlight-color:transparent}
+   287→   287→.dtr-card::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:0 2px 6px color-mix(in srgb,var(--dtr-ground) 40%,transparent),0 18px 44px -12px color-mix(in srgb,var(--dtr-ground) 85%,transparent);opacity:0;transition:opacity 260ms ease;pointer-events:none}
+   288→   288→.dtr-photo{position:absolute;inset:0;overflow:hidden;border-radius:3px;background:var(--dtr-deep);transition:opacity 260ms ease,filter 260ms ease}
+   289→   289→.dtr-photo img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:cover;transition:transform 300ms var(--dtr-ease)}
+   290→   290→.dtr-photo img{transform-origin:50% 22%}
+   291→   291→.dtr-card[data-on] .dtr-photo img{transform:scale(1.05)}
+   292→   292→.dtr-hit{position:absolute;inset:0;z-index:1;margin:0;padding:0;border:0;border-radius:3px;background:transparent;cursor:default;outline:none;-webkit-tap-highlight-color:transparent}
+   293→   293→.dtr-card[data-click] .dtr-hit{cursor:pointer}
+   294→   294→.dtr-hit:focus-visible{box-shadow:0 0 0 2px var(--dtr-ground),0 0 0 4px var(--dtr-ink)}
+   295→   295→.dtr-true{opacity:0;transition:opacity 300ms ease}
+   296→   296→.dtr-plate{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(90% 70% at 50% 35%,var(--dtr-hot),var(--dtr-deep) 70%,var(--dtr-ground));font-family:var(--dtr-display);font-weight:900;color:var(--dtr-ink);font-size:clamp(40px,7cqw,96px);letter-spacing:-.04em}
+   297→   297→.dtr-plate span{transform:scaleX(var(--dtr-stretch));transition:transform 300ms var(--dtr-ease)}
+   298→   298→.dtr-card[data-on] .dtr-plate span{transform:translateY(-.95em) scaleX(var(--dtr-stretch)) scale(.82)}
+   299→   299→.dtr-plate{grid-template-rows:1fr auto 1fr}.dtr-plate span{grid-row:2}
+   300→   300→.dtr-plate em{transition:opacity 160ms ease;grid-row:3;align-self:start;margin-top:.9em;max-width:80%;font:700 12px/1.35 ui-sans-serif,system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;font-style:normal;text-align:center;color:color-mix(in srgb,var(--dtr-ink) 78%,transparent)}
+   301→   301→.dtr-role .dtr-plate{background:repeating-linear-gradient(135deg,transparent 0 10px,color-mix(in srgb,var(--dtr-ink) 9%,transparent) 10px 11px),radial-gradient(90% 70% at 50% 30%,color-mix(in srgb,var(--dtr-hot) 70%,var(--dtr-deep)),var(--dtr-ground) 85%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dtr-ink) 28%,transparent);font-size:clamp(34px,5.2cqw,76px)}
+   302→   302→.dtr-card{--dtr-ct:calc(100% - 26px);--dtr-cr:calc(100% - var(--dtr-cw));--dtr-cb:0px;--dtr-cl:0px}
+   303→   303→.dtr-chip,.dtr-panel{position:absolute;left:12px;bottom:12px;background:color-mix(in srgb,var(--dtr-ground) 95%,transparent);color:var(--dtr-ink);border-radius:3px}
+   304→   304→.dtr-chip{padding:8px 10px 7px;font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;transition:opacity 160ms ease}
+   305→   305→.dtr-panel{z-index:2;right:12px;max-height:calc(100% - 24px);overflow:hidden;padding:10px 12px 11px;clip-path:inset(var(--dtr-ct) var(--dtr-cr) var(--dtr-cb) var(--dtr-cl) round 3px);opacity:0;visibility:hidden;transition:clip-path 200ms var(--dtr-ease),opacity 100ms ease 120ms,visibility 0s linear 220ms;pointer-events:none}
+   306→   306→.dtr-col:first-child .dtr-chip{left:auto;right:12px}
+   307→   307→.dtr-col:first-child .dtr-card{--dtr-cr:0px;--dtr-cl:calc(100% - var(--dtr-cw))}
+   308→   308→
+   309→   309→.dtr-name{margin:0;font-size:clamp(15px,7cqw,19px);font-weight:800;line-height:1.15;letter-spacing:-.01em}
+   310→   310→.dtr-roleline{margin:3px 0 0;font-size:13px;line-height:1.35;color:color-mix(in srgb,var(--dtr-ink) 78%,transparent)}
+   311→   311→.dtr-bio{margin:6px 0 0;font-size:13px;line-height:1.4;color:color-mix(in srgb,var(--dtr-ink) 90%,transparent)}
+   312→   312→.dtr-panel a{display:inline-flex;align-items:center;gap:6px;margin-top:8px;color:var(--dtr-ink);font-size:13px;font-weight:700;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;outline:none}
+   313→   313→.dtr-panel a span{display:inline-block;transition:transform 260ms var(--dtr-ease)}
+   314→   314→.dtr-card[data-on]{z-index:3;transform:translateY(-6px) scale(1.02)}
+   315→   315→.dtr-card[data-on]::after{opacity:1}
+   316→   316→.dtr-card[data-on] .dtr-true{opacity:.72}
+   317→   317→.dtr-card[data-on] .dtr-chip,.dtr-card[data-on] .dtr-plate em{opacity:0;transition-duration:90ms}
+   318→   318→.dtr-card[data-on] .dtr-panel{clip-path:inset(0 0 0 0 round 3px);opacity:1;visibility:visible;pointer-events:auto;transition:clip-path 300ms var(--dtr-ease),opacity 60ms ease,visibility 0s}
+   319→   319→.dtr-title{transform-origin:0 100%;transition:transform 300ms var(--dtr-ease)}
+   320→   320→.dtr[data-active-col="0"] .dtr-title{transform:scale(.84)}
+   321→   321→.dtr[data-active] .dtr-card:not([data-on]) .dtr-photo{opacity:.42;filter:saturate(.7)}
+   322→   322→.dtr[data-active] .dtr-card:not([data-on]) .dtr-chip{opacity:.5}
+   323→   323→.dtr-pause{position:absolute;right:var(--dtr-pad);bottom:14px;z-index:6;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dtr-ink) 32%,transparent);display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:0;border-radius:3px;background:color-mix(in srgb,var(--dtr-ground) 88%,transparent);color:var(--dtr-ink);font:700 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:transform 160ms var(--dtr-ease),background-color 200ms ease;outline:none}
+   324→   324→.dtr-pause:active{transform:scale(.96)}
+   325→   325→.dtr-pause i{display:inline-block;width:8px;height:9px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+   326→   326→.dtr[data-paused] .dtr-pause i{border-right:0;border-left:8px solid currentColor;border-top:4.5px solid transparent;border-bottom:4.5px solid transparent;width:0;height:0}
+   327→   327→.dtr-strip{display:none}
+   328→   328→.dtr[data-mode="strip"] .dtr-in{display:flex;flex-direction:column;height:auto}
+   329→   329→.dtr[data-mode="strip"] .dtr-wall{display:none}
+   330→   330→.dtr[data-mode="strip"] .dtr-strip{display:block;position:relative;order:-1;overflow:hidden;padding:20px 0 4px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%)}
+   331→   331→.dtr-strip-track{display:flex;width:max-content;padding-left:20px;will-change:transform;transition:translate 280ms var(--dtr-ease);animation:dtr-left var(--dtr-sdur) linear infinite}
+   332→   332→.dtr-strip .dtr-card{width:clamp(170px,56cqw,250px);margin:0 10px 0 0;flex:none}
+   333→   333→.dtr[data-mode="strip"] .dtr-copy{padding:18px 20px 28px}
+   334→   334→.dtr[data-mode="strip"] .dtr-pause{position:static;margin-left:auto}
+   335→   335→.dtr[data-static] .dtr-track{animation:none}
+   336→   336→.dtr[data-static] .dtr-wall{height:auto;padding-top:var(--dtr-pad);padding-bottom:var(--dtr-pad);-webkit-mask-image:none;mask-image:none}
+   337→   337→.dtr[data-static] .dtr-col:nth-child(2){padding-top:clamp(32px,6cqw,96px)}
+   338→   338→.dtr[data-static] .dtr-col:nth-child(3){padding-top:clamp(16px,3cqw,48px)}
+   339→   339→.dtr[data-static] .dtr-col:nth-child(4){padding-top:clamp(48px,8cqw,128px)}
+   340→   340→.dtr[data-static] .dtr-in{height:auto;align-items:start}
+   341→   341→.dtr[data-static] .dtr-copy{position:sticky;top:0;height:var(--dtr-h);min-height:600px}
+   342→   342→.dtr[data-static][data-mode="strip"] .dtr-copy{position:relative;height:auto;min-height:0}
+   343→   343→.dtr[data-static] .dtr-strip{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+   344→   344→.dtr[data-static] .dtr-strip-track{animation:none;padding-right:20px}
+   345→   345→.dtr[data-static] .dtr-strip .dtr-card{scroll-snap-align:start}
+   346→   346→@container dtrcard (max-width:229px){.dtr-bio{display:none}.dtr-panel{padding:9px 10px 10px}}
+   347→   347→@keyframes dtr-up{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,-50%,0)}}
+   348→   348→@keyframes dtr-down{from{transform:translate3d(0,-50%,0)}to{transform:translate3d(0,0,0)}}
+   349→   349→@keyframes dtr-left{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-50% + 10px),0,0)}}
+   350→   350→@keyframes dtr-rise{from{opacity:0;transform:translate3d(0,56px,0)}to{opacity:1;transform:none}}
+   351→   351→@keyframes dtr-line-in{from{transform:translate3d(0,104%,0)}to{transform:none}}
+   352→   352→@media (hover:hover) and (pointer:fine){
+   353→   353→.dtr-cta:hover::before{clip-path:inset(0 0 0 0)}
+   354→   354→.dtr-cta:hover .dtr-cta-label>span{transform:translateY(-100%)}
+   355→   355→.dtr-cta:hover .dtr-cta-arrow{transform:translateX(4px)}
+   356→   356→.dtr-link:hover{text-underline-offset:8px}
+   357→   357→.dtr-panel a:hover span{transform:translate(2px,-2px)}
+   358→   358→.dtr-pause:hover{background:var(--dtr-ground)}
+   359→   359→}
+   360→   360→@media (prefers-reduced-motion:reduce){
+   361→   361→.dtr-track,.dtr-strip-track{animation:none;transform:translate3d(0,calc(-50% * var(--dtr-rest,0)),0)}
+   362→   362→.dtr-strip-track{transform:none}
+   363→   363→.dtr-col,.dtr-line>span>span{animation:none}
+   364→   364→.dtr-card,.dtr-panel,.dtr-cta-label>span,.dtr-cta-arrow{transition-duration:1ms}
+   365→   365→.dtr-card[data-on],.dtr-card[data-on] .dtr-photo img{transform:none}
+   366→   366→.dtr-title{transition-duration:1ms}
+   367→   367→.dtr-pause{display:none}
+   368→   368→}
+   369→   369→`
+   370→   370→
+   371→   371→type Slot =
+   372→   372→  | { key: string; kind: "member"; member: TeamMember; dup: boolean }
+   373→   373→  | { key: string; kind: "role"; role: OpenRole; dup: boolean }
+   374→   374→
+   375→   375→/** Nudges a drifting column (or the phone strip) so a focused card is fully visible. */
+   376→   376→function bringIntoView(card: HTMLElement) {
+   377→   377→  const frame = card.closest(".dtr-wall, .dtr-strip") as HTMLElement | null
+   378→   378→  const track = card.closest(".dtr-track, .dtr-strip-track") as HTMLElement | null
+   379→   379→  if (!frame || !track) return
+   380→   380→  const f = frame.getBoundingClientRect()
+   381→   381→  const r = card.getBoundingClientRect()
+   382→   382→  const vertical = track.classList.contains("dtr-track")
+   383→   383→  // Start from where the track is right now (it may still be easing back).
+   384→   384→  const now = getComputedStyle(track).translate
+   385→   385→  const parts = !now || now === "none" ? ["0", "0"] : now.split(" ")
+   386→   386→  let x = parseFloat(parts[0]) || 0
+   387→   387→  let y = parseFloat(parts[1] || "0") || 0
+   388→   388→  const m = 24
+   389→   389→  if (vertical) {
+   390→   390→    if (r.top < f.top + m) y += f.top + m - r.top
+   391→   391→    else if (r.bottom > f.bottom - m) y -= r.bottom - (f.bottom - m)
+   392→   392→  } else {
+   393→   393→    if (r.left < f.left + m) x += f.left + m - r.left
+   394→   394→    else if (r.right > f.right - m) x -= r.right - (f.right - m)
+   395→   395→  }
+   396→   396→  track.style.translate = Math.round(x) + "px " + Math.round(y) + "px"
+   397→   397→}
+   398→   398→
+   399→   399→/** Lets the track ease back into its loop once focus moves on. */
+   400→   400→function releaseNudge(card: HTMLElement) {
+   401→   401→  const track = card.closest(".dtr-track, .dtr-strip-track") as HTMLElement | null
+   402→   402→  if (track) track.style.translate = ""
+   403→   403→}
+   404→   404→
+   405→   405→function Portrait(props: {
+   406→   406→  slot: Slot
+   407→   407→  on: boolean
+   408→   408→  filterId: string
+   409→   409→  labels: RosterLabels
+   410→   410→  onEnter: (key: string) => void
+   411→   411→  onLeave: (key: string) => void
+   412→   412→  onToggle: (key: string) => void
+   413→   413→  onSelect?: (member: TeamMember) => void
+   414→   414→  follows: boolean
+   415→   415→}) {
+   416→   416→  const { slot, on, filterId, labels, onEnter, onLeave, onToggle, onSelect, follows } = props
+   417→   417→  const [failed, setFailed] = React.useState(false)
+   418→   418→  const pointer = React.useRef("mouse")
+   419→   419→  const panelId = "p" + React.useId().replace(/[^a-zA-Z0-9]/g, "")
+   420→   420→  const hidden = slot.dup
+   421→   421→  const isRole = slot.kind === "role"
+   422→   422→  const member = slot.kind === "member" ? slot.member : null
+   423→   423→  const role = slot.kind === "role" ? slot.role : null
+   424→   424→  const craft = member ? member.craft || member.role : role ? role.craft || labels.hiring : ""
+   425→   425→  const label = member ? member.name + ", " + member.role : role ? labels.openRole + ": " + role.title : ""
+   426→   426→  const photo = member && member.photo && !failed ? member.photo : ""
+   427→   427→  const href = member ? member.href : role ? role.href : undefined
+   428→   428→  const linkLabel = member ? member.linkLabel || labels.memberLink : (role && role.linkLabel) || labels.roleLink
+   429→   429→  const exposure = member && member.exposure && member.exposure > 0 ? member.exposure : 1
+   430→   430→  const focus = (member && member.focus) || "50% 22%"
+   431→   431→  const followable = follows && Boolean(href) && !/^mailto:/i.test(String(href))
+   432→   432→  const clickable = Boolean((member && onSelect) || followable)
+   433→   433→
+   434→   434→  const follow = (card: HTMLElement) => {
+   435→   435→    const a = card.querySelector(".dtr-panel a") as HTMLAnchorElement | null
+   436→   436→    if (a) a.click()
+   437→   437→  }
+   438→   438→
+   439→   439→  return (
+   440→   440→    <div
+   441→   441→      className={"dtr-card" + (isRole ? " dtr-role" : "")}
+   442→   442→      data-on={on ? "" : undefined}
+   443→   443→      data-click={clickable ? "" : undefined}
+   444→   444→      aria-hidden={hidden ? true : undefined}
+   445→   445→      style={{ ["--dtr-cw" as string]: Math.min(26, craft.length) * 0.74 + 2.2 + "em" } as React.CSSProperties}
+   446→   446→      onPointerDown={(e) => {
+   447→   447→        pointer.current = e.pointerType
+   448→   448→      }}
+   449→   449→      onPointerEnter={(e) => {
+   450→   450→        if (e.pointerType !== "mouse") return
+   451→   451→        // A card cut off by the frame slides fully into view (it stays under the pointer).
+   452→   452→        bringIntoView(e.currentTarget)
+   453→   453→        onEnter(slot.key)
+   454→   454→      }}
+   455→   455→      onPointerLeave={(e) => {
+   456→   456→        if (e.pointerType !== "mouse") return
+   457→   457→        onLeave(slot.key)
+   458→   458→        if (!e.currentTarget.contains(document.activeElement)) releaseNudge(e.currentTarget)
+   459→   459→      }}
+   460→   460→      onBlur={(e) => {
+   461→   461→        if (e.currentTarget.contains(e.relatedTarget as Node | null)) return
+   462→   462→        onLeave(slot.key)
+   463→   463→        releaseNudge(e.currentTarget)
+   464→   464→      }}
+   465→   465→    >
+   466→   466→      <div className="dtr-photo">
+   467→   467→        {photo ? (
+   468→   468→          <>
+   469→   469→            <img
+   470→   470→              className="dtr-duo"
+   471→   471→              src={photo}
+   472→   472→              alt=""
+   473→   473→              width={720}
+   474→   474→              height={960}
+   475→   475→              loading="lazy"
+   476→   476→              decoding="async"
+   477→   477→              draggable={false}
+   478→   478→              style={{
+   479→   479→                filter: (exposure !== 1 ? "brightness(" + exposure + ") " : "") + "url(#" + filterId + ")",
+   480→   480→                objectPosition: focus,
+   481→   481→              }}
+   482→   482→              onError={() => setFailed(true)}
+   483→   483→            />
+   484→   484→            <img
+   485→   485→              className="dtr-true"
+   486→   486→              src={photo}
+   487→   487→              alt=""
+   488→   488→              width={720}
+   489→   489→              height={960}
+   490→   490→              loading="lazy"
+   491→   491→              decoding="async"
+   492→   492→              draggable={false}
+   493→   493→              style={{ objectPosition: focus }}
+   494→   494→            />
+   495→   495→          </>
+   496→   496→        ) : (
+   497→   497→          <div className="dtr-plate" aria-hidden="true">
+   498→   498→            <span>{member ? initials(member.name) : (role && role.mark) || "You?"}</span>
+   499→   499→            {role ? <em>{role.title}</em> : null}
+   500→   500→          </div>
+   501→   501→        )}
+   502→   502→      </div>
+   503→   503→      <span className="dtr-chip" aria-hidden="true">
+   504→   504→        {craft}
+   505→   505→      </span>
+   506→   506→      <button
+   507→   507→        type="button"
+   508→   508→        className="dtr-hit"
+   509→   509→        tabIndex={hidden ? -1 : 0}
+   510→   510→        aria-label={label}
+   511→   511→        aria-expanded={hidden ? undefined : on}
+   512→   512→        aria-controls={panelId}
+   513→   513→        onFocus={(e) => {
+   514→   514→          // Pointer focus is handled by hover and tap; keyboard focus unfolds here.
+   515→   515→          if (!e.currentTarget.matches(":focus-visible")) return
+   516→   516→          onEnter(slot.key)
+   517→   517→          bringIntoView(e.currentTarget.parentElement as HTMLElement)
+   518→   518→        }}
+   519→   519→        onClick={(e) => {
+   520→   520→          const card = e.currentTarget.parentElement as HTMLElement
+   521→   521→          if (member && onSelect) onSelect(member)
+   522→   522→          if (e.detail === 0) {
+   523→   523→            // Keyboard: Enter opens the card, a second Enter moves to its link.
+   524→   524→            if (!on) {
+   525→   525→              onEnter(slot.key)
+   526→   526→              bringIntoView(card)
+   527→   527→            } else {
+   528→   528→              const a = card.querySelector(".dtr-panel a") as HTMLElement | null
+   529→   529→              if (a) a.focus()
+   530→   530→            }
+   531→   531→            return
+   532→   532→          }
+   533→   533→          if (pointer.current === "mouse") {
+   534→   534→            if (followable) follow(card)
+   535→   535→            return
+   536→   536→          }
+   537→   537→          if (!on) bringIntoView(card)
+   538→   538→          onToggle(slot.key)
+   539→   539→        }}
+   540→   540→        onKeyDown={(e) => {
+   541→   541→          if (e.key === "Escape") onLeave(slot.key)
+   542→   542→        }}
+   543→   543→      />
+   544→   544→      <div
+   545→   545→        className="dtr-panel"
+   546→   546→        id={panelId}
+   547→   547→        aria-hidden={on ? undefined : true}
+   548→   548→        onKeyDown={(e) => {
+   549→   549→          if (e.key !== "Escape") return
+   550→   550→          const btn = e.currentTarget.parentElement?.querySelector(".dtr-hit") as HTMLElement | null
+   551→   551→          if (btn) btn.focus()
+   552→   552→          onLeave(slot.key)
+   553→   553→        }}
+   554→   554→      >
+   555→   555→        <p className="dtr-name">{member ? member.name : role ? role.title : ""}</p>
+   556→   556→        {member || (role && role.note) ? <p className="dtr-roleline">{member ? member.role : role ? role.note : ""}</p> : null}
+   557→   557→        {member && member.bio ? <p className="dtr-bio">{member.bio}</p> : null}
+   558→   558→        {href ? (
+   559→   559→          <a href={href} tabIndex={hidden || !on ? -1 : 0}>
+   560→   560→            {linkLabel} <span aria-hidden="true">↗</span>
+   561→   561→          </a>
+   562→   562→        ) : null}
+   563→   563→      </div>
+   564→   564→    </div>
+   565→   565→  )
+   566→   566→}
+   567→   567→
+   568→   568→export default function DuotoneTeamRoster({
+   569→   569→  members = [],
+   570→   570→  openRoles = [],
+   571→   571→  eyebrow = "Meet",
+   572→   572→  title = "The\ncrew",
+   573→   573→  intro = "",
+   574→   574→  cta = null,
+   575→   575→  secondaryCta = null,
+   576→   576→  preset = "ember",
+   577→   577→  palette,
+   578→   578→  columns = 3,
+   579→   579→  driftSeconds = 9,
+   580→   580→  drift = true,
+   581→   581→  height = "100svh",
+   582→   582→  fontFamily = DISPLAY_STACK,
+   583→   583→  stretch = 1.16,
+   584→   584→  uppercase = true,
+   585→   585→  grain = true,
+   586→   586→  labels,
+   587→   587→  className = "",
+   588→   588→  onMemberSelect,
+   589→   589→  clickFollowsLink = true,
+   590→   590→}: DuotoneTeamRosterProps) {
+   591→   591→  const pal = resolvePalette(preset, palette)
+   592→   592→  const text: RosterLabels = { ...DEFAULT_LABELS, ...(labels || {}) }
+   593→   593→  const rawId = React.useId()
+   594→   594→  const uid = "dtr" + rawId.replace(/[^a-zA-Z0-9]/g, "")
+   595→   595→  const filterId = uid + "-tone"
+   596→   596→  const titleId = uid + "-title"
+   597→   597→  const rootRef = React.useRef(null as HTMLElement | null)
+   598→   598→  const copyRef = React.useRef(null as HTMLDivElement | null)
+   599→   599→  const titleRef = React.useRef(null as HTMLHeadingElement | null)
+   600→   600→  const [cols, setCols] = React.useState(layoutFor(0, columns))
+   601→   601→  const [titleSize, setTitleSize] = React.useState(0)
+   602→   602→  const [active, setActive] = React.useState(null as string | null)
+   603→   603→  const [paused, setPaused] = React.useState(false)
+   604→   604→  const [outOfView, setOutOfView] = React.useState(false)
+   605→   605→  const [tabHidden, setTabHidden] = React.useState(false)
+   606→   606→  const offscreen = outOfView || tabHidden
+   607→   607→
+   608→   608→  const lines = splitLines(title)
+   609→   609→  // The shadow end is lifted toward the field so dark skin and dark clothes keep their detail.
+   610→   610→  const mid = (palette && palette.mid) || mixHex(pal.hot, pal.highlight, 0.35)
+   611→   611→  const tables = tritoneTables(mixHex(pal.shadow, pal.deep, 0.4), mid, mixHex(pal.highlight, pal.ink, 0.5))
+   612→   612→  const still = !drift || !(driftSeconds > 0)
+   613→   613→  const copies = still ? [0] : [0, 1]
+   614→   614→  const [minPer, setMinPer] = React.useState(4)
+   615→   615→  const plan = React.useMemo(
+   616→   616→    () => dealColumns(members.length, openRoles.length, cols || 1, cols && !still ? minPer : 0),
+   617→   617→    [members.length, openRoles.length, cols, minPer, still],
+   618→   618→  )
+   619→   619→
+   620→   620→  const slotFor = (e: { kind: string; index: number; dup: boolean }, prefix: string): Slot =>
+   621→   621→    e.kind === "role"
+   622→   622→      ? { key: prefix, kind: "role", role: openRoles[e.index], dup: e.dup }
+   623→   623→      : { key: prefix, kind: "member", member: members[e.index], dup: e.dup }
+   624→   624→
+   625→   625→  // Measure the container: choose the layout and fit the headline to its column.
+   626→   626→  useIsoLayoutEffect(() => {
+   627→   627→    const root = rootRef.current
+   628→   628→    const copy = copyRef.current
+   629→   629→    const head = titleRef.current
+   630→   630→    if (!root || !copy || !head) return
+   631→   631→    const fit = () => {
+   632→   632→      const w = root.getBoundingClientRect().width
+   633→   633→      const next = layoutFor(w, columns)
+   634→   634→      setCols((c) => (c === next ? c : next))
+   635→   635→      const spans = head.querySelectorAll(".dtr-line > span")
+   636→   636→      let widest = 0
+   637→   637→      const cur = parseFloat(getComputedStyle(head).fontSize) || 100
+   638→   638→      spans.forEach((s) => {
+   639→   639→        widest = Math.max(widest, (s as HTMLElement).offsetWidth)
+   640→   640→      })
+   641→   641→      const widestAt100 = (widest / cur) * 100
+   642→   642→      const cs = getComputedStyle(copy)
+   643→   643→      const avail = copy.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
+   644→   644→      const h = root.getBoundingClientRect().height
+   645→   645→      const strip = next === 0
+   646→   646→      // Enough portraits per column that one loop is taller than the wall.
+   647→   647→      if (next > 0) {
+   648→   648→        const wallW = root.getBoundingClientRect().width * (next === 2 ? 0.5 : 0.58)
+   649→   649→        const cardH = ((wallW - 14 * (next + 1)) / next) * (4 / 3) + 14
+   650→   650→        const need = Math.max(3, Math.ceil(h / Math.max(80, cardH)))
+   651→   651→        setMinPer((m) => (m === need ? m : need))
+   652→   652→      }
+   653→   653→      const maxByHeight = strip ? 200 : Math.max(56, (h * 0.52) / Math.max(1, lines.length + 0.45))
+   654→   654→      // On the wall layout the widest line runs on into the first column of portraits, like a poster.
+   655→   655→      const overhang = strip ? 1 : 1.18
+   656→   656→      setTitleSize(fitTitleSize(avail * overhang, widestAt100, stretch, 40, Math.min(280, maxByHeight)))
+   657→   657→    }
+   658→   658→    fit()
+   659→   659→    const ro = new ResizeObserver(fit)
+   660→   660→    ro.observe(root)
+   661→   661→    return () => ro.disconnect()
+   662→   662→  }, [columns, stretch, title, fontFamily, uppercase, lines.length])
+   663→   663→
+   664→   664→  // Stop drifting while nobody can see it.
+   665→   665→  React.useEffect(() => {
+   666→   666→    const root = rootRef.current
+   667→   667→    if (!root || typeof IntersectionObserver === "undefined") return
+   668→   668→    const io = new IntersectionObserver(([entry]) => setOutOfView(!entry.isIntersecting), { threshold: 0 })
+   669→   669→    io.observe(root)
+   670→   670→    const vis = () => setTabHidden(document.hidden)
+   671→   671→    document.addEventListener("visibilitychange", vis)
+   672→   672→    return () => {
+   673→   673→      io.disconnect()
+   674→   674→      document.removeEventListener("visibilitychange", vis)
+   675→   675→    }
+   676→   676→  }, [])
+   677→   677→
+   678→   678→  const onEnter = React.useCallback((key: string) => setActive(key), [setActive])
+   679→   679→  const onLeave = React.useCallback((key: string) => setActive((a) => (a === key ? null : a)), [setActive])
+   680→   680→  const onToggle = React.useCallback((key: string) => setActive((a) => (a === key ? null : key)), [setActive])
+   681→   681→
+   682→   682→  // Tap outside an unfolded card folds it again.
+   683→   683→  React.useEffect(() => {
+   684→   684→    if (!active) return
+   685→   685→    const down = (e: PointerEvent) => {
+   686→   686→      if (e.pointerType === "mouse") return
+   687→   687→      const t = e.target as HTMLElement | null
+   688→   688→      if (!t || !t.closest || !t.closest(".dtr-card")) setActive(null)
+   689→   689→    }
+   690→   690→    document.addEventListener("pointerdown", down)
+   691→   691→    return () => document.removeEventListener("pointerdown", down)
+   692→   692→  }, [active])
+   693→   693→
+   694→   694→  const rootStyle = {
+   695→   695→    ["--dtr-ground"]: pal.ground,
+   696→   696→    ["--dtr-deep"]: pal.deep,
+   697→   697→    ["--dtr-hot"]: pal.hot,
+   698→   698→    ["--dtr-glow"]: pal.glow,
+   699→   699→    ["--dtr-ink"]: pal.ink,
+   700→   700→    ["--dtr-display"]: fontFamily,
+   701→   701→    ["--dtr-stretch"]: String(stretch),
+   702→   702→    ["--dtr-case"]: uppercase ? "uppercase" : "none",
+   703→   703→    ["--dtr-cols"]: String(cols || 1),
+   704→   704→    ["--dtr-ts"]: titleSize ? titleSize + "px" : undefined,
+   705→   705→    ["--dtr-sdur"]: Math.max(8, (members.length + openRoles.length) * Math.max(1, driftSeconds) * 0.55) + "s",
+   706→   706→    ["--dtr-h"]: height,
+   707→   707→    height: cols === 0 || still ? "auto" : height,
+   708→   708→    minHeight: cols === 0 ? undefined : still ? height : "600px",
+   709→   709→  } as React.CSSProperties
+   710→   710→
+   711→   711→  const pauseButton = (
+   712→   712→    <button
+   713→   713→      type="button"
+   714→   714→      className="dtr-pause"
+   715→   715→      aria-pressed={paused}
+   716→   716→      onClick={() => setPaused((p) => !p)}
+   717→   717→    >
+   718→   718→      <i aria-hidden="true" />
+   719→   719→      {paused ? text.play : text.pause}
+   720→   720→    </button>
+   721→   721→  )
+   722→   722→
+   723→   723→  const phases = [0, 0.38, 0.71, 0.18]
+   724→   724→
+   725→   725→  return (
+   726→   726→    <section
+   727→   727→      ref={rootRef}
+   728→   728→      className={"dtr " + className}
+   729→   729→      style={rootStyle}
+   730→   730→      aria-labelledby={titleId}
+   731→   731→      data-mode={cols === 0 ? "strip" : "columns"}
+   732→   732→      data-cols={cols || undefined}
+   733→   733→      data-active={active ? "" : undefined}
+   734→   734→      data-active-col={active && cols !== 0 ? active.split("-")[0] : undefined}
+   735→   735→      data-paused={paused ? "" : undefined}
+   736→   736→      data-static={still ? "" : undefined}
+   737→   737→      data-offscreen={offscreen ? "" : undefined}
+   738→   738→    >
+   739→   739→      <style>{css}</style>
+   740→   740→      <svg className="dtr-defs" aria-hidden="true" focusable="false">
+   741→   741→        <filter id={filterId} colorInterpolationFilters="sRGB">
+   742→   742→          <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0" />
+   743→   743→          <feComponentTransfer>
+   744→   744→            <feFuncR type="table" tableValues="0 0.13 0.5 0.9 1" />
+   745→   745→            <feFuncG type="table" tableValues="0 0.13 0.5 0.9 1" />
+   746→   746→            <feFuncB type="table" tableValues="0 0.13 0.5 0.9 1" />
+   747→   747→          </feComponentTransfer>
+   748→   748→          <feComponentTransfer>
+   749→   749→            <feFuncR type="table" tableValues={tables[0]} />
+   750→   750→            <feFuncG type="table" tableValues={tables[1]} />
+   751→   751→            <feFuncB type="table" tableValues={tables[2]} />
+   752→   752→          </feComponentTransfer>
+   753→   753→        </filter>
+   754→   754→      </svg>
+   755→   755→      <div className="dtr-field" aria-hidden="true" />
+   756→   756→      {grain ? <div className="dtr-grain" aria-hidden="true" /> : null}
+   757→   757→      {cols !== 0 && !still ? pauseButton : null}
+   758→   758→
+   759→   759→      <div className="dtr-in">
+   760→   760→        <div className="dtr-copy" ref={copyRef}>
+   761→   761→          <h2 className="dtr-title" id={titleId} ref={titleRef}>
+   762→   762→            {eyebrow ? <span className="dtr-eyebrow">{eyebrow} </span> : null}
+   763→   763→            {lines.map((l, i) => (
+   764→   764→              <span className="dtr-line" key={i} style={{ ["--i"]: i } as React.CSSProperties}>
+   765→   765→                <span>
+   766→   766→                  <span>{l}</span>
+   767→   767→                </span>
+   768→   768→                {i < lines.length - 1 ? " " : null}
+   769→   769→              </span>
+   770→   770→            ))}
+   771→   771→          </h2>
+   772→   772→          {intro ? <p className="dtr-intro">{intro}</p> : null}
+   773→   773→          {cta || secondaryCta ? (
+   774→   774→            <div className="dtr-actions">
+   775→   775→              {cta ? (
+   776→   776→                <a className="dtr-cta" href={cta.href}>
+   777→   777→                  <span className="dtr-cta-label">
+   778→   778→                    <span>{cta.label}</span>
+   779→   779→                    <span aria-hidden="true">{cta.label}</span>
+   780→   780→                  </span>
+   781→   781→                  <span className="dtr-cta-arrow" aria-hidden="true">
+   782→   782→                    →
+   783→   783→                  </span>
+   784→   784→                </a>
+   785→   785→              ) : null}
+   786→   786→              {secondaryCta ? (
+   787→   787→                <a className="dtr-link" href={secondaryCta.href}>
+   788→   788→                  {secondaryCta.label}
+   789→   789→                </a>
+   790→   790→              ) : null}
+   791→   791→              {cols === 0 && !still ? pauseButton : null}
+   792→   792→            </div>
+   793→   793→          ) : null}
+   794→   794→        </div>
+   795→   795→
+   796→   796→        {cols === 0 ? (
+   797→   797→          <div className="dtr-strip" role="group" aria-label={text.team}>
+   798→   798→            <div className="dtr-strip-track">
+   799→   799→              {copies.map((copy) =>
+   800→   800→                plan[0].map((e, i) => {
+   801→   801→                  const slot = slotFor({ ...e, dup: e.dup || copy === 1 }, "s" + copy + "-" + i)
+   802→   802→                  return (
+   803→   803→                    <Portrait
+   804→   804→                      key={slot.key}
+   805→   805→                      slot={slot}
+   806→   806→                      on={active === slot.key}
+   807→   807→                      filterId={filterId}
+   808→   808→                      labels={text}
+   809→   809→                      onEnter={onEnter}
+   810→   810→                      onLeave={onLeave}
+   811→   811→                      onToggle={onToggle}
+   812→   812→                      onSelect={onMemberSelect}
+   813→   813→                      follows={clickFollowsLink}
+   814→   814→                    />
+   815→   815→                  )
+   816→   816→                }),
+   817→   817→              )}
+   818→   818→            </div>
+   819→   819→          </div>
+   820→   820→        ) : (
+   821→   821→          <div className="dtr-wall" role="group" aria-label={text.team}>
+   822→   822→            {plan.map((col, c) => {
+   823→   823→              const dur = Math.max(6, col.length * Math.max(1, driftSeconds))
+   824→   824→              const phase = phases[c % phases.length]
+   825→   825→              return (
+   826→   826→                <div
+   827→   827→                  className="dtr-col"
+   828→   828→                  key={c}
+   829→   829→                  data-dir={c % 2 ? "down" : "up"}
+   830→   830→                  style={{
+   831→   831→                    ["--ci"]: c,
+   832→   832→                    ["--dtr-dur"]: dur + "s",
+   833→   833→                    ["--dtr-phase"]: -(dur * phase) + "s",
+   834→   834→                    ["--dtr-rest"]: c % 2 ? 1 - phase : phase,
+   835→   835→                  } as React.CSSProperties}
+   836→   836→                >
+   837→   837→                  <div className="dtr-track">
+   838→   838→                    {copies.map((copy) =>
+   839→   839→                      col.map((e, i) => {
+   840→   840→                        const slot = slotFor({ ...e, dup: e.dup || copy === 1 }, c + "-" + copy + "-" + i)
+   841→   841→                        return (
+   842→   842→                          <div key={slot.key}>
+   843→   843→                            <Portrait
+   844→   844→                              slot={slot}
+   845→   845→                              on={active === slot.key}
+   846→   846→                              filterId={filterId}
+   847→   847→                              labels={text}
+   848→   848→                              onEnter={onEnter}
+   849→   849→                              onLeave={onLeave}
+   850→   850→                              onToggle={onToggle}
+   851→   851→                              onSelect={onMemberSelect}
+   852→   852→                              follows={clickFollowsLink}
+   853→   853→                            />
+   854→   854→                          </div>
+   855→   855→                        )
+   856→   856→                      }),
+   857→   857→                    )}
+   858→   858→                  </div>
+   859→   859→                </div>
+   860→   860→              )
+   861→   861→            })}
+   862→   862→          </div>
+   863→   863→        )}
+   864→   864→      </div>
+   865→   865→    </section>
+   866→   866→  )
+   867→   867→}
+   868→   868→

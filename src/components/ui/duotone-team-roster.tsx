@@ -52,6 +52,8 @@ export type TeamMember = {
   bio?: string
   /** Portrait URL. A monogram plate stands in when missing or broken. */
   photo?: string
+  /** Fuller fallback used when photo fails to load (e.g. the original behind a thumbnail). */
+  photoAlt?: string
   /** object-position for the portrait, e.g. "50% 30%". */
   focus?: string
   href?: string
@@ -255,7 +257,7 @@ const css = `
 .dtr{position:relative;isolation:isolate;overflow:hidden;width:100%;container-type:inline-size;color:var(--dtr-ink);background:var(--dtr-ground);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;--dtr-ease:cubic-bezier(.23,1,.32,1);--dtr-gap:14px;--dtr-pad:clamp(20px,3.2cqw,48px)}
 .dtr *,.dtr *::before,.dtr *::after{box-sizing:border-box}
 .dtr-field{position:absolute;inset:0;z-index:-2;background:radial-gradient(38cqw 46cqw at 0% 100%,var(--dtr-ground) 0%,color-mix(in srgb,var(--dtr-ground) 55%,var(--dtr-deep)) 72%,transparent 100%),radial-gradient(70% 62% at 34% 36%,var(--dtr-glow) 0%,var(--dtr-hot) 26%,color-mix(in srgb,var(--dtr-hot) 55%,var(--dtr-deep)) 48%,transparent 78%),radial-gradient(60% 90% at 78% 30%,color-mix(in srgb,var(--dtr-hot) 70%,var(--dtr-deep)) 0%,transparent 70%),linear-gradient(98deg,var(--dtr-ground) 0%,var(--dtr-deep) 16%,transparent 42%),linear-gradient(0deg,var(--dtr-ground) 0%,color-mix(in srgb,var(--dtr-deep) 85%,transparent) 30%,transparent 62%),var(--dtr-deep)}
-.dtr-grain{position:absolute;inset:-50%;z-index:-1;pointer-events:none;opacity:.2;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -.35'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:220px 220px}
+.dtr-grain{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.2;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.6 -.35'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");background-size:220px 220px}
 .dtr-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
 .dtr-in{position:relative;display:grid;grid-template-columns:minmax(0,42fr) minmax(0,58fr);height:100%}
 .dtr[data-cols="2"] .dtr-in{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
@@ -282,7 +284,7 @@ const css = `
 .dtr-col{position:relative;min-width:0;animation:dtr-rise 1100ms var(--dtr-ease) both;animation-delay:calc(var(--ci) * 90ms)}
 .dtr-track{display:flex;flex-direction:column;will-change:transform;transition:translate 280ms var(--dtr-ease);animation:dtr-up var(--dtr-dur) linear infinite;animation-delay:var(--dtr-phase)}
 .dtr-col[data-dir="down"] .dtr-track{animation-name:dtr-down}
-.dtr[data-paused] .dtr-track,.dtr[data-active] .dtr-track,.dtr[data-offscreen] .dtr-track,.dtr-wall:focus-within .dtr-track,.dtr[data-paused] .dtr-strip-track,.dtr[data-active] .dtr-strip-track,.dtr[data-offscreen] .dtr-strip-track,.dtr-strip:focus-within .dtr-strip-track{animation-play-state:paused}
+.dtr[data-paused] .dtr-track,.dtr[data-offscreen] .dtr-track,.dtr-col[data-hold] .dtr-track,.dtr-col:focus-within .dtr-track,.dtr[data-paused] .dtr-strip-track,.dtr[data-active] .dtr-strip-track,.dtr[data-offscreen] .dtr-strip-track,.dtr-strip:focus-within .dtr-strip-track{animation-play-state:paused}
 .dtr-card{position:relative;container:dtrcard/inline-size;margin:0 0 var(--dtr-gap);aspect-ratio:3/4;border-radius:3px;transition:transform 260ms var(--dtr-ease);-webkit-tap-highlight-color:transparent}
 .dtr-card::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:0 2px 6px color-mix(in srgb,var(--dtr-ground) 40%,transparent),0 18px 44px -12px color-mix(in srgb,var(--dtr-ground) 85%,transparent);opacity:0;transition:opacity 260ms ease;pointer-events:none}
 .dtr-photo{position:absolute;inset:0;overflow:hidden;border-radius:3px;background:var(--dtr-deep);transition:opacity 260ms ease,filter 260ms ease}
@@ -327,7 +329,7 @@ const css = `
 .dtr-strip{display:none}
 .dtr[data-mode="strip"] .dtr-in{display:flex;flex-direction:column;height:auto}
 .dtr[data-mode="strip"] .dtr-wall{display:none}
-.dtr[data-mode="strip"] .dtr-strip{display:block;position:relative;order:-1;overflow:hidden;padding:20px 0 4px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%)}
+.dtr[data-mode="strip"] .dtr-strip{display:block;position:relative;overflow:hidden;padding:20px 0 4px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%)}
 .dtr-strip-track{display:flex;width:max-content;padding-left:20px;will-change:transform;transition:translate 280ms var(--dtr-ease);animation:dtr-left var(--dtr-sdur) linear infinite}
 .dtr-strip .dtr-card{width:clamp(170px,56cqw,250px);margin:0 10px 0 0;flex:none}
 .dtr[data-mode="strip"] .dtr-copy{padding:18px 20px 28px}
@@ -414,7 +416,7 @@ function Portrait(props: {
   follows: boolean
 }) {
   const { slot, on, filterId, labels, onEnter, onLeave, onToggle, onSelect, follows } = props
-  const [failed, setFailed] = React.useState(false)
+  const [photoSrc, setPhotoSrc] = React.useState<string | null>(null)
   const pointer = React.useRef("mouse")
   const panelId = "p" + React.useId().replace(/[^a-zA-Z0-9]/g, "")
   const hidden = slot.dup
@@ -423,7 +425,22 @@ function Portrait(props: {
   const role = slot.kind === "role" ? slot.role : null
   const craft = member ? member.craft || member.role : role ? role.craft || labels.hiring : ""
   const label = member ? member.name + ", " + member.role : role ? labels.openRole + ": " + role.title : ""
-  const photo = member && member.photo && !failed ? member.photo : ""
+  // Starts on `photo`; if it 404s, tries `photoAlt` (the original behind a thumbnail), then the monogram plate.
+  const basePhoto = (member && member.photo) || ""
+  const photoAlt = (member && member.photoAlt) || ""
+  const photo = photoSrc === null ? basePhoto : photoSrc
+  const onPhotoError = () =>
+    setPhotoSrc((cur) => {
+      const now = cur === null ? basePhoto : cur
+      return photoAlt && now !== photoAlt ? photoAlt : ""
+    })
+  /** Holds the card's column still while it is hovered, so the panel stays readable; other columns keep drifting. */
+  const holdColumn = (card: HTMLElement, hold: boolean) => {
+    const col = card.closest(".dtr-col")
+    if (!col) return
+    if (hold) col.setAttribute("data-hold", "")
+    else col.removeAttribute("data-hold")
+  }
   const href = member ? member.href : role ? role.href : undefined
   const linkLabel = member ? member.linkLabel || labels.memberLink : (role && role.linkLabel) || labels.roleLink
   const exposure = member && member.exposure && member.exposure > 0 ? member.exposure : 1
@@ -448,17 +465,20 @@ function Portrait(props: {
       }}
       onPointerEnter={(e) => {
         if (e.pointerType !== "mouse") return
+        holdColumn(e.currentTarget, true)
         // A card cut off by the frame slides fully into view (it stays under the pointer).
         bringIntoView(e.currentTarget)
         onEnter(slot.key)
       }}
       onPointerLeave={(e) => {
         if (e.pointerType !== "mouse") return
+        holdColumn(e.currentTarget, false)
         onLeave(slot.key)
         if (!e.currentTarget.contains(document.activeElement)) releaseNudge(e.currentTarget)
       }}
       onBlur={(e) => {
         if (e.currentTarget.contains(e.relatedTarget as Node | null)) return
+        holdColumn(e.currentTarget, false)
         onLeave(slot.key)
         releaseNudge(e.currentTarget)
       }}
@@ -479,7 +499,7 @@ function Portrait(props: {
                 filter: (exposure !== 1 ? "brightness(" + exposure + ") " : "") + "url(#" + filterId + ")",
                 objectPosition: focus,
               }}
-              onError={() => setFailed(true)}
+              onError={onPhotoError}
             />
             <img
               className="dtr-true"
@@ -491,6 +511,7 @@ function Portrait(props: {
               decoding="async"
               draggable={false}
               style={{ objectPosition: focus }}
+              onError={onPhotoError}
             />
           </>
         ) : (

@@ -73,17 +73,28 @@ export default function Modalities() {
   const waLink = (msg: string) =>
     `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
 
-  const members: TeamMember[] = modalities.map((m) => ({
-    name: m.name,
-    role: scheduleSummary(m),
-    craft:
-      m.schedules.length > 0 ? `${m.schedules.length}x/semana` : "Acesso livre",
-    bio: m.description,
-    photo: m.imageUrl || undefined,
-    focus: "50% 30%",
-    href: waLink(`Olá! Quero saber mais sobre a modalidade ${m.name} na CROWN.`),
-    linkLabel: "Agendar pelo WhatsApp",
-  }));
+  // A parede em deriva usa thumbnails (720px) para carregar leve no celular;
+  // a imagem original fica de reserva caso o thumbnail não exista ainda.
+  const members: TeamMember[] = modalities.map((m) => {
+    const full = m.imageUrl || "";
+    const thumb = full.startsWith("/img/")
+      ? "/img/cards/" + full.slice(5).replace(/\.(png|jpe?g)$/i, ".webp")
+      : full;
+    return {
+      name: m.name,
+      role: scheduleSummary(m),
+      craft:
+        m.schedules.length > 0 ? `${m.schedules.length}x/semana` : "Acesso livre",
+      bio: m.description,
+      photo: thumb || undefined,
+      photoAlt: full || undefined,
+      focus: "50% 30%",
+      href: waLink(
+        `Olá! Quero saber mais sobre a modalidade ${m.name} na CROWN.`,
+      ),
+      linkLabel: "Agendar pelo WhatsApp",
+    };
+  });
 
   return (
     <div id="modalidades" className="scroll-mt-0">
@@ -104,7 +115,7 @@ export default function Modalities() {
         palette={CROWN_PALETTE}
         fontFamily="var(--font-anton), 'Arial Black', sans-serif"
         columns={3}
-        driftSeconds={10}
+        driftSeconds={6}
         height="100svh"
         labels={{
           pause: "Pausar",
