@@ -702,3 +702,11 @@ Work Log:
 - Mobile extra: color bleed (`.dtr-true`, foto colorida no hover) só renderiza em ponteiro fino (`matchMedia("(hover: hover) and (pointer: fine)")`) E só baixa no primeiro hover (`bled`) — no toque nem existe, metade das decodagens a menos. CSS: removido `filter:saturate(.7)` do dim `[data-active]` e `filter` da transition de `.dtr-photo` (também rasterizava em massa ao passar o mouse).
 - Validação browser: desktop 1440×900 — wheel pela parede 8× sem engolir (1000→5000 contínuo); hover BEACH TENNIS abre painel + color bleed. Mobile 390×844 — strip: texto antes dos cards (bug 3 continua OK), 24 imgs duo / 0 true / 0 filtro, 53fps headless, tap PILATES abre grade real (Ter • 19:00) + WhatsApp. Lint 0.
 - Deploy: local HEAD ⊇ origin/main (origin 322754b estava sem jpgs originais/logo/robots.txt que o local tem) → force-push-with-lease do main com o fix.
+
+## Task ID 31 — "A ANIMAÇÃO de rolagem do computador não está funcionando" — deriva morta por prefers-reduced-motion
+
+Work Log:
+- Esclarecimento do report: o usuário agora se refere à ANIMAÇÃO da parede (colunas derivando), não à rolagem da página (essa já foi resolvida no Task 30 — validado: produção roda dtr-up 24s, -173px/3s).
+- No meu ambiente a deriva roda; a única via no código que deixa a parede 100% parada num browser capaz é `@media (prefers-reduced-motion: reduce){.dtr-track{animation:none}}` — Windows com "efeitos de animação" desligados (comum em PC de trabalho/"melhor desempenho") faz o Chromium reportar reduce. Dono quer a animação sempre.
+- Fix: a deriva NÃO é mais desligada por reduce-motion — roda 2x mais lenta (`animation-duration: calc(var(--dtr-dur) * 2)`; strip idem com --dtr-sdur). Entradas (dtr-rise, line-in) continuam desligadas e transições continuam instantâneas para quem tem reduce; botão Pausar volta a ficar visível (era display:none no reduce) dando controle manual.
+- Lint 0. Push → Vercel redeploy.

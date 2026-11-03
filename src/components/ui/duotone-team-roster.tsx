@@ -367,13 +367,17 @@ const css = `
 .dtr-pause:hover{background:var(--dtr-ground)}
 }
 @media (prefers-reduced-motion:reduce){
-.dtr-track,.dtr-strip-track{animation:none;transform:translate3d(0,calc(-50% * var(--dtr-rest,0)),0)}
-.dtr-strip-track{transform:none}
 .dtr-col,.dtr-line>span>span{animation:none}
 .dtr-card,.dtr-panel,.dtr-cta-label>span,.dtr-cta-arrow{transition-duration:1ms}
 .dtr-card[data-on],.dtr-card[data-on] .dtr-photo img{transform:none}
 .dtr-title{transition-duration:1ms}
-.dtr-pause{display:none}
+/* A deriva é movimento ambiente lento e contínuo — parte da identidade da
+ * parede. Máquinas com "efeitos de animação" desligados (comum no Windows)
+ * relatam prefers-reduced-motion e antes ficavam com a parede parada, o que
+ * o cliente lê como defeito. Agora a deriva continua (2x mais lenta) e o
+ * botão Pausar fica disponível para quem quiser pará-la. */
+.dtr-track{animation-duration:calc(var(--dtr-dur) * 2)}
+.dtr-strip-track{animation-duration:calc(var(--dtr-sdur) * 2)}
 }
 `
 
