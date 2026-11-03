@@ -73,21 +73,28 @@ export default function Modalities() {
   const waLink = (msg: string) =>
     `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
 
-  // A parede em deriva usa thumbnails (720px) para carregar leve no celular;
-  // a imagem original fica de reserva caso o thumbnail não exista ainda.
+  // A parede em deriva usa duotones pré-queimados (duo-*.webp, 720px): o
+  // tritone vai gravado no arquivo, então a animação vira transform de
+  // textura em cache — sem filter SVG por frame (era isso que engasgava a
+  // rolagem no desktop e pesava no celular). O thumbnail colorido fica de
+  // reserva: se o duotone faltar, ele entra com o filtro em runtime.
   const members: TeamMember[] = modalities.map((m) => {
     const full = m.imageUrl || "";
     const thumb = full.startsWith("/img/")
       ? "/img/cards/" + full.slice(5).replace(/\.(png|jpe?g)$/i, ".webp")
       : full;
+    const duo = thumb.startsWith("/img/cards/")
+      ? thumb.replace("/img/cards/", "/img/cards/duo-")
+      : thumb;
     return {
       name: m.name,
       role: scheduleSummary(m),
       craft:
         m.schedules.length > 0 ? `${m.schedules.length}x/semana` : "Acesso livre",
       bio: m.description,
-      photo: thumb || undefined,
-      photoAlt: full || undefined,
+      photo: duo || undefined,
+      photoAlt: thumb || undefined,
+      preToned: duo.startsWith("/img/cards/duo-"),
       focus: "50% 30%",
       href: waLink(
         `Olá! Quero saber mais sobre a modalidade ${m.name} na CROWN.`,

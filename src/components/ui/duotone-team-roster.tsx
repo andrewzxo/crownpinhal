@@ -8,6 +8,10 @@ import * as React from "react"
  * tall columns of portraits that drift slowly in opposite directions. Every
  * photo is pushed through one tritone (shadow, midtone, highlight) built from
  * the palette, so a roster shot on ten different phones reads as one set.
+ * Perf: o tritone NÃO deve rodar como filter: url(#svg) em imagens que se
+ * movem — o navegador re-rasteriza o filtro a cada frame e engasga rolagem.
+ * Passe fotos já tonificadas (preToned, duotone gravado no arquivo — ver
+ * scripts/make-duotone-thumbs.ts); o filtro SVG fica só para fallback.
  *
  * The signature: point at, tab to or tap a portrait and it lifts out of the
  * wall, colour bleeds back into it, the rest of the wall sinks into the field,
@@ -61,6 +65,9 @@ export type TeamMember = {
   linkLabel?: string
   /** Brightens (>1) or darkens (<1) this portrait before the tritone, for very dark or bright photos. */
   exposure?: number
+  /** A foto já vem tonificada (duotone gravado no arquivo). Evita filter SVG
+   *  em runtime — essencial para a deriva não engasgar rolagem/CPU. */
+  preToned?: boolean
 }
 
 export type OpenRole = {
@@ -287,7 +294,7 @@ const css = `
 .dtr[data-paused] .dtr-track,.dtr[data-offscreen] .dtr-track,.dtr-col[data-hold] .dtr-track,.dtr-col:focus-within .dtr-track,.dtr[data-paused] .dtr-strip-track,.dtr[data-active] .dtr-strip-track,.dtr[data-offscreen] .dtr-strip-track,.dtr-strip:focus-within .dtr-strip-track{animation-play-state:paused}
 .dtr-card{position:relative;container:dtrcard/inline-size;margin:0 0 var(--dtr-gap);aspect-ratio:3/4;border-radius:3px;transition:transform 260ms var(--dtr-ease);-webkit-tap-highlight-color:transparent}
 .dtr-card::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;box-shadow:0 2px 6px color-mix(in srgb,var(--dtr-ground) 40%,transparent),0 18px 44px -12px color-mix(in srgb,var(--dtr-ground) 85%,transparent);opacity:0;transition:opacity 260ms ease;pointer-events:none}
-.dtr-photo{position:absolute;inset:0;overflow:hidden;border-radius:3px;background:var(--dtr-deep);transition:opacity 260ms ease,filter 260ms ease}
+.dtr-photo{position:absolute;inset:0;overflow:hidden;border-radius:3px;background:var(--dtr-deep);transition:opacity 260ms ease}
 .dtr-photo img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:cover;transition:transform 300ms var(--dtr-ease)}
 .dtr-photo img{transform-origin:50% 22%}
 .dtr-card[data-on] .dtr-photo img{transform:scale(1.05)}
@@ -320,7 +327,7 @@ const css = `
 .dtr-card[data-on] .dtr-panel{clip-path:inset(0 0 0 0 round 3px);opacity:1;visibility:visible;pointer-events:auto;transition:clip-path 300ms var(--dtr-ease),opacity 60ms ease,visibility 0s}
 .dtr-title{transform-origin:0 100%;transition:transform 300ms var(--dtr-ease)}
 .dtr[data-active-col="0"] .dtr-title{transform:scale(.84)}
-.dtr[data-active] .dtr-card:not([data-on]) .dtr-photo{opacity:.42;filter:saturate(.7)}
+.dtr[data-active] .dtr-card:not([data-on]) .dtr-photo{opacity:.42}
 .dtr[data-active] .dtr-card:not([data-on]) .dtr-chip{opacity:.5}
 .dtr-pause{position:absolute;right:var(--dtr-pad);bottom:14px;z-index:6;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--dtr-ink) 32%,transparent);display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:0;border-radius:3px;background:color-mix(in srgb,var(--dtr-ground) 88%,transparent);color:var(--dtr-ink);font:700 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:transform 160ms var(--dtr-ease),background-color 200ms ease;outline:none}
 .dtr-pause:active{transform:scale(.96)}
@@ -409,14 +416,19 @@ function Portrait(props: {
   on: boolean
   filterId: string
   labels: RosterLabels
+  /** Render the color-bleed overlay (hover-capable devices only). */
+  bleed: boolean
   onEnter: (key: string) => void
   onLeave: (key: string) => void
   onToggle: (key: string) => void
   onSelect?: (member: TeamMember) => void
   follows: boolean
 }) {
-  const { slot, on, filterId, labels, onEnter, onLeave, onToggle, onSelect, follows } = props
+  const { slot, on, filterId, labels, bleed, onEnter, onLeave, onToggle, onSelect, follows } = props
   const [photoSrc, setPhotoSrc] = React.useState<string | null>(null)
+  // A foto colorida (color bleed) só baixa quando o card é aberto pela
+  // primeira vez — desktop não paga os bytes das 12 fotos de uma vez.
+  const [bled, setBled] = React.useState(false)
   const pointer = React.useRef("mouse")
   const panelId = "p" + React.useId().replace(/[^a-zA-Z0-9]/g, "")
   const hidden = slot.dup
@@ -444,6 +456,14 @@ function Portrait(props: {
   const href = member ? member.href : role ? role.href : undefined
   const linkLabel = member ? member.linkLabel || labels.memberLink : (role && role.linkLabel) || labels.roleLink
   const exposure = member && member.exposure && member.exposure > 0 ? member.exposure : 1
+  const preToned = member?.preToned === true
+  // O duotone gravado no arquivo dispensa o filtro; se ele falhar e cair no
+  // fallback (photoAlt), o filtro volta em runtime para manter o visual.
+  const tonedNow = preToned && photo === basePhoto && photo !== photoAlt && photo !== ""
+  const toneFilter =
+    exposure !== 1 ? "brightness(" + exposure + ")" : undefined
+  const runtimeFilter =
+    (exposure !== 1 ? "brightness(" + exposure + ") " : "") + "url(#" + filterId + ")"
   const focus = (member && member.focus) || "50% 22%"
   const followable = follows && Boolean(href) && !/^mailto:/i.test(String(href))
   const clickable = Boolean((member && onSelect) || followable)
@@ -465,6 +485,7 @@ function Portrait(props: {
       }}
       onPointerEnter={(e) => {
         if (e.pointerType !== "mouse") return
+        setBled(true)
         holdColumn(e.currentTarget, true)
         // A card cut off by the frame slides fully into view (it stays under the pointer).
         bringIntoView(e.currentTarget)
@@ -496,23 +517,25 @@ function Portrait(props: {
               decoding="async"
               draggable={false}
               style={{
-                filter: (exposure !== 1 ? "brightness(" + exposure + ") " : "") + "url(#" + filterId + ")",
+                filter: tonedNow ? toneFilter : runtimeFilter,
                 objectPosition: focus,
               }}
               onError={onPhotoError}
             />
-            <img
-              className="dtr-true"
-              src={photo}
-              alt=""
-              width={720}
-              height={960}
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-              style={{ objectPosition: focus }}
-              onError={onPhotoError}
-            />
+            {bleed && bled ? (
+              <img
+                className="dtr-true"
+                src={tonedNow ? photoAlt || photo : photo}
+                alt=""
+                width={720}
+                height={960}
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+                style={{ objectPosition: focus }}
+                onError={onPhotoError}
+              />
+            ) : null}
           </>
         ) : (
           <div className="dtr-plate" aria-hidden="true">
@@ -624,6 +647,18 @@ export default function DuotoneTeamRoster({
   const [paused, setPaused] = React.useState(false)
   const [outOfView, setOutOfView] = React.useState(false)
   const [tabHidden, setTabHidden] = React.useState(false)
+  // O "color bleed" (foto colorida sobre o duotone) é efeito de hover: só
+  // existe em ponteiro fino. Em toque, nem renderiza — metade das decodagens
+  // de imagem a menos no celular.
+  const [finePointer, setFinePointer] = React.useState(false)
+  React.useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)")
+    const upd = () => setFinePointer(mq.matches)
+    upd()
+    mq.addEventListener?.("change", upd)
+    return () => mq.removeEventListener?.("change", upd)
+  }, [])
   const offscreen = outOfView || tabHidden
 
   const lines = splitLines(title)
@@ -827,6 +862,7 @@ export default function DuotoneTeamRoster({
                       on={active === slot.key}
                       filterId={filterId}
                       labels={text}
+                      bleed={finePointer}
                       onEnter={onEnter}
                       onLeave={onLeave}
                       onToggle={onToggle}
@@ -866,6 +902,7 @@ export default function DuotoneTeamRoster({
                               on={active === slot.key}
                               filterId={filterId}
                               labels={text}
+                              bleed={finePointer}
                               onEnter={onEnter}
                               onLeave={onLeave}
                               onToggle={onToggle}

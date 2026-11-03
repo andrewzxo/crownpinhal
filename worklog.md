@@ -684,3 +684,21 @@ Work Log:
 
 Stage Summary:
 - Seção de modalidades agora: roda sempre no desktop (hover pausa só a coluna do card), 87% mais leve no celular com thumbnails dedicados, e texto antes dos cards no mobile. Bônus: fotos reais do dono otimizadas (2.1MB PNG→192KB webp), hotlinks Pinterest auto-hospedados, hero quebrado (403) restaurado e conteúdo do painel local sincronizado com o Turso (produção mostra as edições do dono).
+
+---
+
+## Task ID 30 — Parede das modalidades travava a rolagem (desktop) e pesava no celular — duotone pré-queimado
+
+**Data:** sessão atual • **Status:** ✅ corrigido, validado no browser
+
+User Report:
+- "no computador não está funcionando a rolagem ainda, no celular, ta funcionando mas ficou MUITO travado e pesado de carregar a pagina ainda"
+
+Work Log:
+- Reprodução: dev apontando pro Turso (12 modalidades). IMPORTANTE descoberto no caminho: o shell do sandbox exporta `DATABASE_URL=file:` por padrão e ele SOBRESCREVE .env/.env.local do bun — para testar com dados reais é preciso `DATABASE_URL=... DATABASE_AUTH_TOKEN=... bun run dev` explícito.
+- Diagnóstico (produção, agent-browser): wheel engolia eventos de forma intermitente na zona da parede (500→1000→1000→2000→2000→3000); longe dela scrollava perfeito (+500 sempre). Pausando a deriva (botão Pausar) a rolagem ficou perfeita pela mesma zona → causa isolada: a deriva anima `transform` de colunas cujas imagens usam `filter: url(#svg)` (tritone) — o navegador re-rasteriza o filtro SVG a CADA FRAME em toda a área visível, engolindo wheel (desktop) e soterrando a main thread (celular "MUITO travado e pesado"). O fix do Task 29 (hover por coluna) tratou outro sintoma; a causa real era essa.
+- Fix definitivo: duotone QUEIMADO nos arquivos. `scripts/make-duotone-thumbs.ts` replica pixel-a-pixel o filtro do componente (feColorMatrix sRGB 0.2126/0.7152/0.0722 → curva [0,.13,.5,.9,1] → tabelas tritone por canal) usando `mixHex`/`tritoneTables` importados do próprio componente + sharp raw → `public/img/cards/duo-*.webp` (12 arquivos, 16–123KB, q80).
+- Componente: `TeamMember.preToned` — Portrait pula o `filter: url(#)` quando a foto já vem tonificada (filtro volta automaticamente se o duo faltar e cair no fallback photoAlt, mantendo o visual). Zero `filter url` em runtime confirmado (24 imgs duo, 0 filtradas).
+- Mobile extra: color bleed (`.dtr-true`, foto colorida no hover) só renderiza em ponteiro fino (`matchMedia("(hover: hover) and (pointer: fine)")`) E só baixa no primeiro hover (`bled`) — no toque nem existe, metade das decodagens a menos. CSS: removido `filter:saturate(.7)` do dim `[data-active]` e `filter` da transition de `.dtr-photo` (também rasterizava em massa ao passar o mouse).
+- Validação browser: desktop 1440×900 — wheel pela parede 8× sem engolir (1000→5000 contínuo); hover BEACH TENNIS abre painel + color bleed. Mobile 390×844 — strip: texto antes dos cards (bug 3 continua OK), 24 imgs duo / 0 true / 0 filtro, 53fps headless, tap PILATES abre grade real (Ter • 19:00) + WhatsApp. Lint 0.
+- Deploy: local HEAD ⊇ origin/main (origin 322754b estava sem jpgs originais/logo/robots.txt que o local tem) → force-push-with-lease do main com o fix.
