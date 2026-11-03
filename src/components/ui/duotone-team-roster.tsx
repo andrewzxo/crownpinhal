@@ -342,6 +342,7 @@ const css = `
 .dtr[data-mode="strip"] .dtr-copy{padding:18px 20px 28px}
 .dtr[data-mode="strip"] .dtr-pause{position:static;margin-left:auto}
 .dtr[data-static] .dtr-track{animation:none}
+.dtr[data-static] .dtr-track,.dtr[data-static] .dtr-strip-track{will-change:auto;transition:none}
 .dtr[data-static] .dtr-wall{height:auto;padding-top:var(--dtr-pad);padding-bottom:var(--dtr-pad);-webkit-mask-image:none;mask-image:none}
 .dtr[data-static] .dtr-col:nth-child(2){padding-top:clamp(32px,6cqw,96px)}
 .dtr[data-static] .dtr-col:nth-child(3){padding-top:clamp(16px,3cqw,48px)}
@@ -663,13 +664,29 @@ export default function DuotoneTeamRoster({
     mq.addEventListener?.("change", upd)
     return () => mq.removeEventListener?.("change", upd)
   }, [])
+  // Touch não deriva: animação contínua de GPU é o que trava celular. No
+  // toque a parede/strip fica estática e navegável (scroll-snap/swipe), e o
+  // desktop mantém a deriva. Duas vias (qualquer uma ativa): aparelho de
+  // toque de verdade (hover:none + pointer:coarse) ou tela estreita (<700px,
+  // onde só existe o modo strip) — cobre WebViews que reportam mídia errada.
+  const [touchOnly, setTouchOnly] = React.useState(false)
+  React.useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return
+    const mq = window.matchMedia(
+      "(hover: none) and (pointer: coarse), (max-width: 699px)",
+    )
+    const upd = () => setTouchOnly(mq.matches)
+    upd()
+    mq.addEventListener?.("change", upd)
+    return () => mq.removeEventListener?.("change", upd)
+  }, [])
   const offscreen = outOfView || tabHidden
 
   const lines = splitLines(title)
   // The shadow end is lifted toward the field so dark skin and dark clothes keep their detail.
   const mid = (palette && palette.mid) || mixHex(pal.hot, pal.highlight, 0.35)
   const tables = tritoneTables(mixHex(pal.shadow, pal.deep, 0.4), mid, mixHex(pal.highlight, pal.ink, 0.5))
-  const still = !drift || !(driftSeconds > 0)
+  const still = !drift || !(driftSeconds > 0) || touchOnly
   const copies = still ? [0] : [0, 1]
   const [minPer, setMinPer] = React.useState(4)
   const plan = React.useMemo(

@@ -710,3 +710,15 @@ Work Log:
 - No meu ambiente a deriva roda; a única via no código que deixa a parede 100% parada num browser capaz é `@media (prefers-reduced-motion: reduce){.dtr-track{animation:none}}` — Windows com "efeitos de animação" desligados (comum em PC de trabalho/"melhor desempenho") faz o Chromium reportar reduce. Dono quer a animação sempre.
 - Fix: a deriva NÃO é mais desligada por reduce-motion — roda 2x mais lenta (`animation-duration: calc(var(--dtr-dur) * 2)`; strip idem com --dtr-sdur). Entradas (dtr-rise, line-in) continuam desligadas e transições continuam instantâneas para quem tem reduce; botão Pausar volta a ficar visível (era display:none no reduce) dando controle manual.
 - Lint 0. Push → Vercel redeploy.
+
+## Task ID 32 — Celular ainda travando → no toque a parede NÃO anima mais (carrossel swipeável estático)
+
+User Report:
+- "no celular ainda ta travando muito, nao pode travar tanto assim, arrume isso, se não der certo eu quero que remova, ou de um jeito de ficar mais leve"
+
+Work Log:
+- Causa restante no celular: mesmo com duotone queimado (Task 30), o strip animava `transform` infinito numa camada de ~6000px (24 cards de 720px) com mask + grain blend por cima — GPU de celular re-composi­ta isso a cada frame, sem folga; e 24 decodagens 720px no load.
+- Fix (sem remover o visual): `still` agora também ativa em TOQUE — matchMedia("(hover: none) and (pointer: coarse), (max-width: 699px)"). Em touch: data-static → strip vira carrossel com scroll-snap + swipe (12 cards únicos, sem duplicatas), ZERO animação contínua, will-change:auto, sem botão Pausar; tablets em modo parede ficam estáticas com copy sticky. Desktop (hover:hover + pointer:fine + ≥700px) mantém a deriva. Fallback de largura cobre WebViews que reportam mídia errada.
+- Descoberta de ambiente: o headless do sandbox reporta hover:none (sem pointer) — por isso a detecção exige pointer:coarse E ganhou fallback por largura; device emulation da CLI não seta pointer:coarse.
+- Imagens: duo-*.webp re-gerados a 480px de largura (cards têm máx 250px; 2-3x DPR) — decodagem/bytes ~45% menores (ex.: real-interior 123→71KB, muay-thai 36→21KB; total cards 764KB→~500KB com os thumbs).
+- Validação: iPhone 14 (390px) — staticTouch true, 12 cards, moved_px=0, texto antes dos cards, sem Pausar; desktop 1440 fresh (sem emulação) — drift roda (122px/2.2s), Pausar presente. Lint 0.

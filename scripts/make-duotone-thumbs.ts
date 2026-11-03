@@ -90,6 +90,9 @@ async function main() {
     await sharp(data, {
       raw: { width: info.width, height: info.height, channels: 4 as const },
     })
+      // Cards têm no máx. 250px de largura (2-3x DPR ⇒ ~500-750px); 480px
+      // cobre com folga e corta ~55% do custo de decodagem/bytes vs 720px.
+      .resize({ width: 480, withoutEnlargement: true })
       .webp({ quality: 80 })
       .toFile(out);
 
