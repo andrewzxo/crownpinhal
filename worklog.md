@@ -722,3 +722,16 @@ Work Log:
 - Descoberta de ambiente: o headless do sandbox reporta hover:none (sem pointer) — por isso a detecção exige pointer:coarse E ganhou fallback por largura; device emulation da CLI não seta pointer:coarse.
 - Imagens: duo-*.webp re-gerados a 480px de largura (cards têm máx 250px; 2-3x DPR) — decodagem/bytes ~45% menores (ex.: real-interior 123→71KB, muay-thai 36→21KB; total cards 764KB→~500KB com os thumbs).
 - Validação: iPhone 14 (390px) — staticTouch true, 12 cards, moved_px=0, texto antes dos cards, sem Pausar; desktop 1440 fresh (sem emulação) — drift roda (122px/2.2s), Pausar presente. Lint 0.
+
+## Task ID 33 — "Volte como tava antes": celular volta à grade básica original, parede fica só no desktop
+
+User Report:
+- "não, volte como tava antes, antes dessa animação toda, no celular deixa só o basico" — rejeitou também o carrossel swipeável (Task 32) e qualquer variante da parede no celular.
+
+Work Log:
+- Decisão: no celular/tablet (<1024px) a seção "Nossas Modalidades" voltou a ser EXATAMENTE o design pré-animação (commit 764ca6d): grade estática `grid-cols-2 sm:grid-cols-3`, cards clip-blade com foto colorida 720px webp, nome, descrição, "N horários disponíveis", clique rola até #horarios, WhatsAppCTA no fim. Sem deriva, sem carrossel, sem filtros, sem máscara/grain.
+- Implementação em src/components/crown/Modalities.tsx: hook `useIsDesktop()` (matchMedia "(min-width: 1024px)") com estado inicial `false` — o SSR/primeiro paint é a grade básica em qualquer tela; no desktop a parede entra logo após a hidratação. Resultado: o celular NUNCA monta a parede (`.dtr`/strip/carrossel removidos do DOM mobile) e NUNCA baixa os duo-*.webp (0 requests). Desktop (≥1024px) mantém a parede duotone intacta (Tasks 29-31). Resize 1440→900 desmonta a parede e traz a básica na hora; 900→1440 o inverso.
+- duotone-team-roster.tsx NÃO foi tocado: componente só é montado no desktop agora; strip/carrossel virou código morto inofensivo (CSS nunca ativo em ≥1024px).
+- Nota: HTML SSR da produção não contém a seção (AuthGate renderiza tudo no cliente) — verificação tem que ser no browser, curl do HTML não mostra nada da seção.
+- Validação (agent-browser): mobile 390×844 local+produção — dtr:false, stripTrack:false, 12 cards clip-blade, 2 colunas, firstCard "Musculação", duoLoaded:0 (Performance API). Desktop 1440×900 local+produção — wall:true, mode:columns, 3 colunas, deriva movendo (transform -479→-526/0.8s), wheel scroll ok (scrollY 3054), 0 cards básicos. Console sem erros. Lint 0.
+- Commit 6aebada → push origin main → Vercel redeploy validado em https://crownpinhal.vercel.app (mobile e desktop).
